@@ -66,30 +66,19 @@
       <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl mb-4"></div>
       <div id="login-success" class="hidden bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs p-3 rounded-xl mb-4"></div>
 
-      <!-- Kredensial Default Card -->
-      <div class="bg-indigo-950/40 border border-indigo-800/40 rounded-xl p-3 mb-4 text-xs">
-        <p class="font-bold text-indigo-300 flex items-center gap-1 mb-1">
-          <i data-lucide="key" class="w-3.5 h-3.5"></i> Kredensial Admin Siap Pakai:
-        </p>
-        <div class="text-[11px] text-slate-300 space-y-0.5">
-          <p>Email: <span class="font-mono text-white bg-slate-800 px-1.5 py-0.5 rounded">admin@absensi.com</span></p>
-          <p>Password: <span class="font-mono text-white bg-slate-800 px-1.5 py-0.5 rounded">admin123456</span></p>
-        </div>
-      </div>
-
       <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="text-xs font-semibold text-slate-300 block mb-1">Email Admin</label>
           <div class="relative">
             <i data-lucide="mail" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input id="login-email" type="email" required value="admin@absensi.com" placeholder="admin@absensi.com" class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+            <input id="login-email" type="email" required placeholder="admin@email.com" class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
         </div>
         <div>
           <label class="text-xs font-semibold text-slate-300 block mb-1">Password</label>
           <div class="relative">
             <i data-lucide="lock" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input id="login-password" type="password" required value="admin123456" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+            <input id="login-password" type="password" required placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
         </div>
 
