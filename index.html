@@ -276,8 +276,8 @@
   <!-- ==================== SCRIPT JAVASCRIPT LOGIC ==================== -->
   <script>
     const DEFAULT_CONFIG = {
-      url: 'https://xyzcompany.supabase.co',
-      key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+      url: 'https://xfrcokrepsiejsxjzbqf.supabase.co',
+      key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmcmNva3JlcHNpZWpzeGp6YnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MjgzMzksImV4cCI6MjEwNDEwNDMzOX0.YJUh5_M2E0ZkwFv0Zbn4r3qu4uzc0BJUX9ma3nCxfyQ'
     };
 
     let supabaseClient = null;
@@ -289,6 +289,14 @@
     let isDemoMode = localStorage.getItem('app_is_demo') === 'true';
 
     function initSupabase() {
+      // Jika sebelumnya tersimpan URL dummy lama, bersihkan agar menggunakan kredensial asli baru
+      if (localStorage.getItem('app_sb_url')?.includes('xyzcompany')) {
+        localStorage.removeItem('app_sb_url');
+        localStorage.removeItem('app_sb_key');
+        localStorage.removeItem('app_is_demo');
+        isDemoMode = false;
+      }
+
       if (isDemoMode) {
         document.getElementById('supabase-status-text').textContent = 'Mode Demo Offline';
         document.getElementById('supabase-status-text').className = 'text-amber-400 font-bold';
@@ -303,8 +311,8 @@
 
       try {
         supabaseClient = window.supabase.createClient(storedUrl, storedKey);
-        document.getElementById('supabase-status-text').textContent = 'Tersambung';
-        document.getElementById('supabase-status-text').className = 'text-emerald-400';
+        document.getElementById('supabase-status-text').textContent = 'Tersambung (Cloud Supabase)';
+        document.getElementById('supabase-status-text').className = 'text-emerald-400 font-bold';
       } catch (e) {
         document.getElementById('supabase-status-text').textContent = 'Konfigurasi Belum Benar';
         document.getElementById('supabase-status-text').className = 'text-amber-400';

@@ -114,13 +114,18 @@
   <script>
     // Inisialisasi Kredensial Supabase (sinkron dengan admin)
     const DEFAULT_CONFIG = {
-      url: 'https://xyzcompany.supabase.co',
-      key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+      url: 'https://xfrcokrepsiejsxjzbqf.supabase.co',
+      key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmcmNva3JlcHNpZWpzeGp6YnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MjgzMzksImV4cCI6MjEwNDEwNDMzOX0.YJUh5_M2E0ZkwFv0Zbn4r3qu4uzc0BJUX9ma3nCxfyQ'
     };
 
-    const supabaseUrl = localStorage.getItem('app_sb_url') || DEFAULT_CONFIG.url;
-    const supabaseKey = localStorage.getItem('app_sb_key') || DEFAULT_CONFIG.key;
-    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    let storedUrl = localStorage.getItem('app_sb_url');
+    let storedKey = localStorage.getItem('app_sb_key');
+    if (!storedUrl || storedUrl.includes('xyzcompany')) {
+      storedUrl = DEFAULT_CONFIG.url;
+      storedKey = DEFAULT_CONFIG.key;
+    }
+
+    const supabaseClient = window.supabase.createClient(storedUrl, storedKey);
 
     let sessionData = null;
     let deviceUUID = '';
