@@ -708,9 +708,13 @@
       if (!currentSession) return;
       document.getElementById('modal-qr-title').textContent = currentSession.title;
       
-      const currentUrl = new URL(window.location.href);
-      const basePath = currentUrl.pathname.substring(0, currentUrl.pathname.lastIndexOf('/'));
-      const attendanceUrl = `${currentUrl.origin}${basePath}/absen.html?token=${currentSession.qr_token}`;
+      let baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+      // Jika dibuka dari file lokal (file://) atau localhost, otomatis gunakan domain GitHub Pages agar HP bisa scan
+      if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        baseUrl = 'https://bagas2210.github.io/project2';
+      }
+
+      const attendanceUrl = `${baseUrl}/absen.html?token=${currentSession.qr_token}`;
 
       const linkElem = document.getElementById('modal-qr-url');
       linkElem.href = attendanceUrl;
