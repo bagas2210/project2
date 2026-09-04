@@ -226,8 +226,13 @@
           .eq('qr_token', token)
           .maybeSingle();
 
-        if (error || !data) {
-          showError('Sesi absensi tidak ditemukan atau telah dihapus oleh admin.');
+        if (error) {
+          showError('Error Supabase: ' + error.message + ' (Code: ' + (error.code || '-') + ')');
+          return;
+        }
+
+        if (!data) {
+          showError('Sesi absensi tidak ditemukan di database. Pastikan admin sudah membuat sesi ini di cloud Supabase.');
           return;
         }
 
