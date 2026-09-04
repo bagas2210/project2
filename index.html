@@ -163,9 +163,14 @@
                 <h2 id="active-session-title" class="text-xl font-bold mt-2 text-white">...</h2>
                 <p id="active-session-exp" class="text-xs text-slate-400 mt-0.5">Batas waktu: -</p>
               </div>
-              <button onclick="openQrModal()" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/20 transition">
-                <i data-lucide="maximize-2" class="w-4 h-4"></i> Tampilkan QR Code
-              </button>
+              <div class="flex items-center gap-2">
+                <button onclick="openQrModal()" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/20 transition">
+                  <i data-lucide="maximize-2" class="w-4 h-4"></i> Tampilkan QR Code
+                </button>
+                <button onclick="confirmDeleteCurrentSession()" class="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-2 rounded-xl text-xs font-semibold transition" title="Hapus sesi ini">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i> Hapus Sesi
+                </button>
+              </div>
             </div>
 
             <!-- Kartu Statistik -->
@@ -481,15 +486,76 @@
       container.innerHTML = sessionsList.map(s => {
         const isSelected = currentSession && currentSession.id === s.id;
         const expText = s.expires_at ? new Date(s.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Tanpa Batas';
+        const escapedTitle = escapeHtml(s.title);
+        const safeTitleForArg = escapedTitle.replace(/'/g, "\\'");
         return `
-          <button onclick="selectSession('${s.id}')" class="w-full text-left p-3 rounded-xl border text-xs transition ${
+          <div class="flex items-center justify-between p-2.5 rounded-xl border text-xs transition ${
             isSelected ? 'border-indigo-500 bg-indigo-500/10 text-white font-semibold' : 'border-slate-800 hover:bg-slate-800/50 text-slate-300'
           }">
-            <p class="truncate font-bold">${escapeHtml(s.title)}</p>
-            <p class="text-[10px] text-slate-500 mt-1">Exp: ${expText}</p>
-          </button>
+            <button onclick="selectSession('${s.id}')" class="text-left truncate flex-1 mr-2">
+              <p class="truncate font-bold">${escapedTitle}</p>
+              <p class="text-[10px] text-slate-500 mt-0.5">Exp: ${expText}</p>
+            </button>
+            <button onclick="event.stopPropagation(); deleteSessionById('${s.id}', '${safeTitleForArg}')" class="text-slate-500 hover:text-red-400 p-1.5 rounded-lg transition" title="Hapus sesi ini">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
         `;
       }).join('');
+      lucide.createIcons();
+    }
+
+    function confirmDeleteCurrentSession() {
+      if (!currentSession) return;
+      deleteSessionById(currentSession.id, currentSession.title);
+    }
+
+    async function deleteSessionById(sessionId, sessionTitle) {
+      const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus sesi "${sessionTitle}"?\n\nSemua data presensi yang terkait dengan sesi ini akan terhapus secara permanen.`);
+      if (!confirmDelete) return;
+
+      if (isDemoMode) {
+        sessionsList = sessionsList.filter(s => s.id !== sessionId);
+        localStorage.setItem('demo_sessions', JSON.stringify(sessionsList));
+
+        // Hapus attendances terkait di mode demo
+        let demoAtt = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
+        demoAtt = demoAtt.filter(a => a.session_id !== sessionId);
+        localStorage.setItem('demo_attendances', JSON.stringify(demoAtt));
+
+        handleAfterDelete(sessionId);
+        return;
+      }
+
+      // Hapus dari database Supabase (Otomatis Cascade hapus attendances terkait)
+      const { error } = await supabaseClient
+        .from('sessions')
+        .delete()
+        .eq('id', sessionId);
+
+      if (error) {
+        alert('Gagal menghapus sesi: ' + error.message);
+      } else {
+        sessionsList = sessionsList.filter(s => s.id !== sessionId);
+        handleAfterDelete(sessionId);
+      }
+    }
+
+    function handleAfterDelete(sessionId) {
+      if (currentSession && currentSession.id === sessionId) {
+        currentSession = null;
+        if (realtimeChannel) {
+          supabaseClient.removeChannel(realtimeChannel);
+          realtimeChannel = null;
+        }
+        if (sessionsList.length > 0) {
+          selectSession(sessionsList[0].id);
+        } else {
+          document.getElementById('active-session-view').classList.add('hidden');
+          document.getElementById('empty-state').classList.remove('hidden');
+        }
+      }
+      renderSessionList();
     }
 
     async function handleCreateSession(e) {
