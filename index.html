@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>admin absen boss!!</title>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Supabase JS CDN -->
@@ -12,97 +13,264 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Vanilla Tilt 3D CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: #f8fafc;
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .float-anim {
+      animation: float 4.5s ease-in-out infinite;
+    }
+
+    /* Floating Orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .orb-1 {
+      width: 350px;
+      height: 350px;
+      background: #ff007f;
+      top: 5%;
+      left: 10%;
+      animation: floatOrb1 8s ease-in-out infinite alternate;
+    }
+    .orb-2 {
+      width: 450px;
+      height: 450px;
+      background: #00b4db;
+      bottom: 5%;
+      right: 10%;
+      animation: floatOrb2 10s ease-in-out infinite alternate-reverse;
+    }
+    .orb-3 {
+      width: 280px;
+      height: 280px;
+      background: #11998e;
+      top: 45%;
+      right: 35%;
+      opacity: 0.6;
+      animation: floatOrb1 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatOrb1 {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(50px) scale(1.15); }
+    }
+    @keyframes floatOrb2 {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-60px) scale(1.1); }
+    }
+
+    /* Glassmorphism Classes */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .glass-card-3d {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transform-style: preserve-3d;
+    }
+
+    .btn-3d-emerald {
+      background: linear-gradient(45deg, #11998e, #38ef7d);
+      color: #082414;
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(56, 239, 125, 0.35);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-3d-emerald:hover {
+      box-shadow: 0 16px 30px rgba(56, 239, 125, 0.55);
+      transform: translateY(-2px) scale(1.02);
+      color: #03140a;
+    }
+
+    .btn-3d-cyan {
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      color: #061c33;
+      font-weight: 700;
+      box-shadow: 0 10px 22px rgba(0, 242, 254, 0.35);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-3d-cyan:hover {
+      box-shadow: 0 16px 30px rgba(0, 242, 254, 0.55);
+      transform: translateY(-2px) scale(1.02);
+      color: #020e1a;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 239, 125, 0.5);
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative">
+
+  <!-- Dekorasi Background Orbs Neon 3D -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
   <!-- ==================== KONFIGURASI SUPABASE BANNER ==================== -->
-  <div id="config-banner" class="bg-indigo-950/60 border-b border-indigo-800/40 px-4 py-2 text-xs flex justify-between items-center text-indigo-200">
-    <div class="flex items-center gap-2">
-      <i data-lucide="database" class="w-4 h-4 text-indigo-400"></i>
-      <span>Status Supabase: <strong id="supabase-status-text" class="text-emerald-400">Tersambung</strong></span>
+  <div id="config-banner" class="relative z-20 bg-slate-900/40 border-b border-white/10 px-6 py-2.5 text-xs flex justify-between items-center text-slate-300 backdrop-blur-md">
+    <div class="flex items-center gap-2.5">
+      <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+      <span>Status Supabase: <strong id="supabase-status-text" class="text-emerald-400 font-bold">Tersambung (Cloud Supabase)</strong></span>
     </div>
-    <button onclick="toggleConfigModal(true)" class="underline hover:text-white transition">Ubah Konfigurasi API</button>
+    <button onclick="toggleConfigModal(true)" class="text-slate-400 hover:text-white underline transition text-[11px]">
+      Ubah Konfigurasi API
+    </button>
   </div>
 
   <!-- Modal Edit Supabase Config -->
-  <div id="config-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+  <div id="config-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel border border-white/20 rounded-3xl p-6 max-w-md w-full shadow-2xl relative text-white">
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-bold text-base text-white flex items-center gap-2">
-          <i data-lucide="settings" class="w-5 h-5 text-indigo-400"></i> Konfigurasi Supabase
+          <i data-lucide="settings" class="w-5 h-5 text-cyan-400"></i> Konfigurasi Supabase
         </h3>
         <button onclick="toggleConfigModal(false)" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
       <p class="text-xs text-slate-400 mb-4">Masukkan URL dan Anon Key dari dashboard Supabase Anda.</p>
       <div class="space-y-3">
         <div>
-          <label class="text-xs text-slate-300 block mb-1">Supabase URL</label>
-          <input id="input-supabase-url" type="text" placeholder="https://xyzcompany.supabase.co" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <label class="text-xs text-slate-300 block mb-1 font-semibold">Supabase URL</label>
+          <input id="input-supabase-url" type="text" placeholder="https://xyzcompany.supabase.co" class="w-full bg-slate-900/70 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400" />
         </div>
         <div>
-          <label class="text-xs text-slate-300 block mb-1">Supabase Anon Key</label>
-          <input id="input-supabase-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          <label class="text-xs text-slate-300 block mb-1 font-semibold">Supabase Anon Key</label>
+          <input id="input-supabase-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR..." class="w-full bg-slate-900/70 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400" />
         </div>
-        <button onclick="saveSupabaseConfig()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-lg text-xs font-semibold text-white transition">Simpan & Muat Ulang</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== VIEW 1: AUTH / LOGIN ==================== -->
-  <div id="view-login" class="flex-1 flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
-      <div class="text-center mb-8">
-        <div class="inline-flex p-3 bg-indigo-500/10 text-indigo-400 rounded-2xl mb-3">
-          <i data-lucide="shield-check" class="w-8 h-8"></i>
-        </div>
-        <h1 class="text-2xl font-bold text-white tracking-tight">Login Portal Admin</h1>
-        <p class="text-xs text-slate-400 mt-1">Sistem Absensi QR Code Realtime</p>
-      </div>
-
-      <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl mb-4"></div>
-      <div id="login-success" class="hidden bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs p-3 rounded-xl mb-4"></div>
-
-      <form id="form-login" onsubmit="handleLogin(event)" autocomplete="off" class="space-y-4">
-        <div>
-          <label class="text-xs font-semibold text-slate-300 block mb-1">Email Admin</label>
-          <div class="relative">
-            <i data-lucide="mail" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input id="login-email" type="email" required autocomplete="off" placeholder="Masukkan email admin..." class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          </div>
-        </div>
-        <div>
-          <label class="text-xs font-semibold text-slate-300 block mb-1">Password</label>
-          <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input id="login-password" type="password" required autocomplete="new-password" placeholder="Masukkan password..." class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
-          </div>
-        </div>
-
-        <button id="btn-login" type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30">
-          Masuk ke Dashboard
+        <button onclick="saveSupabaseConfig()" class="w-full btn-3d-cyan py-2.5 rounded-xl text-xs transition mt-2">
+          Simpan & Muat Ulang
         </button>
-      </form>
+      </div>
     </div>
   </div>
 
-  <!-- ==================== VIEW 2: DASHBOARD ADMIN ==================== -->
-  <div id="view-dashboard" class="hidden flex-1 flex flex-col">
-    <!-- Navbar -->
-    <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur px-6 py-4 flex items-center justify-between">
+  <!-- ==================== VIEW 1: AUTH / LOGIN 3D ==================== -->
+  <div id="view-login" class="relative z-10 flex-1 flex items-center justify-center p-4">
+    <div class="float-anim max-w-sm w-full">
+      <div class="card glass-card-3d rounded-3xl p-8 shadow-2xl relative" data-tilt data-tilt-max="12" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+        
+        <div class="text-center mb-6" style="transform: translateZ(50px);">
+          <div class="inline-flex p-4 rounded-2xl mb-3 shadow-lg" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #071e36; transform: translateZ(30px);">
+            <i data-lucide="shield-check" class="w-8 h-8"></i>
+          </div>
+          <h1 class="text-2xl font-extrabold text-white tracking-tight">Login Admin</h1>
+          <p class="text-xs text-slate-400 mt-1 font-medium">Sistem Presensi 3D Realtime</p>
+        </div>
+
+        <div id="login-error" class="hidden bg-red-500/20 border border-red-500/40 text-red-300 text-xs p-3 rounded-xl mb-4 text-center" style="transform: translateZ(35px);"></div>
+        <div id="login-success" class="hidden bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs p-3 rounded-xl mb-4 text-center" style="transform: translateZ(35px);"></div>
+
+        <form id="form-login" onsubmit="handleLogin(event)" autocomplete="off" class="space-y-4" style="transform: translateZ(45px);">
+          <div>
+            <label class="text-xs font-semibold text-slate-300 block mb-1.5">Email Admin</label>
+            <div class="relative">
+              <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+              <input id="login-email" type="email" required autocomplete="off" placeholder="Masukkan email admin..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-300 block mb-1.5">Password</label>
+            <div class="relative">
+              <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+              <input id="login-password" type="password" required autocomplete="new-password" placeholder="Masukkan password..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
+            </div>
+          </div>
+
+          <button id="btn-login" type="submit" class="w-full btn-3d-emerald py-3 rounded-xl text-xs tracking-wider flex items-center justify-center gap-2 mt-2" style="transform: translateZ(25px);">
+            <span>MASUK KE DASHBOARD</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </form>
+
+        <div class="mt-6 pt-4 border-t border-white/10 text-center" style="transform: translateZ(20px);">
+          <p class="text-[11px] text-slate-400 flex items-center justify-center gap-1">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i> Portal Kendali Absensi 3D
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VIEW 2: DASHBOARD ADMIN 3D ==================== -->
+  <div id="view-dashboard" class="relative z-10 hidden flex-1 flex flex-col">
+    <!-- Navbar 3D Glass -->
+    <header class="border-b border-white/10 bg-slate-950/40 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-30">
       <div class="flex items-center gap-3">
-        <div class="bg-indigo-600 p-2 rounded-xl text-white">
+        <div class="p-2.5 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #08223d;">
           <i data-lucide="qr-code" class="w-5 h-5"></i>
         </div>
         <div>
-          <h1 class="font-bold text-base leading-tight">admin absen boss!!</h1>
-          <p id="user-email-display" class="text-[11px] text-slate-400">admin@email.com</p>
+          <h1 class="font-extrabold text-base leading-tight tracking-wide text-white flex items-center gap-2">
+            <span>admin absen boss!!</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold uppercase tracking-wider">3D Live</span>
+          </h1>
+          <p id="user-email-display" class="text-[11px] text-slate-400 font-mono">admin@email.com</p>
         </div>
       </div>
-      <button onclick="handleLogout()" class="flex items-center gap-1.5 text-xs bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg transition text-slate-300">
+
+      <!-- Jam Digital & Tanggal Realtime di Navbar -->
+      <div class="hidden md:flex items-center gap-6">
+        <div class="text-right">
+          <div id="admin-clock" class="text-base font-extrabold text-white font-mono tracking-wider">00:00:00</div>
+          <div id="admin-date" class="text-[10px] text-slate-400 font-medium">Senin, 1 Jan 2024</div>
+        </div>
+      </div>
+
+      <button onclick="handleLogout()" class="flex items-center gap-1.5 text-xs bg-white/10 hover:bg-red-500/20 hover:text-red-300 border border-white/10 hover:border-red-500/30 px-3.5 py-2 rounded-xl transition text-slate-300 font-semibold">
         <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
       </button>
     </header>
@@ -112,85 +280,90 @@
       
       <!-- Kolom Kiri: Form Buat Sesi & List Sesi -->
       <div class="space-y-6">
-        <!-- Form Buat Sesi -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+        <!-- Form Buat Sesi 3D Glass -->
+        <div class="glass-panel rounded-3xl p-6 relative overflow-hidden">
           <h2 class="text-sm font-bold mb-4 flex items-center gap-2 text-white">
-            <i data-lucide="plus-circle" class="w-4 h-4 text-indigo-400"></i> Buat Sesi Absensi Baru
+            <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-400"></i> Buat Sesi Absensi Baru
           </h2>
-          <form id="form-create-session" onsubmit="handleCreateSession(event)" autocomplete="off" class="space-y-3">
+          <form id="form-create-session" onsubmit="handleCreateSession(event)" autocomplete="off" class="space-y-3.5">
             <div>
-              <label class="text-xs text-slate-400 mb-1 block">Nama Sesi / Acara</label>
-              <input id="session-title" type="text" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" placeholder="Contoh: Rapat Pleno Semester 1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+              <label class="text-xs text-slate-300 mb-1.5 block font-semibold">Nama Sesi / Acara</label>
+              <input id="session-title" type="text" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" placeholder="Contoh: Rapat Pleno Semester 1" class="w-full bg-slate-900/60 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
             </div>
             <div>
-              <label class="text-xs text-slate-400 mb-1 block">Batas Waktu (Menit)</label>
-              <input id="session-duration" type="number" min="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" placeholder="0 = tanpa batas waktu" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+              <label class="text-xs text-slate-300 mb-1.5 block font-semibold">Batas Waktu (Menit)</label>
+              <input id="session-duration" type="number" min="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" placeholder="0 = tanpa batas waktu" class="w-full bg-slate-900/60 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
             </div>
-            <button id="btn-create-session" type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-lg text-xs font-semibold text-white transition flex items-center justify-center gap-2">
+            <button id="btn-create-session" type="submit" class="w-full btn-3d-emerald py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 mt-1">
               <i data-lucide="qr-code" class="w-4 h-4"></i> Generate QR Sesi
             </button>
           </form>
         </div>
 
         <!-- Riwayat Sesi -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-          <h2 class="text-sm font-bold mb-3 text-white flex items-center justify-between">
+        <div class="glass-panel rounded-3xl p-6">
+          <h2 class="text-sm font-bold mb-3.5 text-white flex items-center justify-between">
             <span>Daftar Sesi Anda</span>
-            <span id="session-count-badge" class="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-400">0</span>
+            <span id="session-count-badge" class="text-[10px] bg-white/10 px-2.5 py-0.5 rounded-full text-slate-300 font-mono">0</span>
           </h2>
-          <div id="session-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-            <div class="text-center py-6 text-xs text-slate-500">Belum ada sesi dibuat.</div>
+          <div id="session-list" class="space-y-2.5 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
+            <div class="text-center py-8 text-xs text-slate-500">Belum ada sesi dibuat.</div>
           </div>
         </div>
       </div>
 
       <!-- Kolom Kanan: Detail Sesi & Tabel Realtime -->
       <div class="lg:col-span-2 space-y-6">
-        <div id="session-detail-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 min-h-[500px]">
+        <div id="session-detail-container" class="glass-panel rounded-3xl p-6 min-h-[500px]">
           
-          <div id="empty-state" class="flex flex-col items-center justify-center h-80 text-slate-500">
-            <i data-lucide="calendar" class="w-12 h-12 mb-3 text-slate-600"></i>
-            <p class="text-sm">Pilih salah satu sesi di sebelah kiri atau buat sesi baru</p>
+          <div id="empty-state" class="flex flex-col items-center justify-center h-80 text-slate-400 text-center">
+            <div class="p-4 rounded-3xl bg-white/5 border border-white/10 mb-3 shadow-inner">
+              <i data-lucide="calendar" class="w-12 h-12 text-cyan-400"></i>
+            </div>
+            <p class="text-sm font-semibold text-white">Belum Ada Sesi Dipilih</p>
+            <p class="text-xs text-slate-400 mt-1 max-w-xs">Pilih salah satu sesi di sebelah kiri atau buat sesi baru untuk menampilkan QR code dan tabel live.</p>
           </div>
 
           <div id="active-session-view" class="hidden">
             <!-- Header Sesi Aktif -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-slate-800">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-white/10">
               <div>
-                <span class="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-semibold">
+                <span class="text-[11px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
                   Sesi Aktif
                 </span>
-                <h2 id="active-session-title" class="text-xl font-bold mt-2 text-white">...</h2>
-                <p id="active-session-exp" class="text-xs text-slate-400 mt-0.5">Batas waktu: -</p>
+                <h2 id="active-session-title" class="text-xl font-extrabold mt-2 text-white">...</h2>
+                <p id="active-session-exp" class="text-xs text-slate-400 mt-1">Batas waktu: -</p>
               </div>
               <div class="flex items-center gap-2">
-                <button onclick="openQrModal()" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/20 transition">
+                <button onclick="openQrModal()" class="flex items-center gap-2 btn-3d-cyan px-4 py-2.5 rounded-xl text-xs">
                   <i data-lucide="maximize-2" class="w-4 h-4"></i> Tampilkan QR Code
                 </button>
-                <button onclick="confirmDeleteCurrentSession()" class="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-2 rounded-xl text-xs font-semibold transition" title="Hapus sesi ini">
+                <button onclick="confirmDeleteCurrentSession()" class="flex items-center gap-1.5 bg-red-500/15 hover:bg-red-500/30 text-red-300 border border-red-500/30 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition" title="Hapus sesi ini">
                   <i data-lucide="trash-2" class="w-4 h-4"></i> Hapus Sesi
                 </button>
               </div>
             </div>
 
-            <!-- Kartu Statistik -->
+            <!-- Kartu Statistik 3D Tilt -->
             <div class="grid grid-cols-2 gap-4 my-5">
-              <div class="bg-slate-800/60 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
-                <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+              <div class="glass-card-3d p-4 rounded-2xl flex items-center gap-3.5" data-tilt data-tilt-max="10" data-tilt-speed="300">
+                <div class="p-3 rounded-xl text-cyan-300 shadow-lg" style="background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2)); border: 1px solid rgba(0, 242, 254, 0.3);">
                   <i data-lucide="users" class="w-5 h-5"></i>
                 </div>
                 <div>
-                  <p class="text-[11px] text-slate-400">Total Hadir</p>
-                  <p id="stat-attendance-count" class="text-2xl font-extrabold text-white">0</p>
+                  <p class="text-[11px] text-slate-400 font-semibold">Total Hadir</p>
+                  <p id="stat-attendance-count" class="text-3xl font-extrabold text-white font-mono tracking-tight">0</p>
                 </div>
               </div>
-              <div class="bg-slate-800/60 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
-                <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+              <div class="glass-card-3d p-4 rounded-2xl flex items-center gap-3.5" data-tilt data-tilt-max="10" data-tilt-speed="300">
+                <div class="p-3 rounded-xl text-emerald-300 shadow-lg" style="background: linear-gradient(135deg, rgba(17, 153, 142, 0.2), rgba(56, 239, 125, 0.2)); border: 1px solid rgba(56, 239, 125, 0.3);">
                   <i data-lucide="radio" class="w-5 h-5 animate-pulse"></i>
                 </div>
                 <div>
-                  <p class="text-[11px] text-slate-400">Status Sinkronisasi</p>
-                  <p class="text-xs font-bold text-emerald-400 mt-1">Live Realtime Aktif</p>
+                  <p class="text-[11px] text-slate-400 font-semibold">Status Sinkronisasi</p>
+                  <p class="text-xs font-bold text-emerald-400 mt-1 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Realtime
+                  </p>
                 </div>
               </div>
             </div>
@@ -198,23 +371,23 @@
             <!-- Tabel Realtime -->
             <div class="flex items-center justify-between mb-3">
               <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Daftar Kehadiran Masuk</h3>
-              <button onclick="refreshCurrentAttendances()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
+              <button onclick="refreshCurrentAttendances()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition">
                 <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh
               </button>
             </div>
 
-            <div class="overflow-x-auto border border-slate-800 rounded-xl">
+            <div class="overflow-x-auto border border-white/10 rounded-2xl bg-black/20">
               <table class="w-full text-left text-xs text-slate-300">
-                <thead class="bg-slate-800/90 text-slate-400 border-b border-slate-800">
+                <thead class="bg-white/5 text-slate-300 border-b border-white/10 uppercase tracking-wider font-semibold text-[11px]">
                   <tr>
-                    <th class="py-3 px-4 font-semibold">Nama Peserta</th>
-                    <th class="py-3 px-4 font-semibold">Waktu Presensi</th>
-                    <th class="py-3 px-4 font-semibold">Info Perangkat</th>
+                    <th class="py-3.5 px-4">Nama Peserta</th>
+                    <th class="py-3.5 px-4">Waktu Presensi</th>
+                    <th class="py-3.5 px-4">Info Perangkat</th>
                   </tr>
                 </thead>
-                <tbody id="attendance-table-body" class="divide-y divide-slate-800/80">
+                <tbody id="attendance-table-body" class="divide-y divide-white/5 font-medium">
                   <tr>
-                    <td colSpan="3" class="py-10 text-center text-slate-500">
+                    <td colSpan="3" class="py-12 text-center text-slate-500">
                       Belum ada peserta yang memindai QR code ini.
                     </td>
                   </tr>
@@ -229,29 +402,52 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL TAMPILAN QR CODE ==================== -->
-  <div id="modal-qr" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="bg-white text-slate-900 rounded-3xl p-8 max-w-sm w-full shadow-2xl relative flex flex-col items-center text-center">
-      <button onclick="closeQrModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg font-bold p-1">✕</button>
+  <!-- ==================== MODAL TAMPILAN QR CODE 3D ==================== -->
+  <div id="modal-qr" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card-3d rounded-3xl p-8 max-w-sm w-full shadow-2xl relative flex flex-col items-center text-center text-white" data-tilt data-tilt-max="10" data-tilt-speed="300">
+      <button onclick="closeQrModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg font-bold p-1 transition">✕</button>
       
-      <span class="text-[10px] font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-2.5 py-1 rounded-full mb-2">Pindai Presensi</span>
-      <h3 id="modal-qr-title" class="text-lg font-extrabold mb-1">...</h3>
-      <p class="text-xs text-slate-500 mb-5">Pindai QR ini dengan kamera HP untuk absensi</p>
+      <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-full mb-3" style="transform: translateZ(30px);">
+        Pindai Presensi
+      </span>
+      <h3 id="modal-qr-title" class="text-lg font-extrabold mb-1" style="transform: translateZ(40px);">...</h3>
+      <p class="text-xs text-slate-400 mb-5" style="transform: translateZ(30px);">Pindai QR ini dengan kamera HP Anda</p>
 
-      <div class="p-3 bg-white border-2 border-slate-200 rounded-2xl shadow-inner mb-4 flex justify-center">
+      <div class="p-4 bg-white rounded-2xl shadow-2xl mb-4 flex justify-center" style="transform: translateZ(50px); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);">
         <div id="qrcode-canvas"></div>
       </div>
 
-      <div class="w-full bg-slate-100 rounded-xl p-2.5 text-[11px] text-slate-600 break-all mb-4 text-left">
-        <span class="font-semibold block text-slate-400 text-[10px] uppercase">Direct Link:</span>
-        <a id="modal-qr-url" href="#" target="_blank" class="text-indigo-600 hover:underline"></a>
+      <div class="w-full bg-slate-900/80 border border-white/10 rounded-xl p-3 text-[11px] text-slate-300 break-all mb-4 text-left" style="transform: translateZ(30px);">
+        <span class="font-bold block text-slate-400 text-[10px] uppercase">Direct Link:</span>
+        <a id="modal-qr-url" href="#" target="_blank" class="text-cyan-400 hover:underline"></a>
       </div>
 
-      <p class="text-[11px] text-slate-400">🔒 Dilengkapi proteksi satu perangkat hanya untuk satu kali absen</p>
+      <p class="text-[11px] text-slate-400 flex items-center justify-center gap-1" style="transform: translateZ(20px);">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span>Proteksi 1 perangkat 1 kali absen aktif</span>
+      </p>
     </div>
   </div>
 
-  <!-- ==================== SCRIPT JAVASCRIPT LOGIC ==================== -->
+  <!-- ==================== SCRIPT JAM REALTIME ADMIN ==================== -->
+  <script>
+    function updateAdminClock() {
+      const now = new Date();
+      const clockEl = document.getElementById('admin-clock');
+      const dateEl = document.getElementById('admin-date');
+      if (clockEl) {
+        clockEl.textContent = now.toLocaleTimeString('id-ID', { hour12: false });
+      }
+      if (dateEl) {
+        const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+        dateEl.textContent = now.toLocaleDateString('id-ID', options);
+      }
+    }
+    setInterval(updateAdminClock, 1000);
+    updateAdminClock();
+  </script>
+
+  <!-- ==================== SCRIPT JAVASCRIPT LOGIC SUPABASE ==================== -->
   <script>
     const DEFAULT_CONFIG = {
       url: 'https://xfrcokrepsiejsxjzbqf.supabase.co',
@@ -267,7 +463,6 @@
     let isDemoMode = localStorage.getItem('app_is_demo') === 'true';
 
     function initSupabase() {
-      // Jika sebelumnya tersimpan URL dummy lama, bersihkan agar menggunakan kredensial asli baru
       if (localStorage.getItem('app_sb_url')?.includes('xyzcompany')) {
         localStorage.removeItem('app_sb_url');
         localStorage.removeItem('app_sb_key');
@@ -316,16 +511,6 @@
       checkAuthSession();
     }
 
-    // Aktifkan Mode Demo Instan tanpa Supabase
-    function enableDemoMode() {
-      isDemoMode = true;
-      localStorage.setItem('app_is_demo', 'true');
-      currentUser = { email: 'admin@demo.local', id: 'demo-admin' };
-      document.getElementById('supabase-status-text').textContent = 'Mode Demo Offline';
-      document.getElementById('supabase-status-text').className = 'text-amber-400 font-bold';
-      showDashboardView();
-    }
-
     async function checkAuthSession() {
       if (isDemoMode) {
         currentUser = { email: 'admin@demo.local', id: 'demo-admin' };
@@ -361,11 +546,6 @@
       const btn = document.getElementById('btn-login');
       const errBox = document.getElementById('login-error');
 
-      if (isDemoMode) {
-        enableDemoMode();
-        return;
-      }
-
       btn.disabled = true;
       btn.textContent = 'Memverifikasi...';
       errBox.classList.add('hidden');
@@ -375,51 +555,14 @@
         errBox.textContent = 'Login gagal: ' + error.message;
         errBox.classList.remove('hidden');
         btn.disabled = false;
-        btn.textContent = 'Masuk ke Dashboard';
+        btn.innerHTML = '<span>MASUK KE DASHBOARD</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>';
+        lucide.createIcons();
       } else {
         currentUser = data.user;
         btn.disabled = false;
-        btn.textContent = 'Masuk ke Dashboard';
+        btn.innerHTML = '<span>MASUK KE DASHBOARD</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>';
+        lucide.createIcons();
         showDashboardView();
-      }
-    }
-
-    // Pendaftaran Otomatis Admin (1-Klik) jika belum dibuat di Supabase
-    async function handleAutoRegister() {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      const btn = document.getElementById('btn-register');
-      const errBox = document.getElementById('login-error');
-      const succBox = document.getElementById('login-success');
-
-      errBox.classList.add('hidden');
-      succBox.classList.add('hidden');
-
-      if (!supabaseClient || supabaseClient.supabaseUrl?.includes('xyzcompany')) {
-        errBox.textContent = 'Anda belum menghubungkan Supabase asli. Silakan isi URL & Key di menu "Ubah Konfigurasi API", atau klik tombol "Masuk Mode Demo (Tanpa Supabase)" di bawah!';
-        errBox.classList.remove('hidden');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = 'Mendaftarkan akun...';
-
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Daftarkan Akun Admin Ini ke Supabase';
-      lucide.createIcons();
-
-      if (error) {
-        if (error.message.toLowerCase().includes('already registered')) {
-          succBox.textContent = 'Akun sudah terdaftar. Silakan langsung klik tombol "Masuk ke Dashboard".';
-          succBox.classList.remove('hidden');
-        } else {
-          errBox.textContent = 'Pendaftaran gagal: ' + error.message;
-          errBox.classList.remove('hidden');
-        }
-      } else {
-        succBox.textContent = 'Akun admin berhasil didaftarkan ke Supabase! Silakan klik tombol "Masuk ke Dashboard".';
-        succBox.classList.remove('hidden');
       }
     }
 
@@ -479,7 +622,7 @@
       document.getElementById('session-count-badge').textContent = sessionsList.length;
 
       if (sessionsList.length === 0) {
-        container.innerHTML = '<div class="text-center py-6 text-xs text-slate-500">Belum ada sesi dibuat.</div>';
+        container.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-medium">Belum ada sesi dibuat.</div>';
         return;
       }
 
@@ -489,12 +632,12 @@
         const escapedTitle = escapeHtml(s.title);
         const safeTitleForArg = escapedTitle.replace(/'/g, "\\'");
         return `
-          <div class="flex items-center justify-between p-2.5 rounded-xl border text-xs transition ${
-            isSelected ? 'border-indigo-500 bg-indigo-500/10 text-white font-semibold' : 'border-slate-800 hover:bg-slate-800/50 text-slate-300'
+          <div class="flex items-center justify-between p-3 rounded-2xl border text-xs transition ${
+            isSelected ? 'border-emerald-400/60 bg-emerald-500/15 text-white font-bold shadow-lg shadow-emerald-500/10' : 'border-white/10 hover:bg-white/5 text-slate-300'
           }">
             <button onclick="selectSession('${s.id}')" class="text-left truncate flex-1 mr-2">
               <p class="truncate font-bold">${escapedTitle}</p>
-              <p class="text-[10px] text-slate-500 mt-0.5">Exp: ${expText}</p>
+              <p class="text-[10px] text-slate-400 mt-0.5 font-normal">Exp: ${expText}</p>
             </button>
             <button onclick="event.stopPropagation(); deleteSessionById('${s.id}', '${safeTitleForArg}')" class="text-slate-500 hover:text-red-400 p-1.5 rounded-lg transition" title="Hapus sesi ini">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -518,7 +661,6 @@
         sessionsList = sessionsList.filter(s => s.id !== sessionId);
         localStorage.setItem('demo_sessions', JSON.stringify(sessionsList));
 
-        // Hapus attendances terkait di mode demo
         let demoAtt = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
         demoAtt = demoAtt.filter(a => a.session_id !== sessionId);
         localStorage.setItem('demo_attendances', JSON.stringify(demoAtt));
@@ -527,7 +669,6 @@
         return;
       }
 
-      // Hapus dari database Supabase (Otomatis Cascade hapus attendances terkait)
       const { error } = await supabaseClient
         .from('sessions')
         .delete()
@@ -670,7 +811,7 @@
       if (list.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colSpan="3" class="py-10 text-center text-slate-500">
+            <td colSpan="3" class="py-12 text-center text-slate-500 font-medium">
               Belum ada peserta yang memindai QR code ini.
             </td>
           </tr>
@@ -679,10 +820,10 @@
       }
 
       tbody.innerHTML = list.map(item => `
-        <tr class="hover:bg-slate-800/40 transition">
-          <td class="py-3 px-4 font-semibold text-white">${escapeHtml(item.full_name)}</td>
-          <td class="py-3 px-4 text-slate-400">${new Date(item.checked_in_at).toLocaleTimeString('id-ID')}</td>
-          <td class="py-3 px-4 text-slate-500 max-w-xs truncate" title="${escapeHtml(item.user_agent || '')}">
+        <tr class="hover:bg-white/5 transition duration-200">
+          <td class="py-3.5 px-4 font-bold text-white">${escapeHtml(item.full_name)}</td>
+          <td class="py-3.5 px-4 text-slate-400 font-mono">${new Date(item.checked_in_at).toLocaleTimeString('id-ID')}</td>
+          <td class="py-3.5 px-4 text-slate-400 max-w-xs truncate" title="${escapeHtml(item.user_agent || '')}">
             ${escapeHtml(item.user_agent || 'Browser')}
           </td>
         </tr>
@@ -691,7 +832,6 @@
 
     function setupRealtime(sessionId) {
       if (isDemoMode) {
-        // Sinkronisasi realtime lokal antar tab di browser menggunakan window StorageEvent
         window.onstorage = (e) => {
           if (e.key === 'demo_attendances') {
             loadAttendances(sessionId);
@@ -725,18 +865,18 @@
 
             const item = payload.new;
             const row = document.createElement('tr');
-            row.className = 'bg-indigo-900/30 text-white transition duration-500 animate-pulse';
+            row.className = 'bg-emerald-500/20 text-white transition duration-500 animate-pulse';
             row.innerHTML = `
-              <td class="py-3 px-4 font-semibold">${escapeHtml(item.full_name)} <span class="text-[9px] bg-indigo-500 text-white px-1.5 py-0.5 rounded ml-1">Baru</span></td>
-              <td class="py-3 px-4 text-slate-400">${new Date(item.checked_in_at).toLocaleTimeString('id-ID')}</td>
-              <td class="py-3 px-4 text-slate-500 max-w-xs truncate" title="${escapeHtml(item.user_agent || '')}">
+              <td class="py-3.5 px-4 font-bold">${escapeHtml(item.full_name)} <span class="text-[9px] bg-emerald-500 text-slate-950 font-extrabold px-1.5 py-0.5 rounded ml-1 uppercase tracking-wide">Baru</span></td>
+              <td class="py-3.5 px-4 text-slate-300 font-mono">${new Date(item.checked_in_at).toLocaleTimeString('id-ID')}</td>
+              <td class="py-3.5 px-4 text-slate-400 max-w-xs truncate" title="${escapeHtml(item.user_agent || '')}">
                 ${escapeHtml(item.user_agent || 'Browser')}
               </td>
             `;
             tbody.insertBefore(row, tbody.firstChild);
 
             setTimeout(() => {
-              row.classList.remove('bg-indigo-900/30', 'animate-pulse');
+              row.classList.remove('bg-emerald-500/20', 'animate-pulse');
             }, 3000);
           }
         )
@@ -748,7 +888,6 @@
       document.getElementById('modal-qr-title').textContent = currentSession.title;
       
       let baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-      // Jika dibuka dari file lokal (file://) atau localhost, otomatis gunakan domain GitHub Pages agar HP bisa scan
       if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         baseUrl = 'https://bagas2210.github.io/project2';
       }
@@ -765,12 +904,13 @@
         text: attendanceUrl,
         width: 220,
         height: 220,
-        colorDark: '#0f172a',
+        colorDark: '#0b1e36',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
       });
 
       document.getElementById('modal-qr').classList.remove('hidden');
+      lucide.createIcons();
     }
 
     function closeQrModal() {
