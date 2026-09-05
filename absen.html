@@ -1,392 +1,789 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Presensi Peserta</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Absensi 3D Interaktif</title>
+
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Mengatur background yang bergerak (Animated Gradient) */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            perspective: 1000px; /* Perspektif untuk efek 3D ruang */
+            padding: 20px 10px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animasi Melayang (Floating) secara vertikal */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-16px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .container {
+            animation: float 4s ease-in-out infinite;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Desain Kartu 3D Glassmorphism */
+        .card {
+            width: 380px;
+            max-width: 92vw;
+            min-height: 560px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 35px 28px;
+            color: white;
+            transform-style: preserve-3d; 
+            position: relative;
+        }
+
+        /* Efek elemen Pop-out menggunakan translateZ */
+        .profile-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            margin-bottom: 12px;
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.4);
+            transform: translateZ(70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0b1e36;
+        }
+
+        .time-display {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 5px 20px rgba(0, 242, 254, 0.4);
+            transform: translateZ(55px);
+            font-variant-numeric: tabular-nums;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .date-display {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            margin-bottom: 18px;
+            transform: translateZ(40px);
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+
+        .greeting {
+            transform: translateZ(35px);
+            text-align: center;
+            margin-bottom: 22px;
+            line-height: 1.4;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        .session-badge {
+            background: rgba(0, 242, 254, 0.15);
+            color: #38ef7d;
+            border: 1px solid rgba(56, 239, 125, 0.3);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 6px;
+            transform: translateZ(40px);
+        }
+
+        /* Form Input 3D Glass */
+        .input-group {
+            width: 100%;
+            margin-bottom: 20px;
+            transform: translateZ(50px);
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .input-field:focus {
+            border-color: #38ef7d;
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.3), inset 0 2px 4px rgba(0,0,0,0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Tombol Absen 3D */
+        .btn-absen {
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #0b2e1a;
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 12px 25px rgba(56, 239, 125, 0.35);
+            transform: translateZ(65px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-absen:hover {
+            transform: translateZ(85px) scale(1.03);
+            box-shadow: 0 18px 35px rgba(56, 239, 125, 0.55);
+            color: #041f10;
+        }
+
+        .btn-absen:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: translateZ(40px);
+            box-shadow: none;
+        }
+
+        .security-badge {
+            transform: translateZ(30px);
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Bola cahaya background yang bergerak-gerak */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(85px);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .orb-1 {
+            width: 320px;
+            height: 320px;
+            background: #ff007f;
+            top: 10%;
+            left: 15%;
+            animation: floatOrb1 7s ease-in-out infinite alternate;
+        }
+        .orb-2 {
+            width: 380px;
+            height: 380px;
+            background: #00b4db;
+            bottom: 10%;
+            right: 15%;
+            animation: floatOrb2 9s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatOrb1 {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(40px) scale(1.15); }
+        }
+
+        @keyframes floatOrb2 {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-50px) scale(1.1); }
+        }
+
+        /* Status States (Success, Locked, Error, Loading) */
+        .status-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            transform: translateZ(50px);
+            padding: 20px 10px;
+        }
+
+        .status-icon {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transform: translateZ(70px);
+        }
+
+        .status-icon.success {
+            background: rgba(56, 239, 125, 0.2);
+            border: 2px solid #38ef7d;
+            color: #38ef7d;
+        }
+
+        .status-icon.locked {
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px solid #f59e0b;
+            color: #f59e0b;
+        }
+
+        .status-icon.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .status-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            color: white;
+            transform: translateZ(60px);
+        }
+
+        .status-desc {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin: 0 0 20px 0;
+            transform: translateZ(40px);
+        }
+
+        .status-chip {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 16px;
+            border-radius: 14px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            transform: translateZ(35px);
+        }
+
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid rgba(0, 242, 254, 0.2);
+            border-top-color: #00f2fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+            transform: translateZ(60px);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error-toast {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 14px;
+            width: 100%;
+            text-align: center;
+            transform: translateZ(40px);
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
+<body>
 
-  <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-    
-    <!-- LOADING STATE -->
-    <div id="state-loading" class="flex flex-col items-center justify-center py-12 text-center">
-      <div class="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
-      <p class="text-xs text-slate-400">Memverifikasi sesi absensi & perangkat...</p>
-    </div>
+    <!-- Dekorasi Latar Belakang Orb Cahaya 3D -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-    <!-- ERROR / INVALID STATE -->
-    <div id="state-error" class="hidden text-center py-8">
-      <div class="inline-flex p-4 bg-red-500/10 text-red-400 rounded-2xl mb-4">
-        <i data-lucide="alert-triangle" class="w-10 h-10"></i>
-      </div>
-      <h2 class="text-xl font-bold text-white mb-2">Sesi Tidak Tersedia</h2>
-      <p id="error-message" class="text-xs text-slate-400 leading-relaxed">
-        QR Code tidak valid atau sesi absensi telah kedaluwarsa.
-      </p>
-    </div>
+    <div class="container">
+        <!-- Kartu Absen 3D Glassmorphism dengan Efek Tilt Interaktif -->
+        <div class="card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+            
+            <!-- 1. LOADING STATE -->
+            <div id="state-loading" class="status-box">
+                <div class="spinner"></div>
+                <h3 class="status-title" style="font-size: 1.1rem;">Memverifikasi Sesi...</h3>
+                <p class="status-desc" style="font-size: 0.8rem; color: #94a3b8;">Menghubungkan ke server absensi & validasi perangkat</p>
+            </div>
 
-    <!-- ALREADY ATTENDED / ANTI-CHEAT LOCKED STATE -->
-    <div id="state-locked" class="hidden text-center py-8">
-      <div class="inline-flex p-4 bg-amber-500/10 text-amber-400 rounded-2xl mb-4">
-        <i data-lucide="shield-alert" class="w-10 h-10"></i>
-      </div>
-      <h2 class="text-xl font-bold text-white mb-2">Perangkat Sudah Terdaftar</h2>
-      <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        Perangkat Anda sudah pernah digunakan untuk melakukan absensi pada sesi <strong id="locked-session-title" class="text-white">...</strong>.
-      </p>
-      <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-800 text-[11px] text-slate-400">
-        🛡️ <strong>Kebijakan Sistem:</strong> Satu perangkat (HP/Komputer) hanya diperbolehkan mengabsenkan 1 orang per sesi untuk mencegah kecurangan.
-      </div>
-    </div>
+            <!-- 2. ERROR / INVALID STATE -->
+            <div id="state-error" class="status-box hidden">
+                <div class="status-icon error">
+                    <i data-lucide="alert-triangle" style="width: 38px; height: 38px;"></i>
+                </div>
+                <h2 class="status-title">Sesi Tidak Tersedia</h2>
+                <p id="error-message" class="status-desc">QR Code tidak valid atau sesi absensi telah kedaluwarsa.</p>
+                <div class="status-chip">Silakan hubungi administrator acara untuk QR Code terbaru.</div>
+            </div>
 
-    <!-- SUCCESS STATE -->
-    <div id="state-success" class="hidden text-center py-8">
-      <div class="inline-flex p-4 bg-emerald-500/10 text-emerald-400 rounded-2xl mb-4">
-        <i data-lucide="check-circle-2" class="w-10 h-10"></i>
-      </div>
-      <h2 class="text-2xl font-bold text-white mb-2">Absensi Berhasil!</h2>
-      <p class="text-xs text-slate-300 leading-relaxed mb-6">
-        Terima kasih, kehadiran atas nama <strong id="success-user-name" class="text-emerald-400">...</strong> telah berhasil tercatat di sistem admin.
-      </p>
-      <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-800 text-[11px] text-slate-400">
-        Perangkat Anda kini telah terkunci untuk sesi ini.
-      </div>
-    </div>
+            <!-- 3. ALREADY ATTENDED / ANTI-CHEAT LOCKED STATE -->
+            <div id="state-locked" class="status-box hidden">
+                <div class="status-icon locked">
+                    <i data-lucide="shield-alert" style="width: 38px; height: 38px;"></i>
+                </div>
+                <h2 class="status-title">Perangkat Terkunci</h2>
+                <p class="status-desc">
+                    Perangkat Anda sudah pernah digunakan untuk absen pada sesi <strong id="locked-session-title" style="color: #38ef7d;">...</strong>.
+                </p>
+                <div class="status-chip">
+                    🔒 <strong>Anti-Titip Absen:</strong> 1 perangkat hanya diperbolehkan 1 kali absen per sesi.
+                </div>
+            </div>
 
-    <!-- FORM INPUT NAMA -->
-    <div id="state-form" class="hidden">
-      <div class="text-center mb-6">
-        <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-          Formulir Kehadiran
-        </span>
-        <h1 id="form-session-title" class="text-2xl font-bold text-white mt-3 leading-snug">...</h1>
-        <p id="form-session-exp" class="text-xs text-slate-400 mt-1">Silakan isi identitas Anda di bawah ini</p>
-      </div>
+            <!-- 4. SUCCESS STATE -->
+            <div id="state-success" class="status-box hidden">
+                <div class="status-icon success">
+                    <i data-lucide="check" style="width: 42px; height: 42px;"></i>
+                </div>
+                <h2 class="status-title">Absensi Berhasil!</h2>
+                <p class="status-desc">
+                    Terima kasih, kehadiran atas nama <strong id="success-user-name" style="color: #38ef7d;">...</strong> telah sukses tercatat di sistem admin.
+                </p>
+                <div class="status-chip">
+                    ✨ Status kehadiran Anda: <strong>HADIR</strong> (Tercatat Realtime)
+                </div>
+            </div>
 
-      <div id="submit-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 text-xs p-3 rounded-xl mb-4"></div>
+            <!-- 5. MAIN ATTENDANCE FORM (ACTIVE STATE) -->
+            <div id="state-form" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div class="profile-icon">
+                    <i data-lucide="user-check" style="width: 42px; height: 42px;"></i>
+                </div>
 
-      <form id="attendance-form" onsubmit="handleAttendanceSubmit(event)" autocomplete="off" class="space-y-4">
-        <div>
-          <label class="text-xs font-semibold text-slate-300 block mb-1">Nama Lengkap</label>
-          <div class="relative">
-            <i data-lucide="user" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
-            <input
-              id="user-fullname"
-              type="text"
-              required
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="words"
-              spellcheck="false"
-              placeholder="Contoh: Ahmad Rizky"
-              class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500"
-            />
-          </div>
+                <div class="time-display" id="clock">00:00:00</div>
+                <div class="date-display" id="date">Senin, 1 Jan 2024</div>
+
+                <div class="session-badge" id="session-badge-title">SESI PRESENSI</div>
+
+                <div class="greeting">
+                    <span id="dynamic-greeting" style="font-weight: 700; color: #38ef7d;">Selamat Datang!</span><br>
+                    <span id="form-session-title" style="font-weight: 600;">...</span>
+                </div>
+
+                <div id="submit-error" class="error-toast hidden"></div>
+
+                <form id="attendance-form" onsubmit="handleAttendanceSubmit(event)" autocomplete="off" style="width: 100%;">
+                    <div class="input-group">
+                        <label class="input-label" for="user-fullname">Nama Lengkap Peserta</label>
+                        <input
+                            id="user-fullname"
+                            type="text"
+                            required
+                            autocomplete="off"
+                            autocorrect="off"
+                            autocapitalize="words"
+                            spellcheck="false"
+                            placeholder="Ketik nama lengkap Anda..."
+                            class="input-field"
+                        />
+                    </div>
+
+                    <button id="btn-submit" type="submit" class="btn-absen">
+                        <i data-lucide="check-circle-2" style="width: 20px; height: 20px;"></i>
+                        <span>ABSEN MASUK</span>
+                    </button>
+                </form>
+
+                <div class="security-badge">
+                    <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #38ef7d;"></i>
+                    <span>Proteksi Anti-Titip Absen & Device Lock Aktif</span>
+                </div>
+            </div>
+
         </div>
-
-        <button
-          id="btn-submit"
-          type="submit"
-          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30"
-        >
-          <span>Kirim Presensi Sekarang</span>
-        </button>
-      </form>
-
-      <div class="mt-6 pt-4 border-t border-slate-800 text-center">
-        <p class="text-[10px] text-slate-500 flex items-center justify-center gap-1.5">
-          <i data-lucide="lock" class="w-3.5 h-3.5"></i> Proteksi identitas perangkat (Anti-Fraud) aktif
-        </p>
-      </div>
     </div>
 
-  </div>
+    <!-- Script Library Vanilla Tilt untuk Efek 3D Interaktif -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
 
-  <script>
-    // Inisialisasi Kredensial Supabase (sinkron dengan admin)
-    const DEFAULT_CONFIG = {
-      url: 'https://xfrcokrepsiejsxjzbqf.supabase.co',
-      key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmcmNva3JlcHNpZWpzeGp6YnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MjgzMzksImV4cCI6MjEwNDEwNDMzOX0.YJUh5_M2E0ZkwFv0Zbn4r3qu4uzc0BJUX9ma3nCxfyQ'
-    };
+    <!-- Script Jam Realtime & Dynamic Greeting -->
+    <script>
+        function updateTime() {
+            const now = new Date();
+            
+            // Format Jam (HH:mm:ss)
+            const timeStr = now.toLocaleTimeString('id-ID', { hour12: false });
+            const clockEl = document.getElementById('clock');
+            if (clockEl) clockEl.textContent = timeStr;
 
-    let storedUrl = localStorage.getItem('app_sb_url');
-    let storedKey = localStorage.getItem('app_sb_key');
-    if (!storedUrl || storedUrl.includes('xyzcompany')) {
-      storedUrl = DEFAULT_CONFIG.url;
-      storedKey = DEFAULT_CONFIG.key;
-    }
+            // Format Tanggal
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            const dateEl = document.getElementById('date');
+            if (dateEl) dateEl.textContent = now.toLocaleDateString('id-ID', options);
 
-    const supabaseClient = window.supabase.createClient(storedUrl, storedKey);
-
-    let sessionData = null;
-    let deviceUUID = '';
-    let deviceFingerprint = '';
-
-    // 1. DEVICE FINGERPRINTING & PERSISTENT UUID
-    function getPersistentDeviceUUID() {
-      const STORAGE_KEY = 'attendance_device_uuid';
-      let uuid = localStorage.getItem(STORAGE_KEY);
-      if (!uuid) {
-        uuid = 'dev-' + crypto.randomUUID();
-        localStorage.setItem(STORAGE_KEY, uuid);
-      }
-      return uuid;
-    }
-
-    async function getDeviceFingerprint() {
-      const components = [
-        navigator.userAgent,
-        navigator.language,
-        screen.width + 'x' + screen.height,
-        screen.colorDepth,
-        new Date().getTimezoneOffset(),
-        navigator.hardwareConcurrency || 'x'
-      ];
-
-      // Canvas Entropy
-      try {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.textBaseline = 'top';
-          ctx.font = "14px 'Arial'";
-          ctx.fillStyle = '#f60';
-          ctx.fillRect(100, 1, 60, 20);
-          ctx.fillStyle = '#069';
-          ctx.fillText('Attendance-FP', 2, 15);
-          components.push(canvas.toDataURL());
+            // Dynamic Greeting berdasarkan waktu
+            const hour = now.getHours();
+            let greeting = 'Selamat Pagi!';
+            if (hour >= 11 && hour < 15) greeting = 'Selamat Siang!';
+            else if (hour >= 15 && hour < 18) greeting = 'Selamat Sore!';
+            else if (hour >= 18 || hour < 4) greeting = 'Selamat Malam!';
+            
+            const greetingEl = document.getElementById('dynamic-greeting');
+            if (greetingEl) greetingEl.textContent = greeting;
         }
-      } catch (e) {}
 
-      const rawString = components.join('|||');
-      const msgBuffer = new TextEncoder().encode(rawString);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 
-    let isDemoSession = false;
-
-    // 2. CHECK TOKEN & SESSION ON LOAD
-    async function checkSession() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
-
-      if (!token) {
-        showError('Token QR Code tidak ditemukan di URL.');
-        return;
-      }
-
-      deviceUUID = getPersistentDeviceUUID();
-      deviceFingerprint = await getDeviceFingerprint();
-
-      // Cek apakah ini sesi demo lokal
-      const demoSessions = JSON.parse(localStorage.getItem('demo_sessions') || '[]');
-      const foundDemo = demoSessions.find(s => s.qr_token === token);
-
-      if (foundDemo || token.startsWith('demo-')) {
-        isDemoSession = true;
-        sessionData = foundDemo || {
-          id: 'demo-session',
-          title: 'Sesi Demo Offline',
-          expires_at: null,
-          is_active: true
+    <!-- Script Supabase & Logika Absensi Anti-Kecurangan -->
+    <script>
+        // Konfigurasi Supabase Produksi
+        const DEFAULT_CONFIG = {
+            url: 'https://xfrcokrepsiejsxjzbqf.supabase.co',
+            key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmcmNva3JlcHNpZWpzeGp6YnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MjgzMzksImV4cCI6MjEwNDEwNDMzOX0.YJUh5_M2E0ZkwFv0Zbn4r3qu4uzc0BJUX9ma3nCxfyQ'
         };
 
-        // Cek anti-cheat di demo_attendances
-        const demoAttendances = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
-        const alreadyAttended = demoAttendances.some(a => 
-          a.session_id === sessionData.id && 
-          (a.device_uuid === deviceUUID || a.device_fingerprint === deviceFingerprint)
-        );
-
-        if (alreadyAttended) {
-          showLocked(sessionData.title);
-          return;
+        let storedUrl = localStorage.getItem('app_sb_url');
+        let storedKey = localStorage.getItem('app_sb_key');
+        if (!storedUrl || storedUrl.includes('xyzcompany')) {
+            storedUrl = DEFAULT_CONFIG.url;
+            storedKey = DEFAULT_CONFIG.key;
         }
 
-        showForm(sessionData);
-        return;
-      }
+        const supabaseClient = window.supabase.createClient(storedUrl, storedKey);
 
-      // Query sesi dari Supabase
-      try {
-        const { data, error } = await supabaseClient
-          .from('sessions')
-          .select('*')
-          .eq('qr_token', token)
-          .maybeSingle();
+        let sessionData = null;
+        let deviceUUID = '';
+        let deviceFingerprint = '';
+        let isDemoSession = false;
 
-        if (error) {
-          showError('Error Supabase: ' + error.message + ' (Code: ' + (error.code || '-') + ')');
-          return;
+        // 1. DEVICE FINGERPRINTING & PERSISTENT UUID
+        function getPersistentDeviceUUID() {
+            const STORAGE_KEY = 'attendance_device_uuid';
+            let uuid = localStorage.getItem(STORAGE_KEY);
+            if (!uuid) {
+                uuid = 'dev-' + crypto.randomUUID();
+                localStorage.setItem(STORAGE_KEY, uuid);
+            }
+            return uuid;
         }
 
-        if (!data) {
-          showError('Sesi absensi tidak ditemukan di database. Pastikan admin sudah membuat sesi ini di cloud Supabase.');
-          return;
+        async function getDeviceFingerprint() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 'x'
+            ];
+
+            // Canvas Entropy
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.textBaseline = 'top';
+                    ctx.font = "14px 'Arial'";
+                    ctx.fillStyle = '#f60';
+                    ctx.fillRect(100, 1, 60, 20);
+                    ctx.fillStyle = '#069';
+                    ctx.fillText('Attendance-3D-FP', 2, 15);
+                    components.push(canvas.toDataURL());
+                }
+            } catch (e) {}
+
+            const rawString = components.join('|||');
+            const msgBuffer = new TextEncoder().encode(rawString);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Cek apakah sesi aktif & belum expired
-        if (!data.is_active) {
-          showError('Sesi absensi ini sudah dinonaktifkan.');
-          return;
+        // 2. CHECK TOKEN & SESSION ON LOAD
+        async function checkSession() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                showError('Token QR Code tidak ditemukan di URL.');
+                return;
+            }
+
+            deviceUUID = getPersistentDeviceUUID();
+            deviceFingerprint = await getDeviceFingerprint();
+
+            // Cek apakah ini sesi demo lokal
+            const demoSessions = JSON.parse(localStorage.getItem('demo_sessions') || '[]');
+            const foundDemo = demoSessions.find(s => s.qr_token === token);
+
+            if (foundDemo || token.startsWith('demo-')) {
+                isDemoSession = true;
+                sessionData = foundDemo || {
+                    id: 'demo-session',
+                    title: 'Sesi Demo Offline',
+                    expires_at: null,
+                    is_active: true
+                };
+
+                // Cek anti-cheat di demo_attendances
+                const demoAttendances = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
+                const alreadyAttended = demoAttendances.some(a => 
+                    a.session_id === sessionData.id && 
+                    (a.device_uuid === deviceUUID || a.device_fingerprint === deviceFingerprint)
+                );
+
+                if (alreadyAttended) {
+                    showLocked(sessionData.title);
+                    return;
+                }
+
+                showForm(sessionData);
+                return;
+            }
+
+            // Query sesi dari Supabase Cloud
+            try {
+                const { data, error } = await supabaseClient
+                    .from('sessions')
+                    .select('*')
+                    .eq('qr_token', token)
+                    .maybeSingle();
+
+                if (error) {
+                    showError('Error Supabase: ' + error.message + ' (Code: ' + (error.code || '-') + ')');
+                    return;
+                }
+
+                if (!data) {
+                    showError('Sesi absensi tidak ditemukan di database. Pastikan QR code dibuat dari akun admin yang aktif.');
+                    return;
+                }
+
+                // Cek apakah sesi aktif & belum expired
+                if (!data.is_active) {
+                    showError('Sesi absensi ini sudah dinonaktifkan oleh admin.');
+                    return;
+                }
+
+                if (data.expires_at && new Date(data.expires_at) < new Date()) {
+                    showError('Waktu pengisian absensi untuk sesi ini telah berakhir.');
+                    return;
+                }
+
+                sessionData = data;
+
+                // Pre-check anti kecurangan: Cek apakah perangkat sudah pernah submit di sesi ini
+                const { data: checkData } = await supabaseClient
+                    .from('attendances')
+                    .select('id')
+                    .eq('session_id', sessionData.id)
+                    .or(`device_uuid.eq.${deviceUUID},device_fingerprint.eq.${deviceFingerprint}`)
+                    .maybeSingle();
+
+                if (checkData) {
+                    showLocked(sessionData.title);
+                    return;
+                }
+
+                // Tampilkan form pengisian
+                showForm(sessionData);
+            } catch (err) {
+                showError('Gagal terhubung ke database: ' + err.message);
+            }
         }
 
-        if (data.expires_at && new Date(data.expires_at) < new Date()) {
-          showError('Waktu pengisian absensi untuk sesi ini telah berakhir.');
-          return;
+        function showForm(session) {
+            document.getElementById('state-loading').classList.add('hidden');
+            document.getElementById('state-form').classList.remove('hidden');
+            document.getElementById('form-session-title').textContent = session.title;
+            
+            const badgeTitle = document.getElementById('session-badge-title');
+            if (session.expires_at) {
+                badgeTitle.textContent = 'BATAS: ' + new Date(session.expires_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            } else {
+                badgeTitle.textContent = 'SESI PRESENSI AKTIF';
+            }
+
+            lucide.createIcons();
+            reinitTilt();
         }
 
-        sessionData = data;
-
-        // Pre-check anti kecurangan: Cek apakah perangkat sudah pernah submit di sesi ini
-        const { data: checkData } = await supabaseClient
-          .from('attendances')
-          .select('id')
-          .eq('session_id', sessionData.id)
-          .or(`device_uuid.eq.${deviceUUID},device_fingerprint.eq.${deviceFingerprint}`)
-          .maybeSingle();
-
-        if (checkData) {
-          showLocked(sessionData.title);
-          return;
+        function showError(msg) {
+            document.getElementById('state-loading').classList.add('hidden');
+            document.getElementById('state-form').classList.add('hidden');
+            document.getElementById('state-locked').classList.add('hidden');
+            document.getElementById('state-error').classList.remove('hidden');
+            document.getElementById('error-message').textContent = msg;
+            lucide.createIcons();
+            reinitTilt();
         }
 
-        // Tampilkan form pengisian
-        showForm(sessionData);
-      } catch (err) {
-        showError('Gagal terhubung ke database: ' + err.message);
-      }
-    }
+        function showLocked(sessionTitle) {
+            document.getElementById('state-loading').classList.add('hidden');
+            document.getElementById('state-form').classList.add('hidden');
+            document.getElementById('state-error').classList.add('hidden');
+            document.getElementById('state-locked').classList.remove('hidden');
+            document.getElementById('locked-session-title').textContent = sessionTitle;
+            lucide.createIcons();
+            reinitTilt();
+        }
 
-    function showForm(session) {
-      document.getElementById('state-loading').classList.add('hidden');
-      document.getElementById('state-form').classList.remove('hidden');
-      document.getElementById('form-session-title').textContent = session.title;
-      if (session.expires_at) {
-        document.getElementById('form-session-exp').textContent = 'Batas pengisian: ' + new Date(session.expires_at).toLocaleTimeString('id-ID');
-      }
-      lucide.createIcons();
-    }
+        function showSuccess(name) {
+            document.getElementById('state-form').classList.add('hidden');
+            document.getElementById('state-success').classList.remove('hidden');
+            document.getElementById('success-user-name').textContent = name;
+            lucide.createIcons();
+            reinitTilt();
 
-    function showError(msg) {
-      document.getElementById('state-loading').classList.add('hidden');
-      document.getElementById('state-form').classList.add('hidden');
-      document.getElementById('state-locked').classList.add('hidden');
-      document.getElementById('state-error').classList.remove('hidden');
-      document.getElementById('error-message').textContent = msg;
-      lucide.createIcons();
-    }
+            // Efek Confetti 3D Perayaan
+            if (window.confetti) {
+                window.confetti({
+                    particleCount: 150,
+                    spread: 85,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
 
-    function showLocked(sessionTitle) {
-      document.getElementById('state-loading').classList.add('hidden');
-      document.getElementById('state-form').classList.add('hidden');
-      document.getElementById('state-error').classList.add('hidden');
-      document.getElementById('state-locked').classList.remove('hidden');
-      document.getElementById('locked-session-title').textContent = sessionTitle;
-      lucide.createIcons();
-    }
+        function reinitTilt() {
+            if (window.VanillaTilt) {
+                const card = document.querySelector('.card');
+                if (card && card.vanillaTilt) {
+                    card.vanillaTilt.destroy();
+                }
+                VanillaTilt.init(document.querySelectorAll(".card"), {
+                    max: 15,
+                    speed: 400,
+                    glare: true,
+                    "max-glare": 0.2
+                });
+            }
+        }
 
-    function showSuccess(name) {
-      document.getElementById('state-form').classList.add('hidden');
-      document.getElementById('state-success').classList.remove('hidden');
-      document.getElementById('success-user-name').textContent = name;
-      lucide.createIcons();
+        // 3. SUBMIT PRESENSI
+        async function handleAttendanceSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('user-fullname').value.trim();
+            const btn = document.getElementById('btn-submit');
+            const errBox = document.getElementById('submit-error');
 
-      // Confetti celebration
-      if (window.confetti) {
-        window.confetti({
-          particleCount: 120,
-          spread: 80,
-          origin: { y: 0.6 }
+            if (!name || !sessionData) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span>Mengirim...</span>';
+            errBox.classList.add('hidden');
+
+            if (isDemoSession) {
+                const demoAttendances = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
+                const isDuplicate = demoAttendances.some(a => 
+                    a.session_id === sessionData.id && 
+                    (a.device_uuid === deviceUUID || a.device_fingerprint === deviceFingerprint)
+                );
+
+                if (isDuplicate) {
+                    showLocked(sessionData.title);
+                    return;
+                }
+
+                const newRecord = {
+                    id: 'demo-att-' + Date.now(),
+                    session_id: sessionData.id,
+                    full_name: name,
+                    device_uuid: deviceUUID,
+                    device_fingerprint: deviceFingerprint,
+                    user_agent: navigator.userAgent,
+                    checked_in_at: new Date().toISOString()
+                };
+                demoAttendances.unshift(newRecord);
+                localStorage.setItem('demo_attendances', JSON.stringify(demoAttendances));
+                showSuccess(name);
+                return;
+            }
+
+            const { data, error } = await supabaseClient
+                .from('attendances')
+                .insert({
+                    session_id: sessionData.id,
+                    full_name: name,
+                    device_uuid: deviceUUID,
+                    device_fingerprint: deviceFingerprint,
+                    user_agent: navigator.userAgent
+                })
+                .select()
+                .single();
+
+            if (error) {
+                if (error.code === '23505') {
+                    showLocked(sessionData.title);
+                } else {
+                    errBox.textContent = 'Gagal menyimpan absensi: ' + error.message;
+                    errBox.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i data-lucide="check-circle-2" style="width: 20px; height: 20px;"></i><span>ABSEN MASUK</span>';
+                    lucide.createIcons();
+                }
+            } else {
+                showSuccess(name);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            reinitTilt();
+            checkSession();
         });
-      }
-    }
-
-    // 3. SUBMIT PRESENSI
-    async function handleAttendanceSubmit(e) {
-      e.preventDefault();
-      const name = document.getElementById('user-fullname').value.trim();
-      const btn = document.getElementById('btn-submit');
-      const errBox = document.getElementById('submit-error');
-
-      if (!name || !sessionData) return;
-
-      btn.disabled = true;
-      btn.innerHTML = '<span>Mengirim Data Kehadiran...</span>';
-      errBox.classList.add('hidden');
-
-      if (isDemoSession) {
-        const demoAttendances = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
-        const isDuplicate = demoAttendances.some(a => 
-          a.session_id === sessionData.id && 
-          (a.device_uuid === deviceUUID || a.device_fingerprint === deviceFingerprint)
-        );
-
-        if (isDuplicate) {
-          showLocked(sessionData.title);
-          return;
-        }
-
-        const newRecord = {
-          id: 'demo-att-' + Date.now(),
-          session_id: sessionData.id,
-          full_name: name,
-          device_uuid: deviceUUID,
-          device_fingerprint: deviceFingerprint,
-          user_agent: navigator.userAgent,
-          checked_in_at: new Date().toISOString()
-        };
-        demoAttendances.unshift(newRecord);
-        localStorage.setItem('demo_attendances', JSON.stringify(demoAttendances));
-        showSuccess(name);
-        return;
-      }
-
-      const { data, error } = await supabaseClient
-        .from('attendances')
-        .insert({
-          session_id: sessionData.id,
-          full_name: name,
-          device_uuid: deviceUUID,
-          device_fingerprint: deviceFingerprint,
-          user_agent: navigator.userAgent
-        })
-        .select()
-        .single();
-
-      if (error) {
-        if (error.code === '23505') {
-          showLocked(sessionData.title);
-        } else {
-          errBox.textContent = 'Gagal menyimpan absensi: ' + error.message;
-          errBox.classList.remove('hidden');
-          btn.disabled = false;
-          btn.innerHTML = '<span>Kirim Presensi Sekarang</span>';
-        }
-      } else {
-        showSuccess(name);
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      checkSession();
-    });
-  </script>
+    </script>
 </body>
 </html>
