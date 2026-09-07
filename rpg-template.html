@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RPG Loot & Quest Rewards UI</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Cinzel Decorative & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold-primary: #f6c85f;
+      --gold-dark: #b8860b;
+      --gold-border: #d4af37;
+      --cyan-neon: #00f2fe;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at center, #111a2e 0%, #080d17 70%, #03060a 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #e2e8f0;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .font-rpg {
+      font-family: 'Cinzel', serif;
+    }
+
+    .font-digital {
+      font-family: 'Rajdhani', monospace;
+    }
+
+    /* Outer Ornate Screen Border */
+    .screen-frame {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      min-height: 680px;
+      background: rgba(10, 16, 28, 0.88);
+      border: 2px solid rgba(212, 175, 55, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 242, 254, 0.05);
+      backdrop-filter: blur(16px);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* Ornate Corners */
+    .corner-decor {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border: 3px solid #00f2fe;
+      box-shadow: 0 0 12px #00f2fe;
+      pointer-events: none;
+    }
+    .corner-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; border-top-left-radius: 12px; }
+    .corner-tr { top: 8px; right: 8px; border-left: none; border-bottom: none; border-top-right-radius: 12px; }
+    .corner-bl { bottom: 8px; left: 8px; border-right: none; border-top: none; border-bottom-left-radius: 12px; }
+    .corner-br { bottom: 8px; right: 8px; border-left: none; border-top: none; border-bottom-right-radius: 12px; }
+
+    /* Metallic RPG Title */
+    .title-glow {
+      background: linear-gradient(180deg, #fff7c2 0%, #f6c85f 45%, #b7791f 85%, #744210 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 15px rgba(246, 200, 95, 0.5));
+      letter-spacing: 2px;
+    }
+
+    .title-subglow {
+      background: linear-gradient(180deg, #00f2fe 0%, #4facfe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 10px rgba(0, 242, 254, 0.5));
+    }
+
+    /* Chest Tier Cards */
+    .tier-card {
+      background: linear-gradient(180deg, rgba(20, 29, 47, 0.85) 0%, rgba(8, 14, 25, 0.95) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 14px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tier-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 14px;
+      padding: 1px;
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.5), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .tier-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Color Rarity Glows */
+    .tier-rare:hover { border-color: #3b82f6; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); }
+    .tier-epic:hover { border-color: #a855f7; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4); }
+    .tier-legendary:hover { border-color: #f59e0b; box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4); }
+    .tier-mythic:hover { border-color: #ef4444; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4); }
+    .tier-celestial:hover { border-color: #06b6d4; box-shadow: 0 10px 30px rgba(6, 182, 212, 0.6); }
+
+    /* Animated Neon XP Bar */
+    .glow-progress-bar {
+      background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+      box-shadow: 0 0 20px #10b981, inset 0 2px 4px rgba(255, 255, 255, 0.6);
+      transition: width 0.4s ease;
+      position: relative;
+    }
+
+    .glow-progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      animation: barScan 2.5s infinite linear;
+    }
+
+    @keyframes barScan {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Gold Ornate Button */
+    .btn-gold-ornate {
+      background: linear-gradient(180deg, #15803d 0%, #166534 50%, #14532d 100%);
+      border: 2px solid #eab308;
+      box-shadow: 0 0 15px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+      color: #fef08a;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+      border-radius: 9999px;
+      transition: all 0.25s ease;
+    }
+
+    .btn-gold-ornate:hover {
+      background: linear-gradient(180deg, #16a34a 0%, #15803d 50%, #166534 100%);
+      border-color: #fef08a;
+      box-shadow: 0 0 25px rgba(234, 179, 8, 0.8), inset 0 2px 6px rgba(255, 255, 255, 0.5);
+      transform: scale(1.04);
+    }
+
+    /* Gold VIP Pass Button */
+    .btn-vip-gold {
+      background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+      border: 1px solid #4ade80;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+    .btn-vip-gold:hover {
+      background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.5);
+    }
+
+    /* Blue Premium Button */
+    .btn-sub-blue {
+      background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid #38bdf8;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+    .btn-sub-blue:hover {
+      background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+      box-shadow: 0 6px 18px rgba(14, 165, 233, 0.5);
+    }
+
+    /* Subtle Floating Particles */
+    @keyframes floatingSpark {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateY(-80px) rotate(180deg); opacity: 0; }
+    }
+    .spark {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #f6c85f;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #f6c85f;
+      pointer-events: none;
+      animation: floatingSpark 4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Frame Utama -->
+  <div class="screen-frame flex flex-col justify-between">
+    
+    <!-- Ornate Neon Corners -->
+    <div class="corner-decor corner-tl"></div>
+    <div class="corner-decor corner-tr"></div>
+    <div class="corner-decor corner-bl"></div>
+    <div class="corner-decor corner-br"></div>
+
+    <!-- Background Sparkles -->
+    <div class="spark" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+    <div class="spark" style="top: 40%; left: 80%; animation-delay: 1.5s;"></div>
+    <div class="spark" style="top: 70%; left: 25%; animation-delay: 0.8s;"></div>
+    <div class="spark" style="top: 85%; left: 75%; animation-delay: 2.2s;"></div>
+
+    <!-- ==================== HEADER SECTION ==================== -->
+    <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-4 border-b border-yellow-500/20 pb-4">
+      
+      <!-- Kiri: Select Loot / Dungeon Source -->
+      <div class="space-y-2">
+        <p class="text-[11px] font-rpg uppercase text-yellow-300/80 tracking-widest flex items-center gap-1.5">
+          <i data-lucide="compass" class="w-3.5 h-3.5 text-cyan-400"></i> Pilih Lokasi Loot:
+        </p>
+        <div class="space-y-1.5">
+          <!-- Item 1 -->
+          <div onclick="selectDungeon(1)" id="dungeon-1" class="flex items-center justify-between p-2 rounded-xl bg-slate-900/80 border border-yellow-500/40 hover:border-cyan-400 transition cursor-pointer">
+            <div>
+              <p class="text-xs font-bold text-white tracking-wide">Frostspire Bastion</p>
+              <p class="text-[10px] text-cyan-400 font-semibold">Lvl 40 - 60</p>
+            </div>
+            <button class="text-[10px] font-rpg uppercase px-2.5 py-1 rounded bg-yellow-500/20 border border-yellow-500 text-yellow-300 hover:bg-yellow-500 hover:text-black font-bold transition">
+              Selected
+            </button>
+          </div>
+          <!-- Item 2 -->
+          <div onclick="selectDungeon(2)" id="dungeon-2" class="flex items-center justify-between p-2 rounded-xl bg-slate-900/50 border border-slate-700/60 hover:border-cyan-400 transition cursor-pointer opacity-75">
+            <div>
+              <p class="text-xs font-bold text-white tracking-wide">Underworld Gate</p>
+              <p class="text-[10px] text-amber-400 font-semibold">Lvl 60 - 100</p>
+            </div>
+            <button class="text-[10px] font-rpg uppercase px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300 hover:border-yellow-500 font-bold transition">
+              Select
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tengah: Judul Game / Quest Banner -->
+      <div class="text-center">
+        <div class="inline-block relative">
+          <h1 class="text-3xl md:text-4xl font-black font-rpg title-glow tracking-wider uppercase">DUNGEON</h1>
+          <h2 class="text-2xl md:text-3xl font-black font-rpg title-subglow tracking-widest uppercase -mt-2">LOOT QUEST</h2>
+        </div>
+        <p class="text-[11px] text-slate-300 mt-1 font-medium">
+          Dapatkan hadiah saat aktif ataupun idle!
+        </p>
+        <p class="text-[10px] text-yellow-400 font-semibold">
+          ✨ Sesi akan otomatis diperbarui setiap 15 menit
+        </p>
+      </div>
+
+      <!-- Kanan: Status Hadiah Berikutnya & VIP -->
+      <div class="flex flex-col items-end space-y-1 text-right">
+        <div class="flex items-center gap-2 bg-slate-900/60 border border-yellow-500/30 px-3 py-1 rounded-xl">
+          <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-400 to-pink-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-white"></i>
+          </div>
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Next Star Drop</p>
+            <p id="star-timer" class="text-xs font-bold text-cyan-300 font-digital text-sm">04:57</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 bg-slate-900/60 border border-yellow-500/30 px-3 py-1 rounded-xl">
+          <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+            <i data-lucide="coins" class="w-3.5 h-3.5 text-slate-950 font-bold"></i>
+          </div>
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Next Gold Coin</p>
+            <p id="gold-timer" class="text-xs font-bold text-yellow-400 font-digital text-sm">00:00</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== CURRENCY BAR ==================== -->
+    <div class="flex items-center justify-start gap-4 my-3">
+      <!-- Gold Coin Pill -->
+      <div class="flex items-center gap-2 bg-gradient-to-r from-yellow-950/80 to-slate-900/80 border border-yellow-500/50 px-4 py-1.5 rounded-full shadow-lg">
+        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-yellow-300 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-md">
+          <i data-lucide="circle-dollar-sign" class="w-4 h-4"></i>
+        </div>
+        <span id="player-gold" class="text-base font-extrabold text-yellow-300 font-digital tracking-wide">1,200</span>
+      </div>
+
+      <!-- Crystal / Star Pill -->
+      <div class="flex items-center gap-2 bg-gradient-to-r from-cyan-950/80 to-slate-900/80 border border-cyan-400/50 px-4 py-1.5 rounded-full shadow-lg">
+        <div class="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-300 to-blue-600 flex items-center justify-center text-slate-950 font-black shadow-md">
+          <i data-lucide="gem" class="w-4 h-4"></i>
+        </div>
+        <span id="player-gems" class="text-base font-extrabold text-cyan-300 font-digital tracking-wide">150</span>
+      </div>
+    </div>
+
+    <!-- ==================== MAIN ROW: CHESTS & VIP PERKS ==================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch my-2">
+      
+      <!-- 5 CHEST CARDS (Kiri & Tengah, Span 3) -->
+      <div class="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        
+        <!-- Chest 1: Rare -->
+        <div onclick="openChest('Rare')" class="tier-card tier-rare p-3 flex flex-col items-center text-center justify-between">
+          <div class="w-2 h-2 rounded-full bg-blue-400 mb-1 shadow-lg shadow-blue-500"></div>
+          <p class="text-xs font-rpg font-bold text-blue-400">Rare Chest</p>
+          <div class="my-3 p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30">
+            <i data-lucide="box" class="w-9 h-9 text-blue-400"></i>
+          </div>
+          <span class="text-xs font-digital font-bold text-slate-300 bg-slate-900/90 px-3 py-0.5 rounded-full border border-blue-500/30">x0</span>
+        </div>
+
+        <!-- Chest 2: Epic -->
+        <div onclick="openChest('Epic')" class="tier-card tier-epic p-3 flex flex-col items-center text-center justify-between border-purple-500/40">
+          <div class="w-2 h-2 rounded-full bg-purple-400 mb-1 shadow-lg shadow-purple-500 animate-ping"></div>
+          <p class="text-xs font-rpg font-bold text-purple-400">Epic Chest</p>
+          <div class="my-3 p-3 rounded-2xl bg-purple-500/10 border border-purple-500/30 shadow-lg shadow-purple-500/20">
+            <i data-lucide="package-open" class="w-9 h-9 text-purple-400"></i>
+          </div>
+          <span class="text-xs font-digital font-bold text-purple-300 bg-purple-950/80 px-3 py-0.5 rounded-full border border-purple-500/50">x1</span>
+        </div>
+
+        <!-- Chest 3: Legendary -->
+        <div onclick="openChest('Legendary')" class="tier-card tier-legendary p-3 flex flex-col items-center text-center justify-between">
+          <div class="w-2 h-2 rounded-full bg-amber-400 mb-1 shadow-lg shadow-amber-500"></div>
+          <p class="text-xs font-rpg font-bold text-amber-400">Legendary</p>
+          <div class="my-3 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30">
+            <i data-lucide="shield" class="w-9 h-9 text-amber-400"></i>
+          </div>
+          <span class="text-xs font-digital font-bold text-slate-300 bg-slate-900/90 px-3 py-0.5 rounded-full border border-amber-500/30">x0</span>
+        </div>
+
+        <!-- Chest 4: Mythic -->
+        <div onclick="openChest('Mythic')" class="tier-card tier-mythic p-3 flex flex-col items-center text-center justify-between">
+          <div class="w-2 h-2 rounded-full bg-red-400 mb-1 shadow-lg shadow-red-500"></div>
+          <p class="text-xs font-rpg font-bold text-red-400">Mythic</p>
+          <div class="my-3 p-3 rounded-2xl bg-red-500/10 border border-red-500/30">
+            <i data-lucide="flame" class="w-9 h-9 text-red-400"></i>
+          </div>
+          <span class="text-xs font-digital font-bold text-slate-300 bg-slate-900/90 px-3 py-0.5 rounded-full border border-red-500/30">x0</span>
+        </div>
+
+        <!-- Chest 5: Celestial -->
+        <div onclick="openChest('Celestial')" class="tier-card tier-celestial p-3 flex flex-col items-center text-center justify-between">
+          <div class="w-2 h-2 rounded-full bg-cyan-300 mb-1 shadow-lg shadow-cyan-300 animate-pulse"></div>
+          <p class="text-xs font-rpg font-bold text-cyan-300">Celestial</p>
+          <div class="my-3 p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 shadow-lg shadow-cyan-500/30">
+            <i data-lucide="crown" class="w-9 h-9 text-cyan-300"></i>
+          </div>
+          <span class="text-xs font-digital font-bold text-slate-300 bg-slate-900/90 px-3 py-0.5 rounded-full border border-cyan-500/30">x0</span>
+        </div>
+
+      </div>
+
+      <!-- VIP & PREMIUM SIDEBAR (Kanan, Span 1) -->
+      <div class="space-y-3 flex flex-col justify-between">
+        
+        <!-- VIP Card -->
+        <div class="p-3 rounded-2xl bg-gradient-to-br from-amber-950/60 to-slate-900/80 border border-yellow-500/40 relative overflow-hidden shadow-lg">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-yellow-500/20 rounded-xl border border-yellow-500/40 text-yellow-400">
+              <i data-lucide="crown" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black font-rpg text-yellow-300">VIP TIER</span>
+                <span class="text-[9px] bg-yellow-500 text-black px-1.5 font-extrabold rounded">PRO</span>
+              </div>
+              <p class="text-[10px] text-yellow-200/80 mt-0.5 font-semibold">+15% Player & Class EXP</p>
+              <p class="text-[10px] text-emerald-400 font-bold">+25% Faster Rewards</p>
+            </div>
+          </div>
+          <button onclick="claimPerk('VIP')" class="w-full mt-2.5 py-1.5 rounded-xl btn-vip-gold text-xs font-extrabold text-white flex items-center justify-center gap-1">
+            <i data-lucide="sparkle" class="w-3.5 h-3.5"></i> Aktivasi VIP
+          </button>
+        </div>
+
+        <!-- Premium Plus Card -->
+        <div class="p-3 rounded-2xl bg-gradient-to-br from-cyan-950/60 to-slate-900/80 border border-cyan-400/40 relative overflow-hidden shadow-lg">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-cyan-500/20 rounded-xl border border-cyan-500/40 text-cyan-400">
+              <i data-lucide="award" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-black font-rpg text-cyan-300">PREMIUM+</span>
+                <span class="text-[9px] bg-cyan-400 text-black px-1.5 font-extrabold rounded">MAX</span>
+              </div>
+              <p class="text-[10px] text-cyan-200/80 mt-0.5 font-semibold">+25% Faster Rewards</p>
+              <p class="text-[9px] text-slate-400">(Stacks with VIP)</p>
+            </div>
+          </div>
+          <button onclick="claimPerk('Premium+')" class="w-full mt-2.5 py-1.5 rounded-xl btn-sub-blue text-xs font-extrabold text-white flex items-center justify-center gap-1">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Langganan
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== BOTTOM PROGRESS & ACTION ==================== -->
+    <div class="mt-4 pt-4 border-t border-yellow-500/20 space-y-3">
+      
+      <!-- Countdown & Bar Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left gap-2">
+        <div class="text-sm font-rpg font-semibold text-slate-300">
+          Waktu Hingga Peti Acak Berikutnya:
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="timer" class="w-5 h-5 text-emerald-400 animate-pulse"></i>
+          <span id="reward-countdown" class="text-2xl font-black font-digital text-white tracking-widest">00:04:56</span>
+        </div>
+      </div>
+
+      <!-- Glowing Neon Green Progress Bar -->
+      <div class="w-full h-5 bg-slate-950/80 border border-emerald-500/40 rounded-full p-0.5 overflow-hidden shadow-inner">
+        <div id="progress-bar-fill" class="h-full rounded-full glow-progress-bar" style="width: 65%;"></div>
+      </div>
+
+      <!-- Bottom Button & Info Footer -->
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+        <p class="text-[11px] text-slate-400 font-medium">
+          🎁 Setiap 20 menit dapatkan peti dungeon gratis secara acak!
+        </p>
+
+        <!-- Big Enter Game / Claim Button -->
+        <button onclick="handleEnterGame()" class="btn-gold-ornate font-rpg font-black uppercase text-sm tracking-widest px-8 py-2.5 flex items-center gap-2 cursor-pointer">
+          <i data-lucide="swords" class="w-4 h-4"></i>
+          <span>ENTER GAME</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Modal Reward Popup -->
+  <div id="reward-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="tier-card p-8 max-w-sm w-full text-center border-2 border-yellow-500 shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-lg">✕</button>
+      
+      <div id="modal-chest-icon" class="w-20 h-20 mx-auto rounded-3xl bg-purple-500/20 border-2 border-purple-500 flex items-center justify-center text-purple-300 mb-4 shadow-xl">
+        <i data-lucide="package-open" class="w-10 h-10"></i>
+      </div>
+
+      <h3 id="modal-title" class="text-xl font-black font-rpg text-yellow-300 mb-1">Epic Chest Terbuka!</h3>
+      <p id="modal-desc" class="text-xs text-slate-300 mb-5 leading-relaxed">
+        Selamat! Anda mendapatkan <strong class="text-yellow-400">+500 Gold</strong> dan <strong class="text-cyan-400">+50 Crystals</strong>.
+      </p>
+
+      <button onclick="closeModal()" class="w-full btn-gold-ornate py-2 rounded-full font-rpg font-bold text-xs uppercase tracking-wider">
+        Klaim Hadiah
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Audio Beep menggunakan Web Audio API (tanpa perlu aset luar)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSfx(freq = 440, type = 'sine', duration = 0.15) {
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    // Countdown Timer logic
+    let secondsLeft = 296; // 04:56
+    const countdownEl = document.getElementById('reward-countdown');
+    const progressBar = document.getElementById('progress-bar-fill');
+
+    function updateCountdown() {
+      if (secondsLeft > 0) {
+        secondsLeft--;
+        const mins = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+        const secs = String(secondsLeft % 60).padStart(2, '0');
+        countdownEl.textContent = `00:${mins}:${secs}`;
+        
+        // Update bar percentage (20 menit = 1200 detik)
+        const percent = ((1200 - (secondsLeft % 1200)) / 1200) * 100;
+        progressBar.style.width = `${percent}%`;
+      } else {
+        secondsLeft = 1200;
+      }
+    }
+    setInterval(updateCountdown, 1000);
+
+    // Dungeon Selector
+    function selectDungeon(id) {
+      playSfx(580, 'triangle', 0.2);
+      const d1 = document.getElementById('dungeon-1');
+      const d2 = document.getElementById('dungeon-2');
+      if (id === 1) {
+        d1.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-900/80 border border-yellow-500/40 hover:border-cyan-400 transition cursor-pointer';
+        d1.querySelector('button').textContent = 'Selected';
+        d1.querySelector('button').className = 'text-[10px] font-rpg uppercase px-2.5 py-1 rounded bg-yellow-500/20 border border-yellow-500 text-yellow-300 font-bold';
+        
+        d2.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-900/50 border border-slate-700/60 hover:border-cyan-400 transition cursor-pointer opacity-75';
+        d2.querySelector('button').textContent = 'Select';
+        d2.querySelector('button').className = 'text-[10px] font-rpg uppercase px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300 font-bold';
+      } else {
+        d2.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-900/80 border border-cyan-400/50 hover:border-yellow-500 transition cursor-pointer';
+        d2.querySelector('button').textContent = 'Selected';
+        d2.querySelector('button').className = 'text-[10px] font-rpg uppercase px-2.5 py-1 rounded bg-cyan-500/20 border border-cyan-400 text-cyan-300 font-bold';
+
+        d1.className = 'flex items-center justify-between p-2 rounded-xl bg-slate-900/50 border border-slate-700/60 hover:border-cyan-400 transition cursor-pointer opacity-75';
+        d1.querySelector('button').textContent = 'Select';
+        d1.querySelector('button').className = 'text-[10px] font-rpg uppercase px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-slate-300 font-bold';
+      }
+    }
+
+    // Chest Open Modal
+    function openChest(tier) {
+      playSfx(720, 'square', 0.25);
+      const modal = document.getElementById('reward-modal');
+      const title = document.getElementById('modal-title');
+      const desc = document.getElementById('modal-desc');
+      
+      title.textContent = `${tier} Chest Terbuka!`;
+      if (tier === 'Epic') {
+        desc.innerHTML = `Selamat! Dari <strong>Epic Chest</strong> Anda memperoleh <span class="text-yellow-400 font-bold">+650 Gold</span> dan <span class="text-cyan-400 font-bold">+45 Crystals</span>.`;
+      } else {
+        desc.innerHTML = `Peti <strong>${tier}</strong> siap dibuka saat reward timer Anda selesai atau di-drop saat eksplorasi!`;
+      }
+
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      playSfx(400, 'sine', 0.15);
+      document.getElementById('reward-modal').classList.add('hidden');
+    }
+
+    function claimPerk(type) {
+      playSfx(880, 'sine', 0.3);
+      alert(`🎉 Fitur ${type} diaktifkan! Pengganda kecepatan reward +25% aktif.`);
+    }
+
+    function handleEnterGame() {
+      playSfx(523.25, 'triangle', 0.4);
+      alert('⚔️ Memasuki Dunia Dungeon Quest! Memulai petualangan...');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
