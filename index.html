@@ -105,21 +105,22 @@
       animation: murasakiFusion 11s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
-    /* 4. Shockwave Blast Wave - Pure GPU Gradient without heavy box-shadow */
-    .hollow-blast {
+    /* 4. Fullscreen Hollow Purple Explosion Burst (1 Layar Penuh, 60 FPS Locked) */
+    .hollow-screen-burst {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: clamp(200px, 40vw, 300px);
-      height: clamp(200px, 40vw, 300px);
-      margin-top: calc(clamp(200px, 40vw, 300px) / -2);
-      margin-left: calc(clamp(200px, 40vw, 300px) / -2);
-      border-radius: 50%;
-      background: radial-gradient(circle, #ffffff 0%, rgba(232, 121, 249, 0.85) 25%, rgba(147, 51, 234, 0.6) 55%, transparent 75%);
+      inset: 0;
       pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, 
+        #ffffff 0%, 
+        rgba(240, 171, 252, 0.96) 15%, 
+        rgba(192, 38, 211, 0.90) 32%, 
+        rgba(126, 34, 206, 0.85) 55%, 
+        rgba(76, 29, 149, 0.80) 75%, 
+        rgba(15, 4, 32, 0.92) 100%
+      );
       backface-visibility: hidden;
-      will-change: transform, opacity;
-      animation: blastWave 11s cubic-bezier(0.1, 0.9, 0.2, 1) infinite;
+      will-change: opacity, transform;
+      animation: screenBurst 11s ease-out infinite;
     }
 
     /* 5. Singularity Distortion Ring */
@@ -137,17 +138,6 @@
       backface-visibility: hidden;
       will-change: transform, opacity;
       animation: ringExplosion 11s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
-    }
-
-    /* 6. Flash Explosion Overlay */
-    .hollow-flash {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(216, 180, 254, 0.25) 45%, transparent 80%);
-      pointer-events: none;
-      backface-visibility: hidden;
-      will-change: opacity;
-      animation: screenFlash 11s ease-out infinite;
     }
 
     /* --- ANIME-ACCURATE ANIMATION KEYFRAMES (Ultra-Smooth Mobile Optimized) --- */
@@ -292,26 +282,28 @@
       }
     }
 
-    @keyframes blastWave {
-      0%, 63% {
-        transform: translate3d(0, 0, 0) scale(0);
+    /* Full-Screen Burst Keyframe (1 Layar Penuh, 60 FPS Locked) */
+    @keyframes screenBurst {
+      0%, 64% {
         opacity: 0;
+        transform: scale(0.92);
       }
       64.5% {
-        transform: translate3d(0, 0, 0) scale(0.2);
-        opacity: 0.9;
+        /* MELEDAK 1 FULL LAYAR! */
+        opacity: 0.96;
+        transform: scale(1);
       }
-      67.5% {
-        transform: translate3d(0, 0, 0) scale(2.0);
-        opacity: 0.85;
+      66.5% {
+        opacity: 0.88;
+        transform: scale(1.02);
       }
-      73% {
-        transform: translate3d(0, 0, 0) scale(3.2);
-        opacity: 0.15;
+      70.5% {
+        opacity: 0.40;
+        transform: scale(1.04);
       }
-      78%, 100% {
-        transform: translate3d(0, 0, 0) scale(3.8);
+      75.5%, 100% {
         opacity: 0;
+        transform: scale(1.06);
       }
     }
 
@@ -333,32 +325,17 @@
         transform: translate3d(0, 0, 0) scale(0.25) rotate(340deg);
         opacity: 1;
       }
-      /* Eruption blast ring */
+      /* Eruption blast ring across screen */
       64.5% {
-        transform: translate3d(0, 0, 0) scale(2.0) rotate(440deg);
-        opacity: 0.9;
+        transform: translate3d(0, 0, 0) scale(1.8) rotate(440deg);
+        opacity: 1;
       }
       72% {
-        transform: translate3d(0, 0, 0) scale(3.2) rotate(560deg);
+        transform: translate3d(0, 0, 0) scale(4.5) rotate(560deg);
         opacity: 0;
       }
       76%, 100% {
-        transform: translate3d(0, 0, 0) scale(3.5) rotate(600deg);
-        opacity: 0;
-      }
-    }
-
-    @keyframes screenFlash {
-      0%, 63.5% {
-        opacity: 0;
-      }
-      64.5% {
-        opacity: 0.8;
-      }
-      68% {
-        opacity: 0.25;
-      }
-      73%, 100% {
+        transform: translate3d(0, 0, 0) scale(5.0) rotate(600deg);
         opacity: 0;
       }
     }
@@ -444,8 +421,7 @@
     <div class="orb orb-blue"></div>
     <div class="orb orb-purple-core"></div>
     <div class="hollow-ring"></div>
-    <div class="hollow-blast"></div>
-    <div class="hollow-flash"></div>
+    <div class="hollow-screen-burst"></div>
   </div>
 
   <!-- ==================== KONFIGURASI SUPABASE BANNER ==================== -->
