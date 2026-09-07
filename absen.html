@@ -24,9 +24,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: radial-gradient(ellipse at 50% 50%, #17042c 0%, #0c0218 35%, #05000a 70%, #010003 100%);
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             overflow-x: hidden;
             overflow-y: auto;
@@ -34,36 +32,30 @@
             padding: 20px 10px;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         /* Animasi Melayang (Floating) secara vertikal */
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-16px); }
+            50% { transform: translateY(-14px); }
             100% { transform: translateY(0px); }
         }
 
         .container {
-            animation: float 4s ease-in-out infinite;
+            animation: float 4.5s ease-in-out infinite;
             position: relative;
             z-index: 10;
         }
 
-        /* Desain Kartu 3D Glassmorphism */
+        /* Desain Kartu 3D Glassmorphism - Hollow Purple Aura */
         .card {
             width: 380px;
             max-width: 92vw;
             min-height: 560px;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(22, 9, 42, 0.72);
             border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(216, 180, 254, 0.28);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 45px rgba(168, 85, 247, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -78,21 +70,21 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            background: linear-gradient(135deg, #f43f5e 0%, #9333ea 50%, #06b6d4 100%);
             margin-bottom: 12px;
-            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.4);
+            box-shadow: 0 10px 28px rgba(147, 51, 234, 0.5);
             transform: translateZ(70px);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #0b1e36;
+            color: #ffffff;
         }
 
         .time-display {
             font-size: 2.8rem;
             font-weight: 800;
             letter-spacing: 1px;
-            text-shadow: 0 5px 20px rgba(0, 242, 254, 0.4);
+            text-shadow: 0 5px 25px rgba(192, 132, 252, 0.6);
             transform: translateZ(55px);
             font-variant-numeric: tabular-nums;
             margin: 0;
@@ -105,7 +97,7 @@
             margin-bottom: 18px;
             transform: translateZ(40px);
             font-weight: 500;
-            color: #cbd5e1;
+            color: #e2e8f0;
         }
 
         .greeting {
@@ -114,13 +106,13 @@
             margin-bottom: 22px;
             line-height: 1.4;
             font-size: 0.95rem;
-            color: #e2e8f0;
+            color: #e9d5ff;
         }
 
         .session-badge {
-            background: rgba(0, 242, 254, 0.15);
-            color: #38ef7d;
-            border: 1px solid rgba(56, 239, 125, 0.3);
+            background: rgba(168, 85, 247, 0.2);
+            color: #d8b4fe;
+            border: 1px solid rgba(192, 132, 252, 0.4);
             padding: 4px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
@@ -161,28 +153,28 @@
         }
 
         .input-field:focus {
-            border-color: #38ef7d;
-            box-shadow: 0 0 15px rgba(56, 239, 125, 0.3), inset 0 2px 4px rgba(0,0,0,0.2);
-            background: rgba(15, 23, 42, 0.8);
+            border-color: #c084fc;
+            box-shadow: 0 0 16px rgba(192, 132, 252, 0.4), inset 0 2px 4px rgba(0,0,0,0.2);
+            background: rgba(15, 7, 30, 0.85);
         }
 
         .input-field::placeholder {
             color: rgba(255, 255, 255, 0.4);
         }
 
-        /* Tombol Absen 3D */
+        /* Tombol Absen 3D - Hollow Purple */
         .btn-absen {
             width: 100%;
             padding: 15px 30px;
             font-size: 1.05rem;
             font-weight: 800;
             letter-spacing: 1px;
-            color: #0b2e1a;
-            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: #ffffff;
+            background: linear-gradient(135deg, #f43f5e 0%, #9333ea 50%, #06b6d4 100%);
             border: none;
             border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 12px 25px rgba(56, 239, 125, 0.35);
+            box-shadow: 0 12px 28px rgba(147, 51, 234, 0.45);
             transform: translateZ(65px);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
@@ -193,8 +185,8 @@
 
         .btn-absen:hover {
             transform: translateZ(85px) scale(1.03);
-            box-shadow: 0 18px 35px rgba(56, 239, 125, 0.55);
-            color: #041f10;
+            box-shadow: 0 18px 38px rgba(232, 121, 249, 0.65);
+            color: #ffffff;
         }
 
         .btn-absen:disabled {
@@ -207,46 +199,85 @@
         .security-badge {
             transform: translateZ(30px);
             font-size: 0.72rem;
-            color: #64748b;
+            color: #94a3b8;
             margin-top: 18px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        /* Bola cahaya background yang bergerak-gerak */
+        /* Floating Orbs - Jujutsu Kaisen: Hollow Purple (Aka + Ao = Murasaki) */
         .orb {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
-            filter: blur(85px);
-            z-index: 1;
             pointer-events: none;
         }
-        .orb-1 {
-            width: 320px;
-            height: 320px;
-            background: #ff007f;
+        /* Aka: Cursed Technique Reversal (Red) */
+        .orb-red {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(255, 0, 76, 0.75) 0%, rgba(225, 29, 72, 0.45) 45%, rgba(136, 19, 55, 0.15) 70%, transparent 100%);
+            filter: blur(85px);
             top: 10%;
-            left: 15%;
-            animation: floatOrb1 7s ease-in-out infinite alternate;
+            left: 5%;
+            z-index: 1;
+            animation: floatRed 7s ease-in-out infinite alternate;
         }
-        .orb-2 {
-            width: 380px;
-            height: 380px;
-            background: #00b4db;
+        /* Ao: Limitless (Blue) */
+        .orb-blue {
+            width: 440px;
+            height: 440px;
+            background: radial-gradient(circle, rgba(0, 180, 255, 0.8) 0%, rgba(0, 102, 255, 0.5) 45%, rgba(30, 58, 138, 0.15) 70%, transparent 100%);
+            filter: blur(85px);
             bottom: 10%;
-            right: 15%;
-            animation: floatOrb2 9s ease-in-out infinite alternate-reverse;
+            right: 5%;
+            z-index: 1;
+            animation: floatBlue 8s ease-in-out infinite alternate-reverse;
+        }
+        /* Murasaki: Hollow Purple Core Singularity */
+        .orb-purple-core {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(232, 121, 249, 0.6) 0%, rgba(168, 85, 247, 0.5) 30%, rgba(107, 33, 168, 0.35) 60%, transparent 85%);
+            filter: blur(75px);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            animation: pulsePurple 4s ease-in-out infinite alternate;
+        }
+        /* Shockwave Singularity Ring */
+        .hollow-ring {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            border: 2px solid rgba(192, 132, 252, 0.25);
+            box-shadow: 0 0 80px rgba(168, 85, 247, 0.35), inset 0 0 50px rgba(217, 70, 239, 0.25);
+            pointer-events: none;
+            z-index: 1;
+            animation: ringPulse 6s ease-in-out infinite;
         }
 
-        @keyframes floatOrb1 {
+        @keyframes floatRed {
             0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(40px) scale(1.15); }
+            100% { transform: translateY(40px) scale(1.1); }
         }
-
-        @keyframes floatOrb2 {
+        @keyframes floatBlue {
             0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(-50px) scale(1.1); }
+            100% { transform: translateY(-40px) scale(1.12); }
+        }
+        @keyframes pulsePurple {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
+        @keyframes ringPulse {
+            0% { transform: translate(-50%, -50%) scale(0.95) rotate(0deg); opacity: 0.4; }
+            50% { transform: translate(-50%, -50%) scale(1.1) rotate(180deg); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(0.95) rotate(360deg); opacity: 0.4; }
         }
 
         /* Status States (Success, Locked, Error, Loading) */
@@ -351,9 +382,11 @@
 </head>
 <body>
 
-    <!-- Dekorasi Latar Belakang Orb Cahaya 3D -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <!-- Background Hollow Purple: Aka (Red) + Ao (Blue) = Murasaki (Purple Singularity) -->
+    <div class="orb orb-red"></div>
+    <div class="orb orb-blue"></div>
+    <div class="orb orb-purple-core"></div>
+    <div class="hollow-ring"></div>
 
     <div class="container">
         <!-- Kartu Absen 3D Glassmorphism dengan Efek Tilt Interaktif -->

@@ -26,19 +26,11 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: radial-gradient(ellipse at 50% 50%, #17042c 0%, #0c0218 35%, #05000a 70%, #010003 100%);
       font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       color: #f8fafc;
       overflow-x: hidden;
       perspective: 1000px;
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
     }
 
     @keyframes float {
@@ -51,91 +43,135 @@
       animation: float 4.5s ease-in-out infinite;
     }
 
-    /* Floating Orbs */
+    /* Floating Orbs - Jujutsu Kaisen: Hollow Purple (Aka + Ao = Murasaki) */
     .orb {
       position: fixed;
       border-radius: 50%;
-      filter: blur(90px);
-      z-index: 0;
       pointer-events: none;
     }
-    .orb-1 {
-      width: 350px;
-      height: 350px;
-      background: #ff007f;
-      top: 5%;
-      left: 10%;
-      animation: floatOrb1 8s ease-in-out infinite alternate;
+    /* Aka: Cursed Technique Reversal (Red) */
+    .orb-red {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 0, 76, 0.75) 0%, rgba(225, 29, 72, 0.45) 45%, rgba(136, 19, 55, 0.15) 70%, transparent 100%);
+      filter: blur(85px);
+      top: 10%;
+      left: 2%;
+      z-index: 0;
+      animation: floatRed 7s ease-in-out infinite alternate;
     }
-    .orb-2 {
-      width: 450px;
-      height: 450px;
-      background: #00b4db;
-      bottom: 5%;
-      right: 10%;
-      animation: floatOrb2 10s ease-in-out infinite alternate-reverse;
+    /* Ao: Limitless (Blue) */
+    .orb-blue {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(0, 180, 255, 0.8) 0%, rgba(0, 102, 255, 0.5) 45%, rgba(30, 58, 138, 0.15) 70%, transparent 100%);
+      filter: blur(85px);
+      top: 15%;
+      right: 2%;
+      z-index: 0;
+      animation: floatBlue 8s ease-in-out infinite alternate-reverse;
     }
-    .orb-3 {
-      width: 280px;
-      height: 280px;
-      background: #11998e;
-      top: 45%;
-      right: 35%;
-      opacity: 0.6;
-      animation: floatOrb1 6s ease-in-out infinite alternate;
+    /* Murasaki: Hollow Purple Core Singularity */
+    .orb-purple-core {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(232, 121, 249, 0.6) 0%, rgba(168, 85, 247, 0.5) 30%, rgba(107, 33, 168, 0.35) 60%, transparent 85%);
+      filter: blur(75px);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      animation: pulsePurple 4s ease-in-out infinite alternate;
+    }
+    /* Shockwave Singularity Ring */
+    .hollow-ring {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      border: 2px solid rgba(192, 132, 252, 0.25);
+      box-shadow: 0 0 80px rgba(168, 85, 247, 0.35), inset 0 0 50px rgba(217, 70, 239, 0.25);
+      pointer-events: none;
+      z-index: 0;
+      animation: ringPulse 6s ease-in-out infinite;
     }
 
-    @keyframes floatOrb1 {
+    @keyframes floatRed {
       0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(50px) scale(1.15); }
+      100% { transform: translateY(50px) scale(1.1); }
     }
-    @keyframes floatOrb2 {
+    @keyframes floatBlue {
       0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-60px) scale(1.1); }
+      100% { transform: translateY(-50px) scale(1.12); }
+    }
+    @keyframes pulsePurple {
+      0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    }
+    @keyframes ringPulse {
+      0% { transform: translate(-50%, -50%) scale(0.95) rotate(0deg); opacity: 0.4; }
+      50% { transform: translate(-50%, -50%) scale(1.1) rotate(180deg); opacity: 0.8; }
+      100% { transform: translate(-50%, -50%) scale(0.95) rotate(360deg); opacity: 0.4; }
     }
 
-    /* Glassmorphism Classes */
+    /* Glassmorphism Classes with Hollow Purple Aura */
     .glass-panel {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: rgba(18, 7, 34, 0.65);
+      border: 1px solid rgba(192, 132, 252, 0.22);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .glass-card-3d {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(22, 9, 42, 0.68);
+      border: 1px solid rgba(216, 180, 254, 0.28);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 45px rgba(168, 85, 247, 0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       transform-style: preserve-3d;
     }
 
-    .btn-3d-emerald {
-      background: linear-gradient(45deg, #11998e, #38ef7d);
-      color: #082414;
+    /* Hollow Purple Action Button (Convergence of Red & Blue) */
+    .btn-3d-hollow {
+      background: linear-gradient(135deg, #f43f5e 0%, #9333ea 50%, #06b6d4 100%);
+      color: #ffffff;
       font-weight: 800;
-      box-shadow: 0 10px 22px rgba(56, 239, 125, 0.35);
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 25px rgba(147, 51, 234, 0.45);
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .btn-3d-emerald:hover {
-      box-shadow: 0 16px 30px rgba(56, 239, 125, 0.55);
+    .btn-3d-hollow:hover {
+      box-shadow: 0 16px 35px rgba(168, 85, 247, 0.7), 0 0 25px rgba(244, 63, 94, 0.4);
       transform: translateY(-2px) scale(1.02);
-      color: #03140a;
+      color: #ffffff;
+    }
+
+    .btn-3d-emerald {
+      background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(168, 85, 247, 0.4);
+      transition: all 0.3s ease;
+    }
+    .btn-3d-emerald:hover {
+      box-shadow: 0 14px 28px rgba(168, 85, 247, 0.65);
+      transform: translateY(-2px) scale(1.02);
     }
 
     .btn-3d-cyan {
-      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-      color: #061c33;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      color: #ffffff;
       font-weight: 700;
-      box-shadow: 0 10px 22px rgba(0, 242, 254, 0.35);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 22px rgba(139, 92, 246, 0.4);
+      transition: all 0.3s ease;
     }
     .btn-3d-cyan:hover {
-      box-shadow: 0 16px 30px rgba(0, 242, 254, 0.55);
+      box-shadow: 0 14px 28px rgba(139, 92, 246, 0.65);
       transform: translateY(-2px) scale(1.02);
-      color: #020e1a;
     }
 
     .custom-scrollbar::-webkit-scrollbar {
@@ -146,20 +182,21 @@
       border-radius: 8px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(168, 85, 247, 0.3);
       border-radius: 8px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(56, 239, 125, 0.5);
+      background: rgba(217, 70, 239, 0.6);
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col relative">
 
-  <!-- Dekorasi Background Orbs Neon 3D -->
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+  <!-- Background Hollow Purple: Aka (Red) + Ao (Blue) = Murasaki (Purple Singularity) -->
+  <div class="orb orb-red"></div>
+  <div class="orb orb-blue"></div>
+  <div class="orb orb-purple-core"></div>
+  <div class="hollow-ring"></div>
 
   <!-- ==================== KONFIGURASI SUPABASE BANNER ==================== -->
   <div id="config-banner" class="relative z-20 bg-slate-900/40 border-b border-white/10 px-6 py-2.5 text-xs flex justify-between items-center text-slate-300 backdrop-blur-md">
@@ -204,8 +241,8 @@
       <div class="card glass-card-3d rounded-3xl p-8 shadow-2xl relative" data-tilt data-tilt-max="12" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
         
         <div class="text-center mb-6" style="transform: translateZ(50px);">
-          <div class="inline-flex p-4 rounded-2xl mb-3 shadow-lg" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #071e36; transform: translateZ(30px);">
-            <i data-lucide="shield-check" class="w-8 h-8"></i>
+          <div class="inline-flex p-4 rounded-2xl mb-3 shadow-lg" style="background: radial-gradient(circle at 35% 35%, #ffffff 0%, #d946ef 35%, #7e22ce 70%, #1e1b4b 100%); color: #ffffff; box-shadow: 0 0 35px rgba(217, 70, 239, 0.7); transform: translateZ(30px);">
+            <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
           </div>
           <h1 class="text-2xl font-extrabold text-white tracking-tight">Login Admin</h1>
         </div>
@@ -218,18 +255,18 @@
             <label class="text-xs font-semibold text-slate-300 block mb-1.5">Email Admin</label>
             <div class="relative">
               <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
-              <input id="login-email" type="email" required autocomplete="off" placeholder="Masukkan email admin..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
+              <input id="login-email" type="email" required autocomplete="off" placeholder="Masukkan email admin..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400 transition" />
             </div>
           </div>
           <div>
             <label class="text-xs font-semibold text-slate-300 block mb-1.5">Password</label>
             <div class="relative">
               <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
-              <input id="login-password" type="password" required autocomplete="new-password" placeholder="Masukkan password..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
+              <input id="login-password" type="password" required autocomplete="new-password" placeholder="Masukkan password..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400 transition" />
             </div>
           </div>
 
-          <button id="btn-login" type="submit" class="w-full btn-3d-emerald py-3 rounded-xl text-xs tracking-wider flex items-center justify-center gap-2 mt-2" style="transform: translateZ(25px);">
+          <button id="btn-login" type="submit" class="w-full btn-3d-hollow py-3 rounded-xl text-xs tracking-wider flex items-center justify-center gap-2 mt-2" style="transform: translateZ(25px);">
             <span>MASUK KE DASHBOARD</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
