@@ -71,7 +71,7 @@
       margin: -210px 0 0 -210px;
       background: radial-gradient(circle, rgba(255, 10, 80, 0.95) 0%, rgba(225, 29, 72, 0.7) 40%, rgba(136, 19, 55, 0.25) 70%, transparent 100%);
       filter: blur(55px);
-      animation: akaCollision 8.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation: akaCollision 11s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
     /* 2. Ao (Limitless: Blue) */
@@ -83,7 +83,7 @@
       margin: -210px 0 0 -210px;
       background: radial-gradient(circle, rgba(0, 195, 255, 0.95) 0%, rgba(0, 110, 255, 0.7) 40%, rgba(30, 58, 138, 0.25) 70%, transparent 100%);
       filter: blur(55px);
-      animation: aoCollision 8.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation: aoCollision 11s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
     /* 3. Murasaki (Hollow Purple Core Singularity) */
@@ -95,7 +95,7 @@
       margin: -230px 0 0 -230px;
       background: radial-gradient(circle, #ffffff 0%, rgba(240, 171, 252, 0.95) 20%, rgba(192, 38, 211, 0.85) 45%, rgba(107, 33, 168, 0.5) 70%, transparent 100%);
       filter: blur(45px);
-      animation: murasakiFusion 8.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation: murasakiFusion 11s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
     /* 4. Shockwave Blast Wave */
@@ -109,7 +109,7 @@
       border-radius: 50%;
       background: radial-gradient(circle, #ffffff 0%, rgba(232, 121, 249, 0.95) 25%, rgba(147, 51, 234, 0.8) 50%, rgba(6, 182, 212, 0.4) 75%, transparent 100%);
       pointer-events: none;
-      animation: blastWave 8.5s cubic-bezier(0.1, 0.9, 0.2, 1) infinite;
+      animation: blastWave 11s cubic-bezier(0.1, 0.9, 0.2, 1) infinite;
     }
 
     /* 5. Singularity Distortion Ring */
@@ -124,7 +124,7 @@
       border: 3px solid rgba(232, 121, 249, 0.7);
       box-shadow: 0 0 50px rgba(168, 85, 247, 0.8), inset 0 0 40px rgba(244, 63, 94, 0.6);
       pointer-events: none;
-      animation: ringExplosion 8.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+      animation: ringExplosion 11s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
     }
 
     /* 6. Flash Explosion Overlay */
@@ -133,198 +133,255 @@
       inset: 0;
       background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.5) 0%, rgba(216, 180, 254, 0.35) 40%, rgba(147, 51, 234, 0.2) 70%, transparent 90%);
       pointer-events: none;
-      animation: screenFlash 8.5s ease-out infinite;
+      animation: screenFlash 11s ease-out infinite;
     }
 
-    /* --- ANIMATION KEYFRAMES --- */
-    /* Red moves to center */
+    /* --- ANIME-ACCURATE ANIMATION KEYFRAMES (11s Loop) --- */
+    /* Red: Long deliberate floating aura chant -> Snap collision -> Fade into Purple */
     @keyframes akaCollision {
-      0%, 18% {
-        transform: translate(-36vw, 0) scale(1);
+      0% {
+        transform: translate(-35vw, 0) scale(1);
         opacity: 0.9;
+        filter: blur(55px);
       }
-      24% {
-        transform: translate(-34vw, 0) scale(1.08);
+      10% {
+        transform: translate(-35vw, -12px) scale(1.08);
+        opacity: 0.95;
+        filter: blur(50px);
+      }
+      20% {
+        transform: translate(-35vw, 8px) scale(0.96);
+        opacity: 0.88;
+        filter: blur(58px);
+      }
+      30% {
+        transform: translate(-35vw, -8px) scale(1.12);
         opacity: 1;
+        filter: blur(48px);
       }
-      42% {
-        transform: translate(-6vw, 0) scale(0.9);
+      38% {
+        /* Anticipation pullback before the sudden snap */
+        transform: translate(-37vw, 0) scale(1.16);
         opacity: 1;
+        filter: blur(45px);
       }
-      48% {
-        transform: translate(0, 0) scale(0.55);
-        opacity: 0.8;
+      /* "Kyoshiki: Murasaki!" Sudden High-Speed Magnetic Snap! */
+      43% {
+        transform: translate(-14vw, 0) scale(1.0);
+        opacity: 1;
+        filter: blur(40px);
       }
-      52% {
-        transform: translate(0, 0) scale(0.2);
+      47% {
+        /* Violent Center Collision! */
+        transform: translate(0, 0) scale(0.6);
+        opacity: 0.9;
+        filter: blur(35px);
+      }
+      50% {
+        /* Merged completely into Purple */
+        transform: translate(0, 0) scale(0.15);
         opacity: 0;
       }
-      53%, 76% {
+      51%, 82% {
         transform: translate(0, 0) scale(0);
         opacity: 0;
       }
-      82% {
-        transform: translate(-36vw, 0) scale(0.5);
+      /* Reappearing softly at left for next chant */
+      88% {
+        transform: translate(-35vw, 0) scale(0.6);
         opacity: 0;
       }
-      92%, 100% {
-        transform: translate(-36vw, 0) scale(1);
+      96%, 100% {
+        transform: translate(-35vw, 0) scale(1);
         opacity: 0.9;
+        filter: blur(55px);
       }
     }
 
-    /* Blue moves to center */
+    /* Blue: Long deliberate floating aura chant -> Snap collision -> Fade into Purple */
     @keyframes aoCollision {
-      0%, 18% {
-        transform: translate(36vw, 0) scale(1);
+      0% {
+        transform: translate(35vw, 0) scale(1);
         opacity: 0.9;
+        filter: blur(55px);
       }
-      24% {
-        transform: translate(34vw, 0) scale(1.08);
+      10% {
+        transform: translate(35vw, 12px) scale(1.08);
+        opacity: 0.95;
+        filter: blur(50px);
+      }
+      20% {
+        transform: translate(35vw, -8px) scale(0.96);
+        opacity: 0.88;
+        filter: blur(58px);
+      }
+      30% {
+        transform: translate(35vw, 8px) scale(1.12);
         opacity: 1;
+        filter: blur(48px);
       }
-      42% {
-        transform: translate(6vw, 0) scale(0.9);
+      38% {
+        /* Anticipation pullback before the sudden snap */
+        transform: translate(37vw, 0) scale(1.16);
         opacity: 1;
+        filter: blur(45px);
       }
-      48% {
-        transform: translate(0, 0) scale(0.55);
-        opacity: 0.8;
+      /* Sudden High-Speed Magnetic Snap! */
+      43% {
+        transform: translate(14vw, 0) scale(1.0);
+        opacity: 1;
+        filter: blur(40px);
       }
-      52% {
-        transform: translate(0, 0) scale(0.2);
+      47% {
+        /* Violent Center Collision! */
+        transform: translate(0, 0) scale(0.6);
+        opacity: 0.9;
+        filter: blur(35px);
+      }
+      50% {
+        /* Merged completely into Purple */
+        transform: translate(0, 0) scale(0.15);
         opacity: 0;
       }
-      53%, 76% {
+      51%, 82% {
         transform: translate(0, 0) scale(0);
         opacity: 0;
       }
-      82% {
-        transform: translate(36vw, 0) scale(0.5);
+      /* Reappearing softly at right for next chant */
+      88% {
+        transform: translate(35vw, 0) scale(0.6);
         opacity: 0;
       }
-      92%, 100% {
-        transform: translate(36vw, 0) scale(1);
+      96%, 100% {
+        transform: translate(35vw, 0) scale(1);
         opacity: 0.9;
+        filter: blur(55px);
       }
     }
 
-    /* Murasaki (Purple) fusion, compression & detonation */
+    /* Murasaki (Purple): Emerges on collision -> High-speed vortex -> Singularity pause -> DETONATION */
     @keyframes murasakiFusion {
       0%, 42% {
         transform: scale(0) rotate(0deg);
         opacity: 0;
       }
+      /* Collision begins! */
       46% {
         transform: scale(0.4) rotate(45deg);
         opacity: 0.7;
         filter: blur(40px);
       }
-      52% {
-        transform: scale(1.15) rotate(120deg);
+      /* Violent churning purple vortex */
+      51% {
+        transform: scale(1.25) rotate(140deg);
         opacity: 1;
         filter: blur(35px);
       }
-      58% {
-        transform: scale(0.9) rotate(220deg);
+      57% {
+        transform: scale(1.0) rotate(260deg);
         opacity: 1;
         filter: blur(28px);
       }
-      64% {
-        transform: scale(0.35) rotate(340deg);
+      /* Gravitational compression into hyper-dense singularity point */
+      62% {
+        transform: scale(0.28) rotate(380deg);
         opacity: 1;
-        filter: blur(12px);
+        filter: blur(10px);
+        box-shadow: 0 0 60px #ffffff, 0 0 120px #e879f9;
       }
-      67% {
-        transform: scale(3.2) rotate(420deg);
+      /* DETONATION! Bang! */
+      64.5% {
+        transform: scale(3.5) rotate(460deg);
         opacity: 1;
-        filter: blur(60px);
+        filter: blur(65px);
       }
-      73% {
-        transform: scale(5.5) rotate(500deg);
-        opacity: 0.3;
-        filter: blur(90px);
+      71% {
+        transform: scale(6.0) rotate(540deg);
+        opacity: 0.25;
+        filter: blur(95px);
       }
-      78%, 100% {
-        transform: scale(6) rotate(540deg);
+      76%, 100% {
+        transform: scale(7) rotate(600deg);
         opacity: 0;
-        filter: blur(100px);
+        filter: blur(110px);
       }
     }
 
     /* Blast shockwave explosion */
     @keyframes blastWave {
-      0%, 65% {
+      0%, 63% {
         transform: scale(0);
         opacity: 0;
       }
-      66% {
+      64.5% {
         transform: scale(0.2);
         opacity: 1;
       }
-      69% {
-        transform: scale(2.8);
-        opacity: 0.9;
-        box-shadow: 0 0 100px rgba(232, 121, 249, 0.9);
+      67.5% {
+        transform: scale(3.2);
+        opacity: 0.95;
+        box-shadow: 0 0 120px rgba(232, 121, 249, 1);
       }
-      74% {
-        transform: scale(6.0);
-        opacity: 0.2;
+      73% {
+        transform: scale(6.5);
+        opacity: 0.18;
       }
       78%, 100% {
-        transform: scale(7.5);
+        transform: scale(8.0);
         opacity: 0;
       }
     }
 
     /* Singularity ring distortion and eruption */
     @keyframes ringExplosion {
-      0%, 44% {
+      0%, 45% {
         transform: scale(0) rotate(0deg);
         opacity: 0;
       }
-      48% {
-        transform: scale(1.3) rotate(90deg);
-        opacity: 0.6;
+      49% {
+        transform: scale(1.4) rotate(90deg);
+        opacity: 0.65;
       }
-      58% {
-        transform: scale(0.8) rotate(200deg);
+      57% {
+        transform: scale(0.85) rotate(220deg);
         opacity: 0.9;
       }
-      64% {
-        transform: scale(0.3) rotate(320deg);
+      /* Compression ring */
+      62% {
+        transform: scale(0.25) rotate(340deg);
         opacity: 1;
-        border-width: 5px;
+        border-width: 6px;
       }
-      67% {
-        transform: scale(2.2) rotate(420deg);
+      /* Eruption blast ring */
+      64.5% {
+        transform: scale(2.4) rotate(440deg);
         opacity: 1;
         border-width: 4px;
-        box-shadow: 0 0 100px rgba(217, 70, 239, 1);
+        box-shadow: 0 0 120px rgba(217, 70, 239, 1);
       }
-      73% {
-        transform: scale(5.2) rotate(540deg);
+      72% {
+        transform: scale(5.8) rotate(560deg);
         opacity: 0;
         border-width: 1px;
       }
       76%, 100% {
-        transform: scale(6) rotate(600deg);
+        transform: scale(6.5) rotate(600deg);
         opacity: 0;
       }
     }
 
     /* Violent flash during explosion */
     @keyframes screenFlash {
-      0%, 65% {
+      0%, 63.5% {
         opacity: 0;
       }
-      67% {
+      64.5% {
         opacity: 1;
       }
-      71% {
-        opacity: 0.35;
+      68% {
+        opacity: 0.4;
       }
-      76%, 100% {
+      73%, 100% {
         opacity: 0;
       }
     }
