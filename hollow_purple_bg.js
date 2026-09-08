@@ -1,15 +1,19 @@
 /**
- * Hollow Purple (Kyoshiki: Murasaki) & 1-Minute Solar System Cycle
+ * Hollow Purple (Kyoshiki: Murasaki) & 1-Minute 3D Solar System with Dimensional Warp Transition
  * 
  * Flow:
- * 1. [0.0s - 4.5s]: Merah & Biru meletup muncul di ujung samping layar, bergerak lurus pelan saling tabrak.
+ * 1. [0.0s - 4.5s]: Merah (kiri) & Biru (kanan) meletup muncul di ujung samping layar, bergerak lurus pelan saling tabrak.
  * 2. [4.5s - 5.2s]: Bertabrakan di tengah -> Melebur jadi bola Ungu (Murasaki) masif & terkompresi.
- * 3. [5.2s - 7.0s]: MELEDAK 1 LAYAR PENUH! Gelombang ledakan membuka/menguak alam semesta.
- * 4. [7.0s - 67.0s (1 MENIT)]: Background TATA SURYA BERGERAK 60 FPS AKTIF:
- *    - Matahari bercahaya dengan korona api di pusat.
- *    - Planet-planet (Merkurius, Venus, Bumi + Bulan, Mars, Asteroid Belt, Jupiter, Saturnus + Cincin, Uranus, Neptunus) berotasi mengitari matahari pada orbitnya masing-masing.
- *    - Gugusan bintang berkelap-kelip (twinkling starfield).
- * 5. [66.0s - 67.0s]: Tata surya memudar halus kembali ke ruang gelap.
+ * 3. [5.2s - 7.0s]: MELEDAK 1 LAYAR PENUH! Gelombang ledakan menguak alam semesta.
+ * 4. [7.0s - 64.5s]: Background TATA SURYA 3D REALISTIK BERGERAK (Sesuai Gambar Referensi):
+ *    - Matahari besar menyala dengan korona api dan tekstur magma.
+ *    - Garis orbit putih tegas melengkung 3D tilted mengitari matahari.
+ *    - Planet 3D shaded (Bumi bersamudra & berawan, Jupiter bergaris di latar depan, Saturnus bercincin, Mars, Venus, Merkurius, Uranus, Neptunus).
+ *    - Bintang-bintang kosmik berkilau & debu nebula.
+ * 5. [64.5s - 67.0s]: ANIMASI TRANSISI DIMENSIONAL (Space-Time Warp & Rift):
+ *    - Garis orbit memancarkan petir energi kutukan ungu.
+ *    - Planet & bintang tertarik melesat cepat membentuk pusaran distorsi ruang-waktu.
+ *    - Kilatan petir merah di kiri & biru di kanan merobek alam semesta menuju awal siklus.
  * 6. Loop kembali ke awal (Merah & Biru meletup muncul lagi).
  * 
  * Performance: 60 FPS Locked on Android/Mobile using Hardware-Accelerated 2D Canvas.
@@ -60,39 +64,29 @@
   let prevCycle = -1;
 
   // ========================================================
-  // SOLAR SYSTEM DATA & PARTICLES
+  // SOLAR SYSTEM DATA & PARTICLES (Reference Image Accurate)
   // ========================================================
-  const STAR_COUNT = 130;
+  const STAR_COUNT = 160;
   const stars = Array.from({ length: STAR_COUNT }, () => ({
     xRatio: Math.random(),
     yRatio: Math.random(),
-    radius: 0.6 + Math.random() * 1.5,
-    baseAlpha: 0.25 + Math.random() * 0.65,
-    speed: 1.5 + Math.random() * 3.0,
+    radius: 0.7 + Math.random() * 1.8,
+    baseAlpha: 0.3 + Math.random() * 0.65,
+    speed: 1.5 + Math.random() * 3.5,
     phase: Math.random() * Math.PI * 2
   }));
 
-  // Planet definitions (orbital speeds, sizes, colors)
+  // Realistic Planets matching user's reference image
   const planets = [
-    { name: 'Merkurius', distRatio: 0.12, radius: 3.2, speed: 0.55, color: '#d6d3d1', glow: 'rgba(214, 211, 209, 0.4)', initialAngle: 0.4 },
-    { name: 'Venus', distRatio: 0.18, radius: 4.8, speed: 0.38, color: '#fde047', glow: 'rgba(253, 224, 71, 0.4)', initialAngle: 2.1 },
-    { name: 'Bumi', distRatio: 0.25, radius: 5.5, speed: 0.28, color: '#38bdf8', glow: 'rgba(56, 189, 248, 0.5)', initialAngle: 4.5, hasMoon: true },
-    { name: 'Mars', distRatio: 0.32, radius: 4.0, speed: 0.21, color: '#f87171', glow: 'rgba(248, 113, 113, 0.4)', initialAngle: 1.2 },
-    { name: 'Jupiter', distRatio: 0.46, radius: 11.5, speed: 0.12, color: '#fed7aa', glow: 'rgba(254, 215, 170, 0.4)', initialAngle: 3.6, hasBands: true },
-    { name: 'Saturnus', distRatio: 0.60, radius: 9.2, speed: 0.08, color: '#fef08a', glow: 'rgba(254, 240, 138, 0.35)', initialAngle: 5.2, hasRings: true },
-    { name: 'Uranus', distRatio: 0.72, radius: 6.8, speed: 0.055, color: '#67e8f9', glow: 'rgba(103, 232, 249, 0.4)', initialAngle: 0.9 },
-    { name: 'Neptunus', distRatio: 0.84, radius: 6.5, speed: 0.042, color: '#60a5fa', glow: 'rgba(96, 165, 250, 0.4)', initialAngle: 2.8 }
+    { name: 'Merkurius', distRatio: 0.14, radius: 4.2, speed: 0.52, color: '#d6d3d1', glow: 'rgba(214, 211, 209, 0.4)', initialAngle: 0.8 },
+    { name: 'Venus', distRatio: 0.22, radius: 6.2, speed: 0.36, color: '#fef08a', glow: 'rgba(254, 240, 138, 0.4)', initialAngle: 2.4 },
+    { name: 'Bumi', distRatio: 0.31, radius: 8.5, speed: 0.25, color: '#1d4ed8', glow: 'rgba(56, 189, 248, 0.6)', initialAngle: 4.2, isEarth: true },
+    { name: 'Mars', distRatio: 0.41, radius: 5.8, speed: 0.19, color: '#ea580c', glow: 'rgba(234, 88, 12, 0.4)', initialAngle: 5.7 },
+    { name: 'Jupiter', distRatio: 0.56, radius: 17.0, speed: 0.11, color: '#e7dfd5', glow: 'rgba(254, 215, 170, 0.45)', initialAngle: 3.1, isJupiter: true },
+    { name: 'Saturnus', distRatio: 0.72, radius: 12.0, speed: 0.075, color: '#fef08a', glow: 'rgba(254, 240, 138, 0.35)', initialAngle: 1.5, hasRings: true },
+    { name: 'Uranus', distRatio: 0.86, radius: 8.8, speed: 0.05, color: '#67e8f9', glow: 'rgba(103, 232, 249, 0.4)', initialAngle: 0.4 },
+    { name: 'Neptunus', distRatio: 0.98, radius: 8.2, speed: 0.038, color: '#3b82f6', glow: 'rgba(59, 130, 246, 0.4)', initialAngle: 2.1 }
   ];
-
-  // Asteroid belt particles between Mars & Jupiter
-  const ASTEROID_COUNT = 32;
-  const asteroids = Array.from({ length: ASTEROID_COUNT }, () => ({
-    distRatio: 0.37 + Math.random() * 0.04,
-    angle: Math.random() * Math.PI * 2,
-    speed: 0.14 + Math.random() * 0.05,
-    size: 1.0 + Math.random() * 1.5,
-    alpha: 0.3 + Math.random() * 0.4
-  }));
 
   // ========================================================
   // HOLLOW PURPLE EXPLOSION PARTICLES
@@ -137,7 +131,7 @@
     }
   }
 
-  // Draw Dense High-Intensity Plasma Orb
+  // Draw Dense High-Intensity Plasma Orb (Hollow Purple)
   function drawDenseGlowOrb(x, y, radius, innerColor, midColor, outerColor, alpha = 1.0, isThick = true) {
     if (radius <= 0.1 || alpha <= 0.01) return;
 
@@ -188,6 +182,104 @@
     ctx.fill();
   }
 
+  // Draw 3D Shaded Planet Matching Reference Image
+  function drawPlanet3D(px, py, radius, planet, sunX, sunY, solarAlpha, elapsed, warpDistort = 0) {
+    const dx = sunX - px;
+    const dy = sunY - py;
+    const sunAngle = Math.atan2(dy, dx);
+
+    ctx.save();
+
+    // 1. Atmosphere Glow
+    ctx.beginPath();
+    ctx.arc(px, py, radius * 1.3, 0, Math.PI * 2);
+    ctx.fillStyle = planet.glow.replace(/[\d\.]+\)$/, `${(0.45 * solarAlpha).toFixed(3)})`);
+    ctx.fill();
+
+    // 2. Planet Surface Texture (Clipped Sphere)
+    ctx.beginPath();
+    ctx.arc(px, py, radius, 0, Math.PI * 2);
+    ctx.clip();
+
+    ctx.fillStyle = planet.color;
+    ctx.fillRect(px - radius, py - radius, radius * 2, radius * 2);
+
+    if (planet.isEarth) {
+      // Earth Continents (Green & Brown landmasses)
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath();
+      ctx.arc(px - radius * 0.25, py + radius * 0.15, radius * 0.55, 0, Math.PI * 2);
+      ctx.arc(px + radius * 0.35, py - radius * 0.25, radius * 0.45, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#a16207';
+      ctx.beginPath();
+      ctx.arc(px - radius * 0.1, py + radius * 0.3, radius * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Atmospheric Cloud Swirls
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+      ctx.beginPath();
+      ctx.ellipse(px - radius * 0.1, py - radius * 0.25, radius * 0.75, radius * 0.22, Math.PI / 7, 0, Math.PI * 2);
+      ctx.ellipse(px + radius * 0.15, py + radius * 0.32, radius * 0.65, radius * 0.18, -Math.PI / 8, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (planet.isJupiter) {
+      // Jupiter Atmospheric Bands
+      const bandCount = 6;
+      for (let b = -bandCount; b <= bandCount; b++) {
+        const by = py + (b / bandCount) * radius * 0.9;
+        const bHeight = radius * 0.18;
+        ctx.fillStyle = b % 2 === 0 ? '#9a3412' : '#fed7aa';
+        ctx.fillRect(px - radius, by, radius * 2, bHeight);
+      }
+      // Great Red Spot
+      ctx.fillStyle = '#ea580c';
+      ctx.beginPath();
+      ctx.ellipse(px + radius * 0.28, py + radius * 0.22, radius * 0.3, radius * 0.18, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 3. Photorealistic 3D Spherical Shadow (Facing Sun is lit, opposite is shadowed)
+    const lightOffsetX = Math.cos(sunAngle) * (radius * 0.45);
+    const lightOffsetY = Math.sin(sunAngle) * (radius * 0.45);
+
+    const shadowGrad = ctx.createRadialGradient(
+      px + lightOffsetX,
+      py + lightOffsetY,
+      radius * 0.15,
+      px - lightOffsetX * 0.6,
+      py - lightOffsetY * 0.6,
+      radius * 1.25
+    );
+    shadowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.48)'); // Sun specular reflection
+    shadowGrad.addColorStop(0.42, 'rgba(0, 0, 0, 0)');
+    shadowGrad.addColorStop(0.82, 'rgba(0, 0, 0, 0.82)'); // Day/night terminator
+    shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0.97)'); // Pitch black night
+
+    ctx.fillStyle = shadowGrad;
+    ctx.fillRect(px - radius, py - radius, radius * 2, radius * 2);
+    ctx.restore();
+
+    // 4. Saturn's Rings
+    if (planet.hasRings) {
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.rotate(-Math.PI / 6);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, radius * 2.8, radius * 0.9, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(254, 240, 138, ${(0.85 * solarAlpha).toFixed(3)})`;
+      ctx.lineWidth = 3.2;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.ellipse(0, 0, radius * 2.1, radius * 0.68, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(217, 119, 6, ${(0.55 * solarAlpha).toFixed(3)})`;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
   // Smooth Easing Functions
   function easeInExpo(t) {
     return t === 0 ? 0 : Math.pow(2, 10 * t - 10);
@@ -228,159 +320,212 @@
     const purpleBaseRadius = minDim * 0.42;
     const maxOrbDist = Math.max(width * 0.45, minDim * 0.56);
 
-    // Clear dark background with deep cosmic tone
+    // Clear dark background
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = '#06020e';
     ctx.fillRect(0, 0, width, height);
 
     // Cosmic background vignette
     const bgGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, maxDiag * 0.7);
-    bgGrad.addColorStop(0, '#0f051e');
+    bgGrad.addColorStop(0, '#0d041c');
     bgGrad.addColorStop(0.6, '#06020e');
     bgGrad.addColorStop(1, '#020106');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
     // ========================================================
-    // TATA SURYA LOGIC & RENDERING
+    // TATA SURYA LOGIC (Reference Image Perspective & 1-Minute Run)
     // ========================================================
-    // Solar system emerges during purple explosion (t >= 5.2s) and stays for 1 minute (until 67.0s)
+    // Solar system: Active from t >= 5.2s until 67.0s (60 full seconds).
+    // At t >= 64.5s (last 2.5 seconds), ANIMASI TRANSISI KEMBALI KE HOLLOW PURPLE!
     let solarAlpha = 0;
+    let transitionProgress = 0;
+
     if (t >= 5.2 && t < 7.0) {
-      // Fade in under the explosion flash
       solarAlpha = (t - 5.2) / 1.8;
-    } else if (t >= 7.0 && t < 66.0) {
-      // 100% active and orbiting for nearly a full minute
+    } else if (t >= 7.0 && t < 64.5) {
       solarAlpha = 1.0;
-    } else if (t >= 66.0 && t < 67.0) {
-      // Final 1 second: smooth dissolve to prepare for next cycle
-      solarAlpha = 1.0 - (t - 66.0) / 1.0;
+    } else if (t >= 64.5 && t < 67.0) {
+      // 2.5s Transition Animation back to Hollow Purple!
+      transitionProgress = (t - 64.5) / 2.5; // 0 to 1
+      solarAlpha = Math.max(0, 1.0 - Math.pow(transitionProgress, 1.5));
     }
 
-    if (solarAlpha > 0.01) {
-      // 1. Starfield
+    if (solarAlpha > 0.005) {
+      // 1. Starfield with Cosmic Nebulae
       ctx.globalCompositeOperation = 'screen';
+
+      // Soft nebula gas clouds (matching reference image)
+      const nebGrad1 = ctx.createRadialGradient(width * 0.25, height * 0.35, 10, width * 0.25, height * 0.35, minDim * 0.45);
+      nebGrad1.addColorStop(0, `rgba(148, 163, 184, ${(0.18 * solarAlpha).toFixed(3)})`);
+      nebGrad1.addColorStop(1, 'rgba(15, 23, 42, 0)');
+      ctx.fillStyle = nebGrad1;
+      ctx.fillRect(0, 0, width, height);
+
+      const nebGrad2 = ctx.createRadialGradient(width * 0.75, height * 0.65, 10, width * 0.75, height * 0.65, minDim * 0.40);
+      nebGrad2.addColorStop(0, `rgba(59, 130, 246, ${(0.14 * solarAlpha).toFixed(3)})`);
+      nebGrad2.addColorStop(1, 'rgba(15, 23, 42, 0)');
+      ctx.fillStyle = nebGrad2;
+      ctx.fillRect(0, 0, width, height);
+
+      // Stars
       for (let i = 0; i < STAR_COUNT; i++) {
         const s = stars[i];
-        const sx = s.xRatio * width;
-        const sy = s.yRatio * height;
+        let sx = s.xRatio * width;
+        let sy = s.yRatio * height;
+
+        // Transition warp: stars stretch toward edges as dimensional rift opens
+        if (transitionProgress > 0) {
+          const warpAmt = transitionProgress * 80;
+          sx += (sx - cx) * (transitionProgress * 0.4);
+          sy += (sy - cy) * (transitionProgress * 0.4);
+        }
+
         const twinkle = Math.sin(elapsed * s.speed + s.phase);
-        const sAlpha = Math.max(0, s.baseAlpha + twinkle * 0.3) * solarAlpha;
+        const sAlpha = Math.max(0, s.baseAlpha + twinkle * 0.35) * solarAlpha;
 
         ctx.beginPath();
         ctx.arc(sx, sy, s.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(240, 245, 255, ${sAlpha.toFixed(3)})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${sAlpha.toFixed(3)})`;
         ctx.fill();
       }
 
-      // 2. Solar System Center & Geometry (Elliptical perspective)
-      const maxOrbitX = Math.min(width * 0.44, minDim * 0.48);
-      const maxOrbitY = maxOrbitX * 0.68; // Tilted 3D perspective
+      // 2. Solar System Geometry & Central Sun (Offset & 3D Tilted like image)
+      const sunX = cx + minDim * 0.08;
+      const sunY = cy - minDim * 0.06;
+      const maxOrbitX = Math.min(width * 0.52, minDim * 0.62);
+      const maxOrbitY = maxOrbitX * 0.55; // Elliptical tilt
+      const orbitTilt = -Math.PI * 0.11; // -20 deg angle matching reference photo!
 
-      // Draw Orbit Paths
-      ctx.lineWidth = 1;
+      // 3. Draw Orbit Paths (Crisp, Glowing White 3D Wireframe Tracks)
+      ctx.save();
+      ctx.translate(sunX, sunY);
+      ctx.rotate(orbitTilt);
+
       for (let i = 0; i < planets.length; i++) {
         const p = planets[i];
         const ox = maxOrbitX * p.distRatio;
         const oy = maxOrbitY * p.distRatio;
 
         ctx.beginPath();
-        ctx.ellipse(cx, cy, ox, oy, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${(0.07 * solarAlpha).toFixed(3)})`;
+        ctx.ellipse(0, 0, ox, oy, 0, 0, Math.PI * 2);
+
+        // If in transition phase, orbits turn into crackling purple energy lines!
+        if (transitionProgress > 0) {
+          ctx.strokeStyle = `rgba(217, 70, 239, ${(0.85 * (1 - transitionProgress)).toFixed(3)})`;
+          ctx.lineWidth = 2.5 + Math.random() * 2;
+        } else {
+          // White glowing orbital tracks matching reference picture
+          ctx.strokeStyle = `rgba(255, 255, 255, ${(0.68 * solarAlpha).toFixed(3)})`;
+          ctx.lineWidth = 1.6;
+        }
         ctx.stroke();
       }
+      ctx.restore();
 
-      // Draw Asteroid Belt
-      for (let i = 0; i < ASTEROID_COUNT; i++) {
-        const ast = asteroids[i];
-        ast.angle += ast.speed * 0.008;
-        const ax = cx + Math.cos(ast.angle) * (maxOrbitX * ast.distRatio);
-        const ay = cy + Math.sin(ast.angle) * (maxOrbitY * ast.distRatio);
+      // 4. Large Blazing Sun (Fiery surface & corona like photo)
+      const sunRadius = Math.max(34, minDim * 0.082);
+      const sunPulse = 1 + Math.sin(elapsed * 2.8) * 0.04;
 
-        ctx.beginPath();
-        ctx.arc(ax, ay, ast.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(214, 211, 209, ${(ast.alpha * solarAlpha).toFixed(3)})`;
-        ctx.fill();
-      }
-
-      // 3. Glowing Sun at Center
-      const sunRadius = Math.max(16, minDim * 0.042);
-      const sunPulse = 1 + Math.sin(elapsed * 2.5) * 0.06;
-
-      // Sun Outer Corona
-      const coronaGrad = ctx.createRadialGradient(cx, cy, sunRadius * 0.2, cx, cy, sunRadius * 3.0 * sunPulse);
-      coronaGrad.addColorStop(0, `rgba(254, 240, 138, ${(0.85 * solarAlpha).toFixed(3)})`);
-      coronaGrad.addColorStop(0.35, `rgba(249, 115, 22, ${(0.45 * solarAlpha).toFixed(3)})`);
-      coronaGrad.addColorStop(0.7, `rgba(239, 68, 68, ${(0.18 * solarAlpha).toFixed(3)})`);
-      coronaGrad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+      // Fiery outer glow
+      const coronaGrad = ctx.createRadialGradient(sunX, sunY, sunRadius * 0.3, sunX, sunY, sunRadius * 2.6 * sunPulse);
+      coronaGrad.addColorStop(0, `rgba(255, 255, 220, ${(0.98 * solarAlpha).toFixed(3)})`);
+      coronaGrad.addColorStop(0.3, `rgba(251, 146, 60, ${(0.82 * solarAlpha).toFixed(3)})`);
+      coronaGrad.addColorStop(0.65, `rgba(239, 68, 68, ${(0.42 * solarAlpha).toFixed(3)})`);
+      coronaGrad.addColorStop(1, 'rgba(185, 28, 28, 0)');
       ctx.fillStyle = coronaGrad;
       ctx.beginPath();
-      ctx.arc(cx, cy, sunRadius * 3.0 * sunPulse, 0, Math.PI * 2);
+      ctx.arc(sunX, sunY, sunRadius * 2.6 * sunPulse, 0, Math.PI * 2);
       ctx.fill();
 
-      // Sun Intense Core
-      const sunCoreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, sunRadius);
+      // Granulated Sun molten core
+      const sunCoreGrad = ctx.createRadialGradient(sunX - sunRadius * 0.25, sunY - sunRadius * 0.25, 0, sunX, sunY, sunRadius);
       sunCoreGrad.addColorStop(0, `rgba(255, 255, 255, ${solarAlpha.toFixed(3)})`);
-      sunCoreGrad.addColorStop(0.4, `rgba(254, 240, 138, ${solarAlpha.toFixed(3)})`);
-      sunCoreGrad.addColorStop(0.85, `rgba(245, 158, 11, ${(0.95 * solarAlpha).toFixed(3)})`);
-      sunCoreGrad.addColorStop(1, `rgba(217, 119, 6, ${(0.8 * solarAlpha).toFixed(3)})`);
+      sunCoreGrad.addColorStop(0.28, `rgba(254, 240, 138, ${solarAlpha.toFixed(3)})`);
+      sunCoreGrad.addColorStop(0.62, `rgba(249, 115, 22, ${solarAlpha.toFixed(3)})`);
+      sunCoreGrad.addColorStop(0.92, `rgba(220, 38, 38, ${(0.95 * solarAlpha).toFixed(3)})`);
+      sunCoreGrad.addColorStop(1, `rgba(153, 27, 27, ${(0.85 * solarAlpha).toFixed(3)})`);
       ctx.fillStyle = sunCoreGrad;
       ctx.beginPath();
-      ctx.arc(cx, cy, sunRadius, 0, Math.PI * 2);
+      ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      // 4. Draw Orbiting Planets
+      // 5. Draw 3D Shaded Moving Planets
+      ctx.globalCompositeOperation = 'source-over';
+
       for (let i = 0; i < planets.length; i++) {
         const p = planets[i];
         const ox = maxOrbitX * p.distRatio;
         const oy = maxOrbitY * p.distRatio;
 
-        // Current planetary position along orbit
-        const pAngle = p.initialAngle + elapsed * p.speed;
-        const px = cx + Math.cos(pAngle) * ox;
-        const py = cy + Math.sin(pAngle) * oy;
+        // Angle along tilted ellipse
+        const speedMultiplier = 1 + transitionProgress * 3.5; // Accelerate during transition!
+        const pAngle = p.initialAngle + elapsed * p.speed * speedMultiplier;
 
-        // Planet Atmosphere Glow
+        // Position in tilted 3D space
+        const localX = Math.cos(pAngle) * ox;
+        const localY = Math.sin(pAngle) * oy;
+
+        // Apply orbit tilt matrix
+        const cosT = Math.cos(orbitTilt);
+        const sinT = Math.sin(orbitTilt);
+        const px = sunX + (localX * cosT - localY * sinT);
+        const py = sunY + (localX * sinT + localY * cosT);
+
+        drawPlanet3D(px, py, p.radius, p, sunX, sunY, solarAlpha, elapsed);
+      }
+
+      // ========================================================
+      // TRANSITION ANIMATION: SPACE-TIME WARP & DIMENSIONAL RIFT
+      // ========================================================
+      if (transitionProgress > 0) {
+        ctx.globalCompositeOperation = 'screen';
+
+        // 1. Expanding Purple Gravitational Shockwave
+        const riftRadius = transitionProgress * maxDiag * 0.9;
         ctx.beginPath();
-        ctx.arc(px, py, p.radius * 1.8, 0, Math.PI * 2);
-        ctx.fillStyle = p.glow.replace(/[\d\.]+\)$/, `${(0.45 * solarAlpha).toFixed(3)})`);
-        ctx.fill();
+        ctx.arc(cx, cy, riftRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(217, 70, 239, ${(0.9 * (1 - transitionProgress)).toFixed(3)})`;
+        ctx.lineWidth = 8 * (1 - transitionProgress) + 2;
+        ctx.stroke();
 
-        // Saturn's Rings (drawn behind if in upper orbit half)
-        if (p.hasRings) {
+        // 2. Crackling Lightning at Left (Red - Aka) and Right (Blue - Ao)
+        // Herals the imminent arrival of Aka and Ao!
+        const boltCount = 5;
+        const leftX = cx - maxOrbDist;
+        const rightX = cx + maxOrbDist;
+
+        for (let b = 0; b < boltCount; b++) {
+          // Red Lightning at Left
           ctx.beginPath();
-          ctx.ellipse(px, py, p.radius * 2.5, p.radius * 0.85, Math.PI / 6, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(254, 240, 138, ${(0.6 * solarAlpha).toFixed(3)})`;
-          ctx.lineWidth = 2.2;
+          ctx.moveTo(leftX + (Math.random() - 0.5) * 30, cy + (Math.random() - 0.5) * 60);
+          ctx.lineTo(leftX + (Math.random() - 0.5) * 90, cy + (Math.random() - 0.5) * 120);
+          ctx.strokeStyle = `rgba(255, 45, 85, ${(transitionProgress * 0.9).toFixed(3)})`;
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+
+          // Blue Lightning at Right
+          ctx.beginPath();
+          ctx.moveTo(rightX + (Math.random() - 0.5) * 30, cy + (Math.random() - 0.5) * 60);
+          ctx.lineTo(rightX + (Math.random() - 0.5) * 90, cy + (Math.random() - 0.5) * 120);
+          ctx.strokeStyle = `rgba(0, 210, 255, ${(transitionProgress * 0.9).toFixed(3)})`;
+          ctx.lineWidth = 2.5;
           ctx.stroke();
         }
 
-        // Planet Solid Body
-        ctx.beginPath();
-        ctx.arc(px, py, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-
-        // Earth's Moon
-        if (p.hasMoon) {
-          const moonDist = 11;
-          const moonAngle = elapsed * 2.8;
-          const mx = px + Math.cos(moonAngle) * moonDist;
-          const my = py + Math.sin(moonAngle) * (moonDist * 0.6);
-
-          ctx.beginPath();
-          ctx.arc(mx, my, 1.4, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(226, 232, 240, ${(0.9 * solarAlpha).toFixed(3)})`;
-          ctx.fill();
+        // 3. Dimensional Flash Wipe right at the end of the transition
+        if (transitionProgress > 0.75) {
+          const flashP = (transitionProgress - 0.75) / 0.25;
+          ctx.fillStyle = `rgba(217, 70, 239, ${(flashP * 0.7).toFixed(3)})`;
+          ctx.fillRect(0, 0, width, height);
         }
       }
     }
 
     // ========================================================
-    // HOLLOW PURPLE LOGIC & RENDERING
+    // HOLLOW PURPLE LOGIC & RENDERING (Active t < 7.0s)
     // ========================================================
-    // Active during t < 7.5s (then yields to Solar System for 1 minute)
-    if (t < 7.5) {
+    if (t < 7.0) {
       ctx.globalCompositeOperation = 'screen';
 
       let redX = cx - maxOrbDist;
@@ -449,9 +594,9 @@
           purpleAlpha = 1.0;
         }
 
-      } else if (t < 7.4) {
+      } else if (t < 7.0) {
         // Phase 3: DETONATION! (Cataclysmic Full Screen Blast)
-        const p = (t - 5.2) / 2.2;
+        const p = (t - 5.2) / 1.8;
 
         if (!prevExploded) {
           resetExplosionRays();
@@ -459,18 +604,18 @@
         }
 
         // Kilatan ultraviolet satu layar penuh
-        if (p < 0.30) {
-          flashAlpha = (1 - p / 0.30) * 0.98;
+        if (p < 0.35) {
+          flashAlpha = (1 - p / 0.35) * 0.98;
         }
 
         // Gelombang kejut ledakan ungu masif (Menutupi seluruh layar)
         const blastP = easeOutQuad(p);
         blastRingRadius = blastP * (maxDiag * 0.92);
-        blastRingAlpha = Math.max(0, 1 - p * 1.12);
+        blastRingAlpha = Math.max(0, 1 - p * 1.15);
 
         // Bola ledakan ungu sangat besar & tebal
         purpleRadius = purpleBaseRadius * (1 + p * 4.5);
-        purpleAlpha = Math.max(0, (1 - p * 1.15) * 0.95);
+        purpleAlpha = Math.max(0, (1 - p * 1.18) * 0.95);
 
         // Sinar ledakan berkecepatan tinggi
         for (let i = 0; i < RAY_COUNT; i++) {
