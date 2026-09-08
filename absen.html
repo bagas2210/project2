@@ -22,48 +22,48 @@
             margin: 0;
             min-height: 100vh;
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
-            background: #06020c url('hollow_purple_bg.jpg') no-repeat right center / cover;
-            background-attachment: fixed;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             overflow-x: hidden;
             overflow-y: auto;
-            perspective: 1000px;
-            padding: 20px 20px 20px clamp(20px, 8vw, 130px);
+            perspective: 1000px; /* Perspektif untuk efek 3D ruang */
+            padding: 20px 10px;
         }
 
-        @media (max-width: 768px) {
-            body {
-                justify-content: center;
-                padding: 20px 10px;
-            }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Animasi Melayang (Floating) secara vertikal */
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-14px); }
+            50% { transform: translateY(-16px); }
             100% { transform: translateY(0px); }
         }
 
         .container {
-            animation: float 4.5s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
             position: relative;
             z-index: 10;
         }
 
-        /* Desain Kartu 3D Glassmorphism - Hollow Purple Aura */
+        /* Desain Kartu 3D Glassmorphism */
         .card {
             width: 380px;
             max-width: 92vw;
             min-height: 560px;
-            background: rgba(22, 9, 42, 0.72);
+            background: rgba(255, 255, 255, 0.06);
             border-radius: 28px;
-            border: 1px solid rgba(216, 180, 254, 0.28);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 45px rgba(168, 85, 247, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -78,21 +78,21 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f43f5e 0%, #9333ea 50%, #06b6d4 100%);
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             margin-bottom: 12px;
-            box-shadow: 0 10px 28px rgba(147, 51, 234, 0.5);
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.4);
             transform: translateZ(70px);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
+            color: #0b1e36;
         }
 
         .time-display {
             font-size: 2.8rem;
             font-weight: 800;
             letter-spacing: 1px;
-            text-shadow: 0 5px 25px rgba(192, 132, 252, 0.6);
+            text-shadow: 0 5px 20px rgba(0, 242, 254, 0.4);
             transform: translateZ(55px);
             font-variant-numeric: tabular-nums;
             margin: 0;
@@ -105,7 +105,7 @@
             margin-bottom: 18px;
             transform: translateZ(40px);
             font-weight: 500;
-            color: #e2e8f0;
+            color: #cbd5e1;
         }
 
         .greeting {
@@ -114,13 +114,13 @@
             margin-bottom: 22px;
             line-height: 1.4;
             font-size: 0.95rem;
-            color: #e9d5ff;
+            color: #e2e8f0;
         }
 
         .session-badge {
-            background: rgba(168, 85, 247, 0.2);
-            color: #d8b4fe;
-            border: 1px solid rgba(192, 132, 252, 0.4);
+            background: rgba(0, 242, 254, 0.15);
+            color: #38ef7d;
+            border: 1px solid rgba(56, 239, 125, 0.3);
             padding: 4px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
@@ -161,28 +161,28 @@
         }
 
         .input-field:focus {
-            border-color: #c084fc;
-            box-shadow: 0 0 16px rgba(192, 132, 252, 0.4), inset 0 2px 4px rgba(0,0,0,0.2);
-            background: rgba(15, 7, 30, 0.85);
+            border-color: #38ef7d;
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.3), inset 0 2px 4px rgba(0,0,0,0.2);
+            background: rgba(15, 23, 42, 0.8);
         }
 
         .input-field::placeholder {
             color: rgba(255, 255, 255, 0.4);
         }
 
-        /* Tombol Absen 3D - Hollow Purple */
+        /* Tombol Absen 3D */
         .btn-absen {
             width: 100%;
             padding: 15px 30px;
             font-size: 1.05rem;
             font-weight: 800;
             letter-spacing: 1px;
-            color: #ffffff;
-            background: linear-gradient(135deg, #f43f5e 0%, #9333ea 50%, #06b6d4 100%);
+            color: #0b2e1a;
+            background: linear-gradient(45deg, #11998e, #38ef7d);
             border: none;
             border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 12px 28px rgba(147, 51, 234, 0.45);
+            box-shadow: 0 12px 25px rgba(56, 239, 125, 0.35);
             transform: translateZ(65px);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
@@ -193,8 +193,8 @@
 
         .btn-absen:hover {
             transform: translateZ(85px) scale(1.03);
-            box-shadow: 0 18px 38px rgba(232, 121, 249, 0.65);
-            color: #ffffff;
+            box-shadow: 0 18px 35px rgba(56, 239, 125, 0.55);
+            color: #041f10;
         }
 
         .btn-absen:disabled {
@@ -207,31 +207,46 @@
         .security-badge {
             transform: translateZ(30px);
             font-size: 0.72rem;
-            color: #94a3b8;
+            color: #64748b;
             margin-top: 18px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        /* Ambient Singularity Glow aligned over the artwork's right-side vortex */
-        .singularity-glow {
+        /* Bola cahaya background yang bergerak-gerak */
+        .orb {
             position: absolute;
-            right: 20%;
-            top: 50%;
-            transform: translate(50%, -50%);
-            width: clamp(280px, 35vw, 550px);
-            height: clamp(280px, 35vw, 550px);
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(232, 121, 249, 0.3) 0%, rgba(168, 85, 247, 0.15) 45%, transparent 75%);
-            filter: blur(40px);
+            filter: blur(85px);
+            z-index: 1;
             pointer-events: none;
-            animation: singularityPulse 4.5s ease-in-out infinite alternate;
+        }
+        .orb-1 {
+            width: 320px;
+            height: 320px;
+            background: #ff007f;
+            top: 10%;
+            left: 15%;
+            animation: floatOrb1 7s ease-in-out infinite alternate;
+        }
+        .orb-2 {
+            width: 380px;
+            height: 380px;
+            background: #00b4db;
+            bottom: 10%;
+            right: 15%;
+            animation: floatOrb2 9s ease-in-out infinite alternate-reverse;
         }
 
-        @keyframes singularityPulse {
-            0% { transform: translate(50%, -50%) scale(0.92); opacity: 0.55; }
-            100% { transform: translate(50%, -50%) scale(1.18); opacity: 0.95; }
+        @keyframes floatOrb1 {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(40px) scale(1.15); }
+        }
+
+        @keyframes floatOrb2 {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-50px) scale(1.1); }
         }
 
         /* Status States (Success, Locked, Error, Loading) */
@@ -336,10 +351,9 @@
 </head>
 <body>
 
-    <!-- Ambient Hollow Purple Glowing Singularity Aura over the artwork -->
-    <div style="position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;">
-        <div class="singularity-glow"></div>
-    </div>
+    <!-- Dekorasi Latar Belakang Orb Cahaya 3D -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
     <div class="container">
         <!-- Kartu Absen 3D Glassmorphism dengan Efek Tilt Interaktif -->
