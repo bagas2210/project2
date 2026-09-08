@@ -26,28 +26,12 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: #06020c;
+      background: #06020c url('hollow_purple_bg.jpg') no-repeat right center / cover;
+      background-attachment: fixed;
       font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       color: #f8fafc;
       overflow-x: hidden;
       perspective: 1000px;
-    }
-
-    /* Cinematic Atmospheric Breathing & Pan on Artwork */
-    .hollow-bg-layer {
-      position: fixed;
-      inset: -3%;
-      background: #06020c url('hollow_purple_bg.jpg') no-repeat right center / cover;
-      pointer-events: none;
-      z-index: 0;
-      will-change: transform;
-      animation: jjkCameraDrift 16s ease-in-out infinite alternate;
-    }
-
-    @keyframes jjkCameraDrift {
-      0% { transform: scale(1) translate3d(0, 0, 0); }
-      50% { transform: scale(1.04) translate3d(-1%, -0.6%, 0); }
-      100% { transform: scale(1.02) translate3d(0.8%, 0.4%, 0); }
     }
 
     @keyframes float {
@@ -154,9 +138,6 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col relative">
-
-  <!-- Cinematic Animated Background Artwork -->
-  <div class="hollow-bg-layer"></div>
 
   <!-- Ambient Hollow Purple Glowing Singularity Aura over the artwork -->
   <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -924,7 +905,5 @@
       checkAuthSession();
     });
   </script>
-  <!-- Hollow Purple 60 FPS Particle & Atmospheric Motion Engine -->
-  <script src="hollow_purple_fx.js"></script>
 </body>
 </html>
