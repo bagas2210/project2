@@ -390,12 +390,12 @@
         ctx.fill();
       }
 
-      // 2. Solar System Geometry & Central Sun (Offset & 3D Tilted like image)
-      const sunX = cx + minDim * 0.08;
-      const sunY = cy - minDim * 0.06;
-      const maxOrbitX = Math.min(width * 0.52, minDim * 0.62);
-      const maxOrbitY = maxOrbitX * 0.55; // Elliptical tilt
-      const orbitTilt = -Math.PI * 0.11; // -20 deg angle matching reference photo!
+      // 2. Solar System Geometry & Central Sun (Berada Tepat di Tengah Layar)
+      const sunX = cx;
+      const sunY = cy;
+      const maxOrbitX = Math.min(width * 0.46, minDim * 0.58);
+      const maxOrbitY = maxOrbitX * 0.58; // Symmetrical 3D Elliptical tilt
+      const orbitTilt = -Math.PI * 0.10; // 3D angle
 
       // 3. Draw Orbit Paths (Crisp, Glowing White 3D Wireframe Tracks)
       ctx.save();
