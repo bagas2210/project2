@@ -26,19 +26,11 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: #06020e;
       font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       color: #f8fafc;
       overflow-x: hidden;
       perspective: 1000px;
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
     }
 
     @keyframes float {
@@ -49,49 +41,6 @@
 
     .float-anim {
       animation: float 4.5s ease-in-out infinite;
-    }
-
-    /* Floating Orbs */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(90px);
-      z-index: 0;
-      pointer-events: none;
-    }
-    .orb-1 {
-      width: 350px;
-      height: 350px;
-      background: #ff007f;
-      top: 5%;
-      left: 10%;
-      animation: floatOrb1 8s ease-in-out infinite alternate;
-    }
-    .orb-2 {
-      width: 450px;
-      height: 450px;
-      background: #00b4db;
-      bottom: 5%;
-      right: 10%;
-      animation: floatOrb2 10s ease-in-out infinite alternate-reverse;
-    }
-    .orb-3 {
-      width: 280px;
-      height: 280px;
-      background: #11998e;
-      top: 45%;
-      right: 35%;
-      opacity: 0.6;
-      animation: floatOrb1 6s ease-in-out infinite alternate;
-    }
-
-    @keyframes floatOrb1 {
-      0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(50px) scale(1.15); }
-    }
-    @keyframes floatOrb2 {
-      0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-60px) scale(1.1); }
     }
 
     /* Glassmorphism Classes */
@@ -155,11 +104,6 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col relative">
-
-  <!-- Dekorasi Background Orbs Neon 3D -->
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
 
   <!-- ==================== KONFIGURASI SUPABASE BANNER ==================== -->
   <div id="config-banner" class="relative z-20 bg-slate-900/40 border-b border-white/10 px-6 py-2.5 text-xs flex justify-between items-center text-slate-300 backdrop-blur-md">
@@ -923,5 +867,7 @@
       checkAuthSession();
     });
   </script>
+  <!-- Hollow Purple 60 FPS Background Canvas Animation -->
+  <script src="hollow_purple_bg.js"></script>
 </body>
 </html>
