@@ -1,14 +1,12 @@
 /**
  * Hollow Purple (Kyoshiki: Murasaki) - Full Cycle Canvas Animation Engine
  * 
- * Animation Cycle:
- * 1. Aka (Red) charges on the left, Ao (Blue) charges on the right (Thick, Large, Saturated).
- * 2. Anticipation pull-back.
- * 3. Direct head-on straight-line convergence (NO spinning/swirling).
- * 4. Violent collision at center -> Fuses into Massive Dense Purple (Murasaki) Core.
- * 5. Gravitational compression -> Cataclysmic FULL-SCREEN PURPLE DETONATION!
- * 6. Thick blast waves, high-velocity rays, and blinding ultraviolet flash.
- * 7. Smooth dissipation & seamless loop.
+ * Flow (Sesuai Permintaan):
+ * 1. Pas masuk website, Merah (kiri) dan Biru (kanan) TIDAK gerak-gerak/hover.
+ * 2. Langsung bergerak lurus saling mendekat untuk tabrakan dengan jalan pelan dan mantap.
+ * 3. Bertabrakan di tengah -> Melebur menjadi bola Ungu (Murasaki) yang sangat besar dan tebal.
+ * 4. Kompresi singularitas sesaat -> MELEDAK 1 LAYAR PENUH!
+ * 5. Memudar halus dan kembali ke semula (looping mulus).
  * 
  * Performance: 60 FPS Locked on Android/Mobile using Hardware-Accelerated 2D Canvas.
  */
@@ -50,8 +48,8 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // Animation Cycle Timings (Total: 9.6 seconds)
-  const CYCLE_DURATION = 9.6;
+  // Animation Cycle Timings (Total: 8.8 seconds)
+  const CYCLE_DURATION = 8.8;
   let startTime = performance.now();
 
   // Explosion Debris Rays
@@ -73,26 +71,26 @@
     }
   }
 
-  // Draw Dense High-Intensity Plasma Orb (Lebih Tebal, Lebih Besar)
+  // Draw Dense High-Intensity Plasma Orb (Lebih Tebal, Lebih Besar, Padat)
   function drawDenseGlowOrb(x, y, radius, innerColor, midColor, outerColor, alpha = 1.0, isThick = true) {
     if (radius <= 0.1 || alpha <= 0.01) return;
 
     const a = Math.min(1.0, alpha);
 
     // 1. Giant Outer Radiance Aura
-    const auraGrad = ctx.createRadialGradient(x, y, radius * 0.15, x, y, radius * 1.5);
+    const auraGrad = ctx.createRadialGradient(x, y, radius * 0.15, x, y, radius * 1.55);
     auraGrad.addColorStop(0, midColor.replace('__A__', (a * 0.85).toFixed(3)));
     auraGrad.addColorStop(0.45, outerColor.replace('__A__', (a * 0.55).toFixed(3)));
     auraGrad.addColorStop(1, outerColor.replace('__A__', '0'));
     ctx.fillStyle = auraGrad;
     ctx.beginPath();
-    ctx.arc(x, y, radius * 1.5, 0, Math.PI * 2);
+    ctx.arc(x, y, radius * 1.55, 0, Math.PI * 2);
     ctx.fill();
 
     // 2. Thick Dense Energy Body (Deep Saturation)
     const bodyGrad = ctx.createRadialGradient(x, y, radius * 0.1, x, y, radius);
     bodyGrad.addColorStop(0, midColor.replace('__A__', (a * 0.98).toFixed(3)));
-    bodyGrad.addColorStop(0.65, midColor.replace('__A__', (a * 0.90).toFixed(3)));
+    bodyGrad.addColorStop(0.65, midColor.replace('__A__', (a * 0.92).toFixed(3)));
     bodyGrad.addColorStop(1, outerColor.replace('__A__', '0'));
     ctx.fillStyle = bodyGrad;
     ctx.beginPath();
@@ -101,19 +99,19 @@
 
     // 3. Extra Saturated Inner Plasma Core (Membuat warna merah & ungu sangat padat/tebal)
     if (isThick) {
-      const denseGrad = ctx.createRadialGradient(x, y, 0, x, y, radius * 0.72);
+      const denseGrad = ctx.createRadialGradient(x, y, 0, x, y, radius * 0.75);
       denseGrad.addColorStop(0, innerColor.replace('__A__', (a * 1.0).toFixed(3)));
       denseGrad.addColorStop(0.45, midColor.replace('__A__', (a * 0.98).toFixed(3)));
-      denseGrad.addColorStop(0.85, midColor.replace('__A__', (a * 0.75).toFixed(3)));
+      denseGrad.addColorStop(0.85, midColor.replace('__A__', (a * 0.80).toFixed(3)));
       denseGrad.addColorStop(1, outerColor.replace('__A__', '0'));
       ctx.fillStyle = denseGrad;
       ctx.beginPath();
-      ctx.arc(x, y, radius * 0.72, 0, Math.PI * 2);
+      ctx.arc(x, y, radius * 0.75, 0, Math.PI * 2);
       ctx.fill();
     }
 
     // 4. White-Hot Intense Singularity Center
-    const coreRadius = radius * 0.38;
+    const coreRadius = radius * 0.40;
     const coreGrad = ctx.createRadialGradient(x, y, 0, x, y, coreRadius);
     coreGrad.addColorStop(0, innerColor.replace('__A__', a.toFixed(3)));
     coreGrad.addColorStop(0.55, midColor.replace('__A__', (a * 0.95).toFixed(3)));
@@ -144,17 +142,17 @@
     if (!isTabActive) return;
 
     const elapsed = (now - startTime) / 1000;
-    const t = elapsed % CYCLE_DURATION; // 0 to 9.6 seconds
+    const t = elapsed % CYCLE_DURATION; // 0 to 8.8 seconds
 
     const cx = width * 0.5;
     const cy = height * 0.5;
 
-    // Lebar dan besar yang ditingkatkan secara signifikan
+    // Dimensi orbs (Besar dan Tebal)
     const minDim = Math.min(width, height);
-    const redBaseRadius = minDim * 0.28;      // Lebih besar & tebal
-    const blueBaseRadius = minDim * 0.24;
-    const purpleBaseRadius = minDim * 0.40;    // Sangat besar & tebal
-    const maxOrbDist = minDim * 0.38;
+    const redBaseRadius = minDim * 0.30;       // Sangat besar & tebal
+    const blueBaseRadius = minDim * 0.25;      // Seimbang dengan merah
+    const purpleBaseRadius = minDim * 0.42;    // Masif & tebal
+    const maxOrbDist = minDim * 0.42;          // Jarak mulai dari pinggir
 
     // Clear dark background with deep cosmic tone
     ctx.globalCompositeOperation = 'source-over';
@@ -169,27 +167,25 @@
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    // Switch to Screen blending for vibrant glowing anime energy
+    // Switch to Screen blending for radiant anime energy
     ctx.globalCompositeOperation = 'screen';
 
     // ========================================================
-    // TIMELINE PHASES
+    // TIMELINE PHASES (TANPA GERAK-GERAK / HOVER, JALAN PELAN)
     // ========================================================
-    // Phase 1: 0.0s - 3.0s -> Aka (Left) & Ao (Right) Charge & Hover
-    // Phase 2: 3.0s - 3.4s -> Anticipation Pullback
-    // Phase 3: 3.4s - 4.3s -> High-Speed Head-on Straight-line Collision (NO SPIN)
-    // Phase 4: 4.3s - 5.1s -> Murasaki (Purple) Singularity Fusion & Compression
-    // Phase 5: 5.1s - 7.3s -> CATACLYSMIC FULL SCREEN EXPLOSION!
-    // Phase 6: 7.3s - 9.6s -> Dissipation & Smooth loop back
+    // Phase 1: 0.0s - 4.5s -> Merah & Biru LANGSUNG maju pelan saling tabrak (Lurus)
+    // Phase 2: 4.5s - 5.2s -> Melebur jadi Ungu Masif & Kompresi Singularitas
+    // Phase 3: 5.2s - 7.4s -> CATACLYSMIC FULL SCREEN EXPLOSION!
+    // Phase 4: 7.4s - 8.8s -> Memudar halus & Loop kembali ke awal
     // ========================================================
 
     let redX = cx - maxOrbDist;
-    let redY = cy;
+    let redY = cy; // Tepat di sumbu lurus tanpa goyang
     let redRadius = redBaseRadius;
     let redAlpha = 0;
 
     let blueX = cx + maxOrbDist;
-    let blueY = cy;
+    let blueY = cy; // Tepat di sumbu lurus tanpa goyang
     let blueRadius = blueBaseRadius;
     let blueAlpha = 0;
 
@@ -199,100 +195,71 @@
     let blastRingRadius = 0;
     let blastRingAlpha = 0;
 
-    if (t < 3.0) {
-      // Phase 1: Charge & Hover
-      const fadeIn = Math.min(t / 0.7, 1.0);
-      const hoverA = Math.sin(t * 3.2) * 10;
-      const hoverB = Math.cos(t * 3.2) * 10;
-      const pulseRed = 1 + Math.sin(t * 5.0) * 0.09;
-      const pulseBlue = 1 + Math.cos(t * 5.0) * 0.08;
+    if (t < 4.5) {
+      // Phase 1: Langsung bergerak pelan dan mantap menuju satu sama lain (Lurus tanpa goyang)
+      const p = t / 4.5; // 0 to 1 berjalan selama 4.5 detik (pelan & dramatis)
+      
+      // Gerakan pelan yang halus, sedikit percepatan magnetik saat mendekat
+      const moveProgress = Math.pow(p, 1.25);
+      const currentDist = maxOrbDist * (1 - moveProgress);
 
-      redX = cx - maxOrbDist;
-      redY = cy + hoverA;
-      redRadius = redBaseRadius * pulseRed;
-      redAlpha = fadeIn * 1.0; // Maksimal tebal
-
-      blueX = cx + maxOrbDist;
-      blueY = cy + hoverB;
-      blueRadius = blueBaseRadius * pulseBlue;
-      blueAlpha = fadeIn * 0.95;
-      prevExploded = false;
-
-    } else if (t < 3.4) {
-      // Phase 2: Anticipation Pullback
-      const p = (t - 3.0) / 0.4;
-      const pullDist = maxOrbDist * (1 + 0.10 * Math.sin(p * Math.PI));
-
-      redX = cx - pullDist;
-      redY = cy;
-      redRadius = redBaseRadius * 1.08;
-      redAlpha = 1.0;
-
-      blueX = cx + pullDist;
-      blueY = cy;
-      blueRadius = blueBaseRadius * 1.08;
-      blueAlpha = 1.0;
-
-    } else if (t < 4.3) {
-      // Phase 3: Straight-Line Head-On Convergence (TIDAK BERPUTAR, lurus saling tabrak)
-      const p = (t - 3.4) / 0.9; // 0 to 1
-      const easedP = easeInExpo(p);
-      const currentDist = maxOrbDist * (1 - easedP);
-
-      // Gerakan lurus horizontal head-on tanpa rotasi/swirl
       redX = cx - currentDist;
-      redY = cy;
-      redRadius = redBaseRadius * (1 - p * 0.2);
-      redAlpha = 1.0;
+      redY = cy; // Lurus, tidak goyang / hover
+      redRadius = redBaseRadius;
+      redAlpha = Math.min(1.0, 0.4 + p * 0.6); // Padat penuh
 
       blueX = cx + currentDist;
-      blueY = cy;
-      blueRadius = blueBaseRadius * (1 - p * 0.2);
-      blueAlpha = 1.0;
+      blueY = cy; // Lurus, tidak goyang / hover
+      blueRadius = blueBaseRadius;
+      blueAlpha = Math.min(1.0, 0.4 + p * 0.6); // Padat penuh
 
-      // Ungu mulai membesar tebal di tengah saat merah dan biru bertabrakan
-      purpleRadius = purpleBaseRadius * (0.35 + p * 0.75);
-      purpleAlpha = p * 0.95;
+      // Saat sudah sangat dekat di tengah, warna ungu mulai terbentuk dan membesar
+      if (p > 0.6) {
+        const mergeP = (p - 0.6) / 0.4;
+        purpleRadius = purpleBaseRadius * (0.2 + mergeP * 0.8);
+        purpleAlpha = mergeP * 0.95;
+      }
+      prevExploded = false;
 
-    } else if (t < 5.1) {
-      // Phase 4: Murasaki Fusion & Intense Gravitational Compression
-      const p = (t - 4.3) / 0.8; // 0 to 1
+    } else if (t < 5.2) {
+      // Phase 2: Tabrakan Penuh -> Melebur Menjadi Ungu Masif & Kompresi Singularitas
+      const p = (t - 4.5) / 0.7; // 0 to 1
       redAlpha = 0;
       blueAlpha = 0;
 
-      if (p < 0.65) {
-        // Inti ungu tumbuh membesar tebal dan bergetar hebat
-        const growP = p / 0.65;
-        purpleRadius = purpleBaseRadius * (1.1 + Math.sin(growP * Math.PI) * 0.4);
+      if (p < 0.6) {
+        // Inti ungu membesar sangat tebal di tengah
+        const growP = p / 0.6;
+        purpleRadius = purpleBaseRadius * (1.0 + Math.sin(growP * Math.PI) * 0.35);
         purpleAlpha = 1.0;
       } else {
-        // Kompresi ketat sesaat sebelum meledak
-        const compP = (p - 0.65) / 0.35;
+        // Kompresi sesaat sebelum ledakan
+        const compP = (p - 0.6) / 0.4;
         const pinch = 1.0 - easeInExpo(compP) * 0.72;
         purpleRadius = purpleBaseRadius * pinch;
         purpleAlpha = 1.0;
       }
 
-    } else if (t < 7.3) {
-      // Phase 5: DETONATION! (Cataclysmic Full Screen Blast)
-      const p = (t - 5.1) / 2.2; // 0 to 1
+    } else if (t < 7.4) {
+      // Phase 3: DETONATION! (Cataclysmic Full Screen Blast)
+      const p = (t - 5.2) / 2.2; // 0 to 1
 
       if (!prevExploded) {
         resetExplosionRays();
         prevExploded = true;
       }
 
-      // Blinding full-screen ultraviolet flash
+      // Kilatan ultraviolet satu layar penuh
       if (p < 0.28) {
         flashAlpha = (1 - p / 0.28) * 0.98;
       }
 
-      // Massive Expanding Cataclysmic Blast Ring (Full Screen Cover)
+      // Gelombang kejut ledakan ungu masif (Menutupi seluruh layar)
       const blastP = easeOutQuad(p);
       blastRingRadius = blastP * (maxDiag * 0.88);
       blastRingAlpha = Math.max(0, 1 - p * 1.12);
 
-      // Bola ledakan ungu yang sangat besar & tebal
+      // Bola ledakan ungu sangat besar & tebal
       purpleRadius = purpleBaseRadius * (1 + p * 4.2);
       purpleAlpha = Math.max(0, (1 - p * 1.15) * 0.92);
 
@@ -307,7 +274,7 @@
         const rxEnd = cx + Math.cos(ray.angle) * (ray.dist + ray.length);
         const ryEnd = cy + Math.sin(ray.angle) * (ray.dist + ray.length);
 
-        // Tebal ungu luar
+        // Garis ungu tebal
         ctx.strokeStyle = `rgba(217, 70, 239, ${(ray.alpha * 0.85).toFixed(3)})`;
         ctx.lineWidth = ray.width * 1.4;
         ctx.lineCap = 'round';
@@ -326,7 +293,7 @@
       }
 
     } else {
-      // Phase 6: Dissipation & Rest before loop
+      // Phase 4: Memudar halus dan siap kembali ke semula
       purpleAlpha = 0;
       redAlpha = 0;
       blueAlpha = 0;
@@ -337,7 +304,7 @@
     // DRAW DENSE GLOWING ELEMENTS
     // ========================================================
 
-    // 1. Aka (Red Orb - Lebih Tebal, Lebih Besar, Crimson Pekat)
+    // 1. Aka (Red Orb - Sangat Tebal, Sangat Besar, Crimson Padat)
     if (redAlpha > 0.01) {
       drawDenseGlowOrb(
         redX,
@@ -365,7 +332,7 @@
       );
     }
 
-    // 3. Murasaki (Purple Fusion Orb - Lebih Tebal, Sangat Besar)
+    // 3. Murasaki (Purple Fusion Orb - Sangat Tebal & Masif)
     if (purpleAlpha > 0.01) {
       drawDenseGlowOrb(
         cx,
