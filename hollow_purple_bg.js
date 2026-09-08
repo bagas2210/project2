@@ -181,10 +181,12 @@
 
     // Dimensi orbs (Besar dan Tebal)
     const minDim = Math.min(width, height);
-    const redBaseRadius = minDim * 0.30;       // Sangat besar & tebal
-    const blueBaseRadius = minDim * 0.25;      // Seimbang dengan merah
+    const redBaseRadius = Math.min(minDim * 0.28, width * 0.22);
+    const blueBaseRadius = Math.min(minDim * 0.24, width * 0.19);
     const purpleBaseRadius = minDim * 0.42;    // Masif & tebal
-    const maxOrbDist = minDim * 0.42;          // Jarak mulai dari pinggir
+
+    // Jarak awal dari pusat: berada jauh di ujung kiri dan kanan layar (tidak kedekatan)
+    const maxOrbDist = Math.max(width * 0.45, minDim * 0.56);
 
     // Clear dark background with deep cosmic tone
     ctx.globalCompositeOperation = 'source-over';
