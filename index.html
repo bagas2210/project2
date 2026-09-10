@@ -346,25 +346,6 @@
             <span>Dashboard</span>
           </a>
 
-          <div class="group">
-            <button onclick="toggleSubmenu('submenu-master')" class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition text-left">
-              <div class="flex items-center gap-2.5">
-                <i data-lucide="database" class="w-4 h-4 text-[#00c0ef]"></i>
-                <span>Data Master</span>
-              </div>
-              <i data-lucide="chevron-right" id="arrow-master" class="w-3.5 h-3.5 transition-transform duration-200"></i>
-            </button>
-            <div id="submenu-master" class="hidden bg-[#2c3b41] py-1 pl-9 pr-3 space-y-1 text-[11px]">
-              <a href="#table-section" class="block py-1 text-slate-300 hover:text-white transition">• Data Siswa / Peserta</a>
-              <a href="#table-sessions" class="block py-1 text-slate-300 hover:text-white transition">• Data Kelas / Sesi</a>
-            </div>
-          </div>
-
-          <a href="#table-section" class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition">
-            <i data-lucide="calendar" class="w-4 h-4 text-[#00a65a]"></i>
-            <span>Operasional</span>
-          </a>
-
           <a href="javascript:void(0)" onclick="openCreateSessionModal()" class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition">
             <i data-lucide="clock" class="w-4 h-4 text-[#f39c12]"></i>
             <span>Sesi Absensi</span>
@@ -396,19 +377,13 @@
       <main class="flex-1 p-4 md:p-6 overflow-x-hidden flex flex-col justify-between">
         
         <div>
-          <!-- Content Header: Title & Breadcrumbs -->
+          <!-- Content Header: Title -->
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-4 border-b border-white/15">
             <div>
               <h1 class="text-2xl font-bold text-white tracking-tight flex items-baseline gap-2 drop-shadow-md">
                 Dashboard
                 <small class="text-slate-300 font-normal text-sm">Control panel</small>
               </h1>
-            </div>
-            <div class="text-xs text-slate-300 flex items-center gap-1.5 mt-2 sm:mt-0 font-medium bg-black/40 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm shadow-sm">
-              <i data-lucide="home" class="w-3.5 h-3.5 text-cyan-400"></i>
-              <span>Home</span>
-              <span>&gt;</span>
-              <span class="text-white font-bold">Dashboard</span>
             </div>
           </div>
 
