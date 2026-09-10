@@ -1077,7 +1077,7 @@
         renderAttendances(currentAttendancesList);
         return;
       }
-      const filtered = currentAttendancesList.filter(a => (a.attendee_name || '').toLowerCase().includes(q));
+      const filtered = currentAttendancesList.filter(a => (a.attendee_name || a.full_name || '').toLowerCase().includes(q));
       renderAttendances(filtered);
     }
 
@@ -1114,10 +1114,11 @@
 
       tbody.innerHTML = list.map((a, idx) => {
         const timeStr = new Date(a.checked_in_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const studentName = a.attendee_name || a.full_name || 'Peserta';
         return `
           <tr>
             <td class="font-bold text-slate-500">${idx + 1}</td>
-            <td class="font-bold text-slate-800">${escapeHtml(a.attendee_name || 'Peserta')}</td>
+            <td class="font-bold text-slate-800">${escapeHtml(studentName)}</td>
             <td class="text-slate-600 text-xs">${timeStr} WIB</td>
             <td>
               <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[11px]">
@@ -1403,7 +1404,10 @@
       }
       let csv = 'No,Nama Peserta,Waktu Presensi,Info Perangkat\n';
       currentAttendancesList.forEach((a, i) => {
-        csv += `${i+1},"${a.attendee_name || ''}","${a.checked_in_at || ''}","${a.device_info || ''}"\n`;
+        const name = (a.attendee_name || a.full_name || '').replace(/"/g, '""');
+        const time = a.checked_in_at || '';
+        const device = (a.user_agent || a.device_info || '').replace(/"/g, '""');
+        csv += `${i+1},"${name}","${time}","${device}"\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
