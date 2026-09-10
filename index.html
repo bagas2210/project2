@@ -35,18 +35,18 @@
 
     /* AdminLTE Small Box Card Styles */
     .small-box {
-      border-radius: 4px;
+      border-radius: 6px;
       position: relative;
       display: block;
       margin-bottom: 20px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
       color: #ffffff;
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .small-box:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
     }
     .small-box .inner {
       padding: 14px 16px;
@@ -87,7 +87,7 @@
       color: rgba(255, 255, 255, 0.85);
       display: block;
       z-index: 10;
-      background: rgba(0, 0, 0, 0.15);
+      background: rgba(0, 0, 0, 0.18);
       text-decoration: none;
       font-size: 12px;
       font-weight: 600;
@@ -95,7 +95,7 @@
     }
     .small-box-footer:hover {
       color: #ffffff;
-      background: rgba(0, 0, 0, 0.28);
+      background: rgba(0, 0, 0, 0.32);
     }
 
     /* Colors matching user's reference screenshot */
@@ -108,15 +108,18 @@
     .bg-green-card { background-color: #00a65a !important; }
     .bg-orange-card { background-color: #f39c12 !important; }
 
-    /* AdminLTE Box / Card */
+    /* AdminLTE Box / Card (Translucent Modern Glass for Cosmic Background) */
     .box-admin {
       position: relative;
-      border-radius: 3px;
-      background: #ffffff;
-      border-top: 3px solid #3c8dbc;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 4px solid #3c8dbc;
       margin-bottom: 20px;
       width: 100%;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
     }
     .box-admin.box-primary { border-top-color: #3c8dbc; }
     .box-admin.box-success { border-top-color: #00a65a; }
@@ -276,7 +279,7 @@
   </div>
 
   <!-- ==================== VIEW 2: DASHBOARD ADMINISTRATOR (SESUAI GAMBAR REFERENSI) ==================== -->
-  <div id="view-dashboard" class="hidden flex-1 flex flex-col min-h-screen bg-[#ecf0f5]">
+  <div id="view-dashboard" class="hidden relative z-10 flex-1 flex flex-col min-h-screen bg-black/40 backdrop-blur-[2px]">
     
     <!-- 1. TOP NAVBAR (AdminLTE Style - #3c8dbc) -->
     <header class="bg-[#3c8dbc] text-white h-[50px] flex items-center justify-between sticky top-0 z-30 shadow">
@@ -397,23 +400,23 @@
         </div>
       </aside>
 
-      <!-- MAIN CONTENT (AdminLTE Content Wrapper - #ecf0f5) -->
+      <!-- MAIN CONTENT -->
       <main class="flex-1 p-4 md:p-6 overflow-x-hidden flex flex-col justify-between">
         
         <div>
           <!-- Content Header: Title & Breadcrumbs -->
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-4 border-b border-slate-300">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-4 border-b border-white/15">
             <div>
-              <h1 class="text-2xl font-bold text-slate-800 tracking-tight flex items-baseline gap-2">
+              <h1 class="text-2xl font-bold text-white tracking-tight flex items-baseline gap-2 drop-shadow-md">
                 Dashboard
-                <small class="text-slate-500 font-normal text-sm">Control panel</small>
+                <small class="text-slate-300 font-normal text-sm">Control panel</small>
               </h1>
             </div>
-            <div class="text-xs text-slate-500 flex items-center gap-1.5 mt-2 sm:mt-0 font-medium">
-              <i data-lucide="home" class="w-3.5 h-3.5 text-blue-600"></i>
+            <div class="text-xs text-slate-300 flex items-center gap-1.5 mt-2 sm:mt-0 font-medium bg-black/40 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm shadow-sm">
+              <i data-lucide="home" class="w-3.5 h-3.5 text-cyan-400"></i>
               <span>Home</span>
               <span>&gt;</span>
-              <span class="text-slate-800 font-bold">Dashboard</span>
+              <span class="text-white font-bold">Dashboard</span>
             </div>
           </div>
 
@@ -691,10 +694,10 @@
           </div>
         </div>
 
-        <!-- FOOTER HALAMAN DASHBOARD (AdminLTE Style) -->
-        <footer class="bg-white border-t border-slate-300 py-3 px-4 text-xs text-slate-600 flex flex-col sm:flex-row justify-between items-center gap-2 mt-auto">
+        <!-- FOOTER HALAMAN DASHBOARD -->
+        <footer class="bg-black/50 backdrop-blur-md border-t border-white/10 py-3 px-4 text-xs text-slate-300 flex flex-col sm:flex-row justify-between items-center gap-2 mt-auto rounded-lg">
           <div>
-            <strong>Copyright &copy; 2026 <a href="#" class="text-blue-600 hover:underline">Presensi Siswa Online</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2026 <a href="#" class="text-cyan-400 hover:underline">Presensi Siswa Online</a>.</strong> All rights reserved.
           </div>
           <div class="text-slate-400 font-mono text-[11px]">
             <b>Version</b> 2.0.0
@@ -912,9 +915,9 @@
     function showDashboardView() {
       document.getElementById('view-login').classList.add('hidden');
       document.getElementById('view-dashboard').classList.remove('hidden');
-      document.body.style.backgroundColor = '#ecf0f5';
+      document.body.style.backgroundColor = '#06020e';
       const cvs = document.getElementById('hollowCanvas');
-      if (cvs) cvs.style.display = 'none';
+      if (cvs) cvs.style.display = 'block';
 
       document.getElementById('user-email-display').textContent = currentUser?.email || 'Administrator';
       loadSessions();
