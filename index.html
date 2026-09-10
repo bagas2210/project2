@@ -644,8 +644,8 @@
                     <i data-lucide="sliders" class="w-4 h-4 text-amber-600"></i>
                     Detail Sesi Terpilih
                   </h3>
-                  <span id="active-badge" class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-                    Aktif
+                  <span id="active-badge" class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+                    Belum Dipilih
                   </span>
                 </div>
 
@@ -653,8 +653,8 @@
                   <!-- Nama Sesi -->
                   <div class="bg-slate-50 border rounded p-3">
                     <span class="text-[10px] uppercase font-bold text-slate-400 block">Sesi Terpilih:</span>
-                    <h4 id="active-session-title" class="text-base font-bold text-slate-800 truncate mt-0.5">...</h4>
-                    <p id="active-session-exp" class="text-xs text-slate-500 mt-1">Batas Waktu: -</p>
+                    <h4 id="active-session-title" class="text-base font-bold text-slate-800 truncate mt-0.5">Belum Ada Sesi Dipilih</h4>
+                    <p id="active-session-exp" class="text-xs text-slate-500 mt-1">Silakan klik salah satu sesi di tabel untuk melihat data</p>
                   </div>
 
                   <!-- Tombol Tampilkan QR Code Besar -->
@@ -964,16 +964,11 @@
       if (isDemoMode) {
         sessionsList = JSON.parse(localStorage.getItem('demo_sessions') || '[]');
         renderSessionsTable();
-        if (sessionsList.length > 0) {
-          if (!currentSession || !sessionsList.find(s => s.id === currentSession.id)) {
-            selectSession(sessionsList[0].id);
-          }
+        // Hanya pertahankan seleksi jika sesi yang terpilih masih ada di daftar
+        if (currentSession && sessionsList.find(s => s.id === currentSession.id)) {
+          selectSession(currentSession.id);
         } else {
-          currentSession = null;
-          currentAttendancesList = [];
-          renderAttendances([]);
-          document.getElementById('active-session-title').textContent = 'Belum Ada Sesi';
-          document.getElementById('active-session-exp').textContent = 'Silakan buat sesi baru untuk memulai presensi';
+          deselectCurrentSession();
         }
         updateStatCounters();
         return;
@@ -987,19 +982,30 @@
       if (!error && data) {
         sessionsList = data;
         renderSessionsTable();
-        if (sessionsList.length > 0) {
-          if (!currentSession || !sessionsList.find(s => s.id === currentSession.id)) {
-            selectSession(sessionsList[0].id);
-          }
+        if (currentSession && sessionsList.find(s => s.id === currentSession.id)) {
+          selectSession(currentSession.id);
         } else {
-          currentSession = null;
-          currentAttendancesList = [];
-          renderAttendances([]);
-          document.getElementById('active-session-title').textContent = 'Belum Ada Sesi';
-          document.getElementById('active-session-exp').textContent = 'Silakan buat sesi baru untuk memulai presensi';
+          deselectCurrentSession();
         }
         updateStatCounters();
       }
+    }
+
+    function deselectCurrentSession() {
+      currentSession = null;
+      currentAttendancesList = [];
+      if (realtimeChannel && supabaseClient) {
+        supabaseClient.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+      }
+      document.getElementById('active-session-title').textContent = 'Belum Ada Sesi Dipilih';
+      document.getElementById('active-session-exp').textContent = 'Silakan klik salah satu sesi di tabel untuk melihat data';
+      const badge = document.getElementById('active-badge');
+      if (badge) {
+        badge.textContent = 'Belum Dipilih';
+        badge.className = 'bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase';
+      }
+      renderAttendances([]);
     }
 
     function renderSessionsTable() {
@@ -1018,13 +1024,16 @@
         const safeTitleForArg = escapedTitle.replace(/'/g, "\\'");
         
         return `
-          <tr class="${isSelected ? 'bg-emerald-50 font-bold' : ''}">
+          <tr onclick="selectSession('${s.id}')" class="cursor-pointer transition hover:bg-blue-50/70 ${isSelected ? 'bg-blue-50 border-l-4 border-[#3c8dbc]' : ''}">
             <td>
-              <button onclick="selectSession('${s.id}')" class="text-left font-bold text-slate-800 hover:text-blue-600 block">
+              <span class="font-bold text-slate-800 hover:text-blue-600 block">
                 ${escapedTitle}
-              </button>
+              </span>
+              ${isSelected 
+                ? '<span class="inline-block text-[10px] text-blue-700 font-bold bg-blue-100 px-1.5 py-0.2 rounded mt-0.5">● Terpilih</span>' 
+                : '<span class="inline-block text-[10px] text-slate-400 font-normal">Klik untuk pilih</span>'}
             </td>
-            <td class="text-xs text-slate-500">${expText}</td>
+            <td class="text-xs text-slate-500 whitespace-nowrap">${expText}</td>
             <td class="text-center whitespace-nowrap">
               <button onclick="event.stopPropagation(); selectSession('${s.id}'); openQrModal();" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-[11px] font-semibold mr-1 shadow-sm" title="Lihat QR Code">
                 <i data-lucide="qr-code" class="w-3.5 h-3.5 inline"></i>
@@ -1045,9 +1054,22 @@
 
       renderSessionsTable();
       document.getElementById('active-session-title').textContent = currentSession.title;
+
+      const isExpired = currentSession.expires_at && new Date(currentSession.expires_at) <= new Date();
       document.getElementById('active-session-exp').textContent = currentSession.expires_at 
         ? 'Batas waktu: ' + new Date(currentSession.expires_at).toLocaleString('id-ID')
         : 'Sesi tanpa batas waktu kedaluwarsa';
+
+      const badge = document.getElementById('active-badge');
+      if (badge) {
+        if (isExpired) {
+          badge.textContent = 'Ditutup';
+          badge.className = 'bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase';
+        } else {
+          badge.textContent = 'Aktif';
+          badge.className = 'bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase';
+        }
+      }
 
       await loadAttendances(currentSession.id);
       setupRealtime(currentSession.id);
@@ -1090,8 +1112,24 @@
     }
 
     function renderAttendances(list) {
-      document.getElementById('attendance-count-badge').textContent = `${list.length} Hadir`;
+      const badge = document.getElementById('attendance-count-badge');
       const tbody = document.getElementById('attendance-table-body');
+
+      if (!currentSession) {
+        if (badge) badge.textContent = `0 Hadir`;
+        if (tbody) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4" class="py-10 text-center text-slate-400">
+                Belum ada sesi dipilih. Silakan klik salah satu sesi di tabel Daftar Sesi.
+              </td>
+            </tr>
+          `;
+        }
+        return;
+      }
+
+      if (badge) badge.textContent = `${list.length} Hadir`;
 
       if (list.length === 0) {
         tbody.innerHTML = `
@@ -1123,13 +1161,28 @@
     }
 
     function updateStatCounters() {
-      // 1. Total Hadir Hari Ini
-      const hadirCount = currentAttendancesList.length;
+      // Jika tidak ada sesi yang dipilih atau belum ada sesi tersedia, semua di-set 0
+      if (!currentSession || sessionsList.length === 0) {
+        document.getElementById('stat-hadir-today').textContent = '0';
+        document.getElementById('stat-sessions-active').textContent = '0';
+        document.getElementById('stat-on-time').textContent = '0';
+        document.getElementById('stat-late-permit').textContent = '0';
+        document.getElementById('stat-total-sessions').textContent = sessionsList.length > 0 ? sessionsList.length : '0';
+        document.getElementById('stat-unattended').textContent = '0';
+        document.getElementById('stat-total-students').textContent = '0';
+        document.getElementById('stat-percent').textContent = '0%';
+        return;
+      }
+
+      // Bila ada sesi yang diklik / dipilih:
+      const hadirCount = currentAttendancesList ? currentAttendancesList.length : 0;
+      const isSessionActive = !currentSession.expires_at || new Date(currentSession.expires_at) > new Date();
+
+      // 1. Total Hadir Hari Ini pada sesi terpilih
       document.getElementById('stat-hadir-today').textContent = hadirCount;
 
       // 2. Sesi Aktif
-      const activeSessionsCount = sessionsList.filter(s => !s.expires_at || new Date(s.expires_at) > new Date()).length;
-      document.getElementById('stat-sessions-active').textContent = activeSessionsCount;
+      document.getElementById('stat-sessions-active').textContent = isSessionActive ? '1' : '0';
 
       // 3. Hadir Tepat Waktu
       document.getElementById('stat-on-time').textContent = hadirCount;
@@ -1218,7 +1271,10 @@
     }
 
     function confirmDeleteCurrentSession() {
-      if (!currentSession) return;
+      if (!currentSession) {
+        alert('Silakan pilih salah satu sesi yang ingin dihapus terlebih dahulu.');
+        return;
+      }
       deleteSessionById(currentSession.id, currentSession.title);
     }
 
@@ -1238,6 +1294,16 @@
         return;
       }
 
+      // Hapus data presensi terlebih dahulu untuk mencegah konflik foreign key
+      try {
+        await supabaseClient
+          .from('attendances')
+          .delete()
+          .eq('session_id', sessionId);
+      } catch (err) {
+        console.warn('Attendances cleanup notice:', err);
+      }
+
       const { error } = await supabaseClient
         .from('sessions')
         .delete()
@@ -1253,18 +1319,7 @@
 
     function handleAfterDelete(sessionId) {
       if (currentSession && currentSession.id === sessionId) {
-        currentSession = null;
-        if (realtimeChannel && supabaseClient) {
-          supabaseClient.removeChannel(realtimeChannel);
-          realtimeChannel = null;
-        }
-        if (sessionsList.length > 0) {
-          selectSession(sessionsList[0].id);
-        } else {
-          document.getElementById('active-session-title').textContent = 'Tidak ada sesi';
-          document.getElementById('active-session-exp').textContent = '-';
-          renderAttendances([]);
-        }
+        deselectCurrentSession();
       }
       renderSessionsTable();
       updateStatCounters();
@@ -1296,7 +1351,10 @@
     }
 
     function openQrModal() {
-      if (!currentSession) return;
+      if (!currentSession) {
+        alert('Silakan klik salah satu sesi absensi pada tabel terlebih dahulu.');
+        return;
+      }
       document.getElementById('modal-qr-title').textContent = currentSession.title;
       
       const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
