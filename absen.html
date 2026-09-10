@@ -391,11 +391,8 @@
                 <div class="time-display" id="clock">00:00:00</div>
                 <div class="date-display" id="date">Senin, 1 Jan 2024</div>
 
-                <div class="session-badge" id="session-badge-title">SESI PRESENSI</div>
-
-                <div class="greeting">
-                    <span id="dynamic-greeting" style="font-weight: 700; color: #38ef7d;">Selamat Datang!</span><br>
-                    <span id="form-session-title" style="font-weight: 600;">...</span>
+                <div class="greeting" style="margin-top: 4px; margin-bottom: 20px;">
+                    <span id="dynamic-greeting" style="font-weight: 700; color: #38ef7d; font-size: 1.15rem;">Selamat Datang!</span>
                 </div>
 
                 <div id="submit-error" class="error-toast hidden"></div>
@@ -628,13 +625,17 @@
         function showForm(session) {
             document.getElementById('state-loading').classList.add('hidden');
             document.getElementById('state-form').classList.remove('hidden');
-            document.getElementById('form-session-title').textContent = session.title;
+            
+            const titleEl = document.getElementById('form-session-title');
+            if (titleEl) titleEl.textContent = session.title;
             
             const badgeTitle = document.getElementById('session-badge-title');
-            if (session.expires_at) {
-                badgeTitle.textContent = 'BATAS: ' + new Date(session.expires_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            } else {
-                badgeTitle.textContent = 'SESI PRESENSI AKTIF';
+            if (badgeTitle) {
+                if (session.expires_at) {
+                    badgeTitle.textContent = 'BATAS: ' + new Date(session.expires_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                } else {
+                    badgeTitle.textContent = 'SESI PRESENSI AKTIF';
+                }
             }
 
             lucide.createIcons();
@@ -656,7 +657,8 @@
             document.getElementById('state-form').classList.add('hidden');
             document.getElementById('state-error').classList.add('hidden');
             document.getElementById('state-locked').classList.remove('hidden');
-            document.getElementById('locked-session-title').textContent = sessionTitle;
+            const lockedTitle = document.getElementById('locked-session-title');
+            if (lockedTitle) lockedTitle.textContent = sessionTitle;
             lucide.createIcons();
             reinitTilt();
         }
