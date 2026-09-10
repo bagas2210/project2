@@ -421,7 +421,7 @@
             <!-- 1. KOTAK MERAH (Total Hadir Hari Ini) -->
             <div class="small-box bg-red-card">
               <div class="inner">
-                <h3 id="stat-hadir-today">1</h3>
+                <h3 id="stat-hadir-today">0</h3>
                 <p>Total Hadir Hari Ini</p>
               </div>
               <div class="icon">
@@ -435,7 +435,7 @@
             <!-- 2. KOTAK BIRU (Sesi Absen Aktif) -->
             <div class="small-box bg-blue-card">
               <div class="inner">
-                <h3 id="stat-sessions-active">3</h3>
+                <h3 id="stat-sessions-active">0</h3>
                 <p>Sesi Absen Aktif</p>
               </div>
               <div class="icon">
@@ -449,7 +449,7 @@
             <!-- 3. KOTAK UNGU (Hadir Tepat Waktu) -->
             <div class="small-box bg-purple-card">
               <div class="inner">
-                <h3 id="stat-on-time">1</h3>
+                <h3 id="stat-on-time">0</h3>
                 <p>Hadir Tepat Waktu</p>
               </div>
               <div class="icon">
@@ -463,7 +463,7 @@
             <!-- 4. KOTAK PINK/MAGENTA (Izin & Terlambat) -->
             <div class="small-box bg-magenta-card">
               <div class="inner">
-                <h3 id="stat-late-permit">4</h3>
+                <h3 id="stat-late-permit">0</h3>
                 <p>Terlambat / Catatan</p>
               </div>
               <div class="icon">
@@ -482,7 +482,7 @@
             <!-- 5. KOTAK CYAN (Total Sesi Dibuat) -->
             <div class="small-box bg-teal-card">
               <div class="inner">
-                <h3 id="stat-total-sessions">2</h3>
+                <h3 id="stat-total-sessions">0</h3>
                 <p>Total Sesi Dibuat</p>
               </div>
               <div class="icon">
@@ -510,7 +510,7 @@
             <!-- 7. KOTAK HIJAU (Total Peserta) -->
             <div class="small-box bg-green-card">
               <div class="inner">
-                <h3 id="stat-total-students">3</h3>
+                <h3 id="stat-total-students">0</h3>
                 <p>Total Peserta</p>
               </div>
               <div class="icon">
@@ -524,7 +524,7 @@
             <!-- 8. KOTAK ORANGE (Persentase Kehadiran) -->
             <div class="small-box bg-orange-card">
               <div class="inner">
-                <h3 id="stat-percent">100%</h3>
+                <h3 id="stat-percent">0%</h3>
                 <p>Tingkat Kehadiran</p>
               </div>
               <div class="icon">
@@ -963,36 +963,17 @@
     async function loadSessions() {
       if (isDemoMode) {
         sessionsList = JSON.parse(localStorage.getItem('demo_sessions') || '[]');
-        if (sessionsList.length === 0) {
-          sessionsList = [
-            {
-              id: 'demo-sess-1',
-              title: 'Presensi Siswa Kelas X A',
-              qr_token: 'token-kelas-10a',
-              expires_at: null,
-              created_at: new Date().toISOString()
-            },
-            {
-              id: 'demo-sess-2',
-              title: 'Upacara Bendera Senin',
-              qr_token: 'token-upacara',
-              expires_at: null,
-              created_at: new Date(Date.now() - 3600000).toISOString()
-            }
-          ];
-          localStorage.setItem('demo_sessions', JSON.stringify(sessionsList));
-
-          // Sample attendances
-          const demoAtt = [
-            { id: 'att-1', session_id: 'demo-sess-1', attendee_name: 'Ahmad Fauzi', checked_in_at: new Date().toISOString(), device_info: 'Chrome / Android' },
-            { id: 'att-2', session_id: 'demo-sess-1', attendee_name: 'Budi Santoso', checked_in_at: new Date(Date.now() - 600000).toISOString(), device_info: 'Safari / iPhone' },
-            { id: 'att-3', session_id: 'demo-sess-1', attendee_name: 'Citra Dewi', checked_in_at: new Date(Date.now() - 1200000).toISOString(), device_info: 'Chrome / Windows' }
-          ];
-          localStorage.setItem('demo_attendances', JSON.stringify(demoAtt));
-        }
         renderSessionsTable();
-        if (sessionsList.length > 0 && !currentSession) {
-          selectSession(sessionsList[0].id);
+        if (sessionsList.length > 0) {
+          if (!currentSession || !sessionsList.find(s => s.id === currentSession.id)) {
+            selectSession(sessionsList[0].id);
+          }
+        } else {
+          currentSession = null;
+          currentAttendancesList = [];
+          renderAttendances([]);
+          document.getElementById('active-session-title').textContent = 'Belum Ada Sesi';
+          document.getElementById('active-session-exp').textContent = 'Silakan buat sesi baru untuk memulai presensi';
         }
         updateStatCounters();
         return;
@@ -1006,8 +987,16 @@
       if (!error && data) {
         sessionsList = data;
         renderSessionsTable();
-        if (sessionsList.length > 0 && !currentSession) {
-          selectSession(sessionsList[0].id);
+        if (sessionsList.length > 0) {
+          if (!currentSession || !sessionsList.find(s => s.id === currentSession.id)) {
+            selectSession(sessionsList[0].id);
+          }
+        } else {
+          currentSession = null;
+          currentAttendancesList = [];
+          renderAttendances([]);
+          document.getElementById('active-session-title').textContent = 'Belum Ada Sesi';
+          document.getElementById('active-session-exp').textContent = 'Silakan buat sesi baru untuk memulai presensi';
         }
         updateStatCounters();
       }
@@ -1155,7 +1144,7 @@
       document.getElementById('stat-unattended').textContent = '0';
 
       // 7. Total Peserta
-      document.getElementById('stat-total-students').textContent = hadirCount || '3';
+      document.getElementById('stat-total-students').textContent = hadirCount;
 
       // 8. Tingkat Kehadiran
       document.getElementById('stat-percent').textContent = hadirCount > 0 ? '100%' : '0%';
