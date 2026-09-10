@@ -742,8 +742,12 @@
       <h3 id="modal-qr-title" class="text-lg font-bold text-slate-800 mb-1 truncate max-w-[280px]">...</h3>
       <p class="text-xs text-slate-500 mb-4">Arahkan kamera HP ke QR Code untuk melakukan absensi</p>
 
-      <div class="p-3 bg-white border-2 border-slate-200 rounded-xl shadow-md mb-4 flex justify-center">
-        <div id="qrcode-canvas"></div>
+      <div class="relative p-3.5 bg-white border-2 border-slate-200 rounded-2xl shadow-lg mb-4 inline-flex items-center justify-center">
+        <div id="qrcode-canvas" class="relative"></div>
+        <!-- Logo Profile di Tengah Barcode/QR -->
+        <div class="absolute inset-0 m-auto w-12 h-12 rounded-xl bg-white p-1 shadow-md border border-slate-200 flex items-center justify-center pointer-events-none">
+          <img src="logo.jpg" alt="Logo Profile" class="w-full h-full object-contain rounded-lg" />
+        </div>
       </div>
 
       <div class="w-full bg-slate-50 border rounded-lg p-2.5 text-[11px] text-slate-600 break-all mb-3 text-left">
@@ -1364,14 +1368,47 @@
 
       const qrContainer = document.getElementById('qrcode-canvas');
       qrContainer.innerHTML = '';
+      
+      const qrSize = 220;
       new QRCode(qrContainer, {
         text: fullUrl,
-        width: 200,
-        height: 200,
-        colorDark: "#0f172a",
+        width: qrSize,
+        height: qrSize,
+        colorDark: "#000000",
         colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
+        correctLevel: QRCode.CorrectLevel.H // Level H mengizinkan logo di tengah tanpa merusak data scan
       });
+
+      // Sisipkan logo ke canvas QR secara permanen
+      setTimeout(() => {
+        const canvas = qrContainer.querySelector('canvas');
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          const logo = new Image();
+          logo.crossOrigin = 'Anonymous';
+          logo.src = 'logo.jpg';
+          logo.onload = () => {
+            const logoSize = Math.floor(canvas.width * 0.22);
+            const x = (canvas.width - logoSize) / 2;
+            const y = (canvas.height - logoSize) / 2;
+            const pad = 4;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(x - pad, y - pad, logoSize + pad * 2, logoSize + pad * 2, 6);
+            } else {
+              ctx.rect(x - pad, y - pad, logoSize + pad * 2, logoSize + pad * 2);
+            }
+            ctx.fill();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.drawImage(logo, x, y, logoSize, logoSize);
+          };
+        }
+      }, 60);
 
       document.getElementById('modal-qr').classList.remove('hidden');
     }
