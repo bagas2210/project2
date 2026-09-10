@@ -24,6 +24,7 @@
         body {
             margin: 0;
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -32,13 +33,13 @@
             overflow-x: hidden;
             overflow-y: auto;
             perspective: 1000px; /* Perspektif untuk efek 3D ruang */
-            padding: 20px 10px;
+            padding: 16px 12px;
         }
 
         /* Animasi Melayang (Floating) secara vertikal */
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-16px); }
+            50% { transform: translateY(-12px); }
             100% { transform: translateY(0px); }
         }
 
@@ -46,15 +47,25 @@
             animation: float 4s ease-in-out infinite;
             position: relative;
             z-index: 10;
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            justify-content: center;
+        }
+
+        @media (max-height: 650px) {
+            .container {
+                animation: none;
+            }
         }
 
         /* Desain Kartu 3D Glassmorphism - Selaras Tema Kosmik */
         .card {
-            width: 400px;
-            max-width: 92vw;
-            min-height: 540px;
-            background: rgba(17, 24, 39, 0.82);
-            border-radius: 28px;
+            width: 100%;
+            max-width: 420px;
+            min-height: auto;
+            background: rgba(17, 24, 39, 0.84);
+            border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.16);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65), 0 0 35px rgba(56, 189, 248, 0.15);
             backdrop-filter: blur(20px);
@@ -62,10 +73,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 32px 26px;
+            padding: 26px 20px;
             color: white;
             transform-style: preserve-3d; 
             position: relative;
+        }
+
+        @media (min-width: 480px) {
+            .card {
+                padding: 32px 26px;
+                border-radius: 28px;
+            }
         }
 
         /* Efek elemen Pop-out menggunakan translateZ */
@@ -84,7 +102,7 @@
         }
 
         .time-display {
-            font-size: 2.8rem;
+            font-size: clamp(2.2rem, 8.5vw, 2.8rem);
             font-weight: 800;
             letter-spacing: 1px;
             text-shadow: 0 5px 20px rgba(0, 242, 254, 0.4);
@@ -92,6 +110,7 @@
             font-variant-numeric: tabular-nums;
             margin: 0;
             color: #ffffff;
+            line-height: 1.15;
         }
 
         .date-display {
@@ -147,9 +166,9 @@
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 16px;
-            padding: 14px 18px;
+            padding: 13px 16px;
             color: white;
-            font-size: 0.95rem;
+            font-size: 16px; /* Mencegah auto-zoom pada Safari iOS */
             outline: none;
             transition: all 0.3s ease;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
@@ -168,8 +187,9 @@
         /* Tombol Absen 3D - Matching Theme */
         .btn-absen {
             width: 100%;
-            padding: 15px 30px;
-            font-size: 1.05rem;
+            padding: 14px 24px;
+            min-height: 48px;
+            font-size: 1rem;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #ffffff;
@@ -665,12 +685,15 @@
                 if (card && card.vanillaTilt) {
                     card.vanillaTilt.destroy();
                 }
-                VanillaTilt.init(document.querySelectorAll(".card"), {
-                    max: 15,
-                    speed: 400,
-                    glare: true,
-                    "max-glare": 0.2
-                });
+                const isTouchDevice = window.innerWidth < 640 || ('ontouchstart' in window);
+                if (!isTouchDevice) {
+                    VanillaTilt.init(document.querySelectorAll(".card"), {
+                        max: 12,
+                        speed: 400,
+                        glare: true,
+                        "max-glare": 0.2
+                    });
+                }
             }
         }
 
