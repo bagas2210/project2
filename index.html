@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>admin absen boss!!</title>
+  <title>Dashboard Administrator - Aplikasi Presensi Online</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- QRCode.js CDN -->
+  <!-- Supabase JS Client CDN -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- QR Code Generator CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -17,7 +17,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
     
     * {
       box-sizing: border-box;
@@ -27,346 +27,749 @@
       margin: 0;
       min-height: 100vh;
       background: #06020e;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      color: #f8fafc;
+      font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #333333;
       overflow-x: hidden;
-      perspective: 1000px;
     }
 
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
-      100% { transform: translateY(0px); }
+    /* AdminLTE Small Box Card Styles */
+    .small-box {
+      border-radius: 4px;
+      position: relative;
+      display: block;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      color: #ffffff;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .float-anim {
-      animation: float 4.5s ease-in-out infinite;
+    .small-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     }
-
-    /* Glassmorphism Classes */
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+    .small-box .inner {
+      padding: 14px 16px;
     }
-
-    .glass-card-3d {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      transform-style: preserve-3d;
-    }
-
-    .btn-3d-emerald {
-      background: linear-gradient(45deg, #11998e, #38ef7d);
-      color: #082414;
-      font-weight: 800;
-      box-shadow: 0 10px 22px rgba(56, 239, 125, 0.35);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .btn-3d-emerald:hover {
-      box-shadow: 0 16px 30px rgba(56, 239, 125, 0.55);
-      transform: translateY(-2px) scale(1.02);
-      color: #03140a;
-    }
-
-    .btn-3d-cyan {
-      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-      color: #061c33;
+    .small-box h3 {
+      font-size: 34px;
       font-weight: 700;
-      box-shadow: 0 10px 22px rgba(0, 242, 254, 0.35);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      margin: 0 0 4px 0;
+      white-space: nowrap;
+      padding: 0;
+      font-family: 'Source Sans Pro', monospace, sans-serif;
     }
-    .btn-3d-cyan:hover {
-      box-shadow: 0 16px 30px rgba(0, 242, 254, 0.55);
-      transform: translateY(-2px) scale(1.02);
-      color: #020e1a;
+    .small-box p {
+      font-size: 13px;
+      margin: 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.92;
+    }
+    .small-box .icon {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      z-index: 0;
+      opacity: 0.22;
+      pointer-events: none;
+      transition: all 0.3s linear;
+    }
+    .small-box:hover .icon {
+      opacity: 0.35;
+      transform: scale(1.08);
+    }
+    .small-box-footer {
+      position: relative;
+      text-align: center;
+      padding: 5px 0;
+      color: rgba(255, 255, 255, 0.85);
+      display: block;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+    .small-box-footer:hover {
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.28);
     }
 
+    /* Colors matching user's reference screenshot */
+    .bg-red-card { background-color: #dd4b39 !important; }
+    .bg-blue-card { background-color: #00c0ef !important; }
+    .bg-purple-card { background-color: #605ca8 !important; }
+    .bg-magenta-card { background-color: #d81b60 !important; }
+    .bg-teal-card { background-color: #00a65a !important; }
+    .bg-navy-card { background-color: #001f3f !important; }
+    .bg-green-card { background-color: #00a65a !important; }
+    .bg-orange-card { background-color: #f39c12 !important; }
+
+    /* AdminLTE Box / Card */
+    .box-admin {
+      position: relative;
+      border-radius: 3px;
+      background: #ffffff;
+      border-top: 3px solid #3c8dbc;
+      margin-bottom: 20px;
+      width: 100%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .box-admin.box-primary { border-top-color: #3c8dbc; }
+    .box-admin.box-success { border-top-color: #00a65a; }
+    .box-admin.box-warning { border-top-color: #f39c12; }
+    .box-admin.box-info { border-top-color: #00c0ef; }
+
+    .box-header {
+      color: #444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid #f4f4f4;
+    }
+    .box-header .box-title {
+      font-size: 15px;
+      margin: 0;
+      font-weight: 700;
+      color: #333333;
+    }
+
+    /* Table styling */
+    .table-admin th {
+      background-color: #f9fafc;
+      color: #495057;
+      font-weight: 700;
+      font-size: 12px;
+      border-bottom: 2px solid #dee2e6;
+      padding: 9px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .table-admin td {
+      padding: 8px 12px;
+      font-size: 13px;
+      border-top: 1px solid #f4f4f4;
+      color: #333333;
+      vertical-align: middle;
+    }
+    .table-admin tr:hover td {
+      background-color: #f8fafc;
+    }
+
+    /* Custom Scrollbar */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
+      height: 6px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
+      background: #f1f1f1;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+      background: #c1c1c1;
+      border-radius: 4px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(56, 239, 125, 0.5);
+      background: #a8a8a8;
+    }
+
+    /* Login Card Glass */
+    .glass-card-login {
+      background: rgba(17, 24, 39, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(56, 189, 248, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col relative">
+<body class="min-h-screen flex flex-col relative text-slate-800">
 
   <!-- ==================== KONFIGURASI SUPABASE BANNER ==================== -->
-  <div id="config-banner" class="relative z-20 bg-slate-900/40 border-b border-white/10 px-6 py-2.5 text-xs flex justify-between items-center text-slate-300 backdrop-blur-md">
-    <div class="flex items-center gap-2.5">
+  <div id="config-banner" class="relative z-40 bg-slate-900/90 border-b border-white/10 px-4 py-2 text-xs flex justify-between items-center text-slate-300 backdrop-blur-md">
+    <div class="flex items-center gap-2">
       <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
       <span>Status Supabase: <strong id="supabase-status-text" class="text-emerald-400 font-bold">Tersambung (Cloud Supabase)</strong></span>
     </div>
-    <button onclick="toggleConfigModal(true)" class="text-slate-400 hover:text-white underline transition text-[11px]">
-      Ubah Konfigurasi API
-    </button>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleConfigModal(true)" class="text-slate-300 hover:text-white underline transition text-[11px]">
+        Ubah Konfigurasi API
+      </button>
+    </div>
   </div>
 
   <!-- Modal Edit Supabase Config -->
   <div id="config-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="glass-panel border border-white/20 rounded-3xl p-6 max-w-md w-full shadow-2xl relative text-white">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-base text-white flex items-center gap-2">
-          <i data-lucide="settings" class="w-5 h-5 text-cyan-400"></i> Konfigurasi Supabase
+    <div class="bg-white rounded-lg p-6 max-w-md w-full shadow-2xl relative text-slate-800">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b">
+        <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+          <i data-lucide="settings" class="w-5 h-5 text-blue-600"></i> Konfigurasi Supabase
         </h3>
-        <button onclick="toggleConfigModal(false)" class="text-slate-400 hover:text-white text-lg">✕</button>
+        <button onclick="toggleConfigModal(false)" class="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
       </div>
-      <p class="text-xs text-slate-400 mb-4">Masukkan URL dan Anon Key dari dashboard Supabase Anda.</p>
+      <p class="text-xs text-slate-500 mb-4">Masukkan URL dan Anon Key dari dashboard Supabase Anda.</p>
       <div class="space-y-3">
         <div>
-          <label class="text-xs text-slate-300 block mb-1 font-semibold">Supabase URL</label>
-          <input id="input-supabase-url" type="text" placeholder="https://xyzcompany.supabase.co" class="w-full bg-slate-900/70 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400" />
+          <label class="text-xs text-slate-700 block mb-1 font-semibold">Supabase URL</label>
+          <input id="input-supabase-url" type="text" placeholder="https://xyzcompany.supabase.co" class="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-500" />
         </div>
         <div>
-          <label class="text-xs text-slate-300 block mb-1 font-semibold">Supabase Anon Key</label>
-          <input id="input-supabase-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR..." class="w-full bg-slate-900/70 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400" />
+          <label class="text-xs text-slate-700 block mb-1 font-semibold">Supabase Anon Key</label>
+          <input id="input-supabase-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR..." class="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-500" />
         </div>
-        <button onclick="saveSupabaseConfig()" class="w-full btn-3d-cyan py-2.5 rounded-xl text-xs transition mt-2">
+        <button onclick="saveSupabaseConfig()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded text-xs transition mt-2 shadow">
           Simpan & Muat Ulang
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== VIEW 1: AUTH / LOGIN 3D ==================== -->
-  <div id="view-login" class="relative z-10 flex-1 flex items-center justify-center p-4">
-    <div class="float-anim max-w-sm w-full">
-      <div class="card glass-card-3d rounded-3xl p-8 shadow-2xl relative" data-tilt data-tilt-max="12" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+  <!-- ==================== VIEW 1: AUTH / LOGIN ADMIN ==================== -->
+  <div id="view-login" class="relative z-20 flex-1 flex items-center justify-center p-4">
+    <div class="max-w-sm w-full">
+      <div class="glass-card-login rounded-2xl p-7 shadow-2xl relative border border-white/20">
         
-        <div class="text-center mb-6" style="transform: translateZ(50px);">
-          <div class="inline-flex p-4 rounded-2xl mb-3 shadow-lg" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #071e36; transform: translateZ(30px);">
-            <i data-lucide="shield-check" class="w-8 h-8"></i>
+        <div class="text-center mb-6">
+          <div class="inline-flex p-3.5 rounded-2xl mb-3 shadow-lg bg-gradient-to-tr from-blue-600 to-cyan-500 text-white">
+            <i data-lucide="shield-check" class="w-7 h-7"></i>
           </div>
-          <h1 class="text-2xl font-extrabold text-white tracking-tight">Login Admin</h1>
+          <h1 class="text-xl font-bold text-white tracking-tight">Login Administrator</h1>
+          <p class="text-xs text-slate-400 mt-1">Sistem Presensi & Kontrol Absensi Siswa Online</p>
         </div>
 
-        <div id="login-error" class="hidden bg-red-500/20 border border-red-500/40 text-red-300 text-xs p-3 rounded-xl mb-4 text-center" style="transform: translateZ(35px);"></div>
-        <div id="login-success" class="hidden bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs p-3 rounded-xl mb-4 text-center" style="transform: translateZ(35px);"></div>
+        <div id="login-error" class="hidden bg-red-500/20 border border-red-500/40 text-red-300 text-xs p-3 rounded-xl mb-4 text-center"></div>
+        <div id="login-success" class="hidden bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs p-3 rounded-xl mb-4 text-center"></div>
 
-        <form id="form-login" onsubmit="handleLogin(event)" autocomplete="off" class="space-y-4" style="transform: translateZ(45px);">
+        <form id="form-login" onsubmit="handleLogin(event)" autocomplete="off" class="space-y-4">
           <div>
-            <label class="text-xs font-semibold text-slate-300 block mb-1.5">Email Admin</label>
+            <label class="text-xs font-semibold text-slate-300 block mb-1">Email Administrator</label>
             <div class="relative">
               <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
-              <input id="login-email" type="email" required autocomplete="off" placeholder="Masukkan email admin..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
+              <input id="login-email" type="email" required autocomplete="off" placeholder="admin@email.com" class="w-full bg-slate-900/70 border border-white/15 rounded-lg pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400 transition" />
             </div>
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-300 block mb-1.5">Password</label>
+            <label class="text-xs font-semibold text-slate-300 block mb-1">Password</label>
             <div class="relative">
               <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
-              <input id="login-password" type="password" required autocomplete="new-password" placeholder="Masukkan password..." class="w-full bg-slate-900/60 border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
+              <input id="login-password" type="password" required autocomplete="new-password" placeholder="••••••••" class="w-full bg-slate-900/70 border border-white/15 rounded-lg pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400 transition" />
             </div>
           </div>
 
-          <button id="btn-login" type="submit" class="w-full btn-3d-emerald py-3 rounded-xl text-xs tracking-wider flex items-center justify-center gap-2 mt-2" style="transform: translateZ(25px);">
+          <button id="btn-login" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg text-xs tracking-wider flex items-center justify-center gap-2 mt-2 shadow-lg transition">
             <span>MASUK KE DASHBOARD</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </form>
+
+        <!-- Quick Demo Login Button -->
+        <div class="mt-4 pt-3 border-t border-white/10 text-center">
+          <button onclick="loginAsDemo()" class="text-xs text-cyan-400 hover:text-cyan-300 font-semibold flex items-center justify-center gap-1.5 w-full py-1.5 transition">
+            <i data-lucide="play-circle" class="w-4 h-4"></i> Masuk Mode Demo Cepat (Tanpa Akun)
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== VIEW 2: DASHBOARD ADMIN 3D ==================== -->
-  <div id="view-dashboard" class="relative z-10 hidden flex-1 flex flex-col">
-    <!-- Navbar 3D Glass -->
-    <header class="border-b border-white/10 bg-slate-950/40 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-30">
-      <div class="flex items-center gap-3">
-        <div class="p-2.5 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #08223d;">
-          <i data-lucide="qr-code" class="w-5 h-5"></i>
+  <!-- ==================== VIEW 2: DASHBOARD ADMINISTRATOR (SESUAI GAMBAR REFERENSI) ==================== -->
+  <div id="view-dashboard" class="hidden flex-1 flex flex-col min-h-screen bg-[#ecf0f5]">
+    
+    <!-- 1. TOP NAVBAR (AdminLTE Style - #3c8dbc) -->
+    <header class="bg-[#3c8dbc] text-white h-[50px] flex items-center justify-between sticky top-0 z-30 shadow">
+      <!-- Logo / Brand on Left -->
+      <div class="flex items-center h-full">
+        <div class="bg-[#367fa9] font-bold px-5 h-full flex items-center gap-2 text-[15px] tracking-wide border-r border-[#306f95]">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          <span>Administrator</span>
         </div>
-        <div>
-          <h1 class="font-extrabold text-base leading-tight tracking-wide text-white flex items-center gap-2">
-            <span>admin absen boss!!</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold uppercase tracking-wider">3D Live</span>
-          </h1>
-          <p id="user-email-display" class="text-[11px] text-slate-400 font-mono">admin@email.com</p>
-        </div>
+        <!-- Hamburger Toggle Button -->
+        <button onclick="toggleSidebar()" class="px-4 h-full hover:bg-[#367fa9] transition flex items-center justify-center" title="Toggle Sidebar">
+          <i data-lucide="menu" class="w-5 h-5 text-white"></i>
+        </button>
       </div>
 
-      <!-- Jam Digital & Tanggal Realtime di Navbar -->
-      <div class="hidden md:flex items-center gap-6">
-        <div class="text-right">
-          <div id="admin-clock" class="text-base font-extrabold text-white font-mono tracking-wider">00:00:00</div>
-          <div id="admin-date" class="text-[10px] text-slate-400 font-medium">Senin, 1 Jan 2024</div>
+      <!-- Right Header Items: Jam, Profil, Sign Out -->
+      <div class="flex items-center h-full">
+        <!-- Live Clock & Date -->
+        <div class="hidden md:flex items-center gap-2 px-4 text-xs font-mono text-white/90 border-r border-white/15 h-full">
+          <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+          <span id="admin-clock" class="font-bold">00:00:00</span>
+          <span class="text-white/60">|</span>
+          <span id="admin-date" class="font-sans text-[11px] text-white/80">Senin, 1 Jan 2026</span>
         </div>
-      </div>
 
-      <button onclick="handleLogout()" class="flex items-center gap-1.5 text-xs bg-white/10 hover:bg-red-500/20 hover:text-red-300 border border-white/10 hover:border-red-500/30 px-3.5 py-2 rounded-xl transition text-slate-300 font-semibold">
-        <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
-      </button>
+        <!-- User Profile Dropdown -->
+        <div class="flex items-center gap-2 px-4 h-full hover:bg-[#367fa9] transition cursor-pointer text-xs font-semibold">
+          <div class="w-7 h-7 rounded-full bg-white/20 border border-white flex items-center justify-center overflow-hidden">
+            <i data-lucide="user" class="w-4 h-4 text-white"></i>
+          </div>
+          <span id="user-email-display" class="max-w-[120px] md:max-w-[180px] truncate">Administrator</span>
+          <i data-lucide="chevron-down" class="w-3 h-3 text-white/70"></i>
+        </div>
+
+        <!-- Sign Out Button -->
+        <button onclick="handleLogout()" class="px-4 h-full bg-red-600/30 hover:bg-red-600 text-white transition text-xs flex items-center gap-1.5 font-bold border-l border-white/10" title="Keluar">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Sign Out</span>
+        </button>
+      </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- 2. WRAPPER DENGAN SIDEBAR DAN MAIN CONTENT -->
+    <div class="flex-1 flex relative">
       
-      <!-- Kolom Kiri: Form Buat Sesi & List Sesi -->
-      <div class="space-y-6">
-        <!-- Form Buat Sesi 3D Glass -->
-        <div class="glass-panel rounded-3xl p-6 relative overflow-hidden">
-          <h2 class="text-sm font-bold mb-4 flex items-center gap-2 text-white">
-            <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-400"></i> Buat Sesi Absensi Baru
-          </h2>
-          <form id="form-create-session" onsubmit="handleCreateSession(event)" autocomplete="off" class="space-y-3.5">
-            <div>
-              <label class="text-xs text-slate-300 mb-1.5 block font-semibold">Nama Sesi / Acara</label>
-              <input id="session-title" type="text" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" placeholder="Contoh: Rapat Pleno Semester 1" class="w-full bg-slate-900/60 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
+      <!-- LEFT SIDEBAR (AdminLTE Dark Charcoal - #222d32) -->
+      <aside id="admin-sidebar" class="w-[230px] bg-[#222d32] text-[#b8c7ce] flex-shrink-0 flex flex-col transition-all duration-300 z-20 shadow-lg">
+        
+        <!-- User Panel with Avatar & Online Status -->
+        <div class="p-3.5 flex items-center gap-3 bg-[#1a2226] border-b border-[#2c3b41]">
+          <div class="w-10 h-10 rounded-full bg-[#3c8dbc] border-2 border-white/40 flex items-center justify-center text-white shadow">
+            <i data-lucide="user-check" class="w-5 h-5"></i>
+          </div>
+          <div class="overflow-hidden">
+            <p class="text-white font-bold text-xs truncate">Administrator</p>
+            <div class="flex items-center gap-1.5 text-[11px] text-[#2ecc71] mt-0.5">
+              <span class="w-2 h-2 rounded-full bg-[#2ecc71] animate-pulse"></span>
+              <span>Online</span>
             </div>
-            <div>
-              <label class="text-xs text-slate-300 mb-1.5 block font-semibold">Batas Waktu (Menit)</label>
-              <input id="session-duration" type="number" min="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" placeholder="0 = tanpa batas waktu" class="w-full bg-slate-900/60 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 transition" />
-            </div>
-            <button id="btn-create-session" type="submit" class="w-full btn-3d-emerald py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 mt-1">
-              <i data-lucide="qr-code" class="w-4 h-4"></i> Generate QR Sesi
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="px-3.5 py-2 text-[10px] font-bold text-[#4b646f] uppercase tracking-wider bg-[#1a2226]">
+          MAIN NAVIGATION
+        </div>
+        <nav class="flex-1 text-xs font-medium space-y-0.5 py-1">
+          <a href="javascript:void(0)" class="flex items-center gap-2.5 px-4 py-2.5 bg-[#1e282c] text-white border-l-4 border-[#3c8dbc]">
+            <i data-lucide="gauge" class="w-4 h-4 text-[#3c8dbc]"></i>
+            <span>Dashboard</span>
+          </a>
+
+          <div class="group">
+            <button onclick="toggleSubmenu('submenu-master')" class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition text-left">
+              <div class="flex items-center gap-2.5">
+                <i data-lucide="database" class="w-4 h-4 text-[#00c0ef]"></i>
+                <span>Data Master</span>
+              </div>
+              <i data-lucide="chevron-right" id="arrow-master" class="w-3.5 h-3.5 transition-transform duration-200"></i>
             </button>
-          </form>
-        </div>
-
-        <!-- Riwayat Sesi -->
-        <div class="glass-panel rounded-3xl p-6">
-          <h2 class="text-sm font-bold mb-3.5 text-white flex items-center justify-between">
-            <span>Daftar Sesi Anda</span>
-            <span id="session-count-badge" class="text-[10px] bg-white/10 px-2.5 py-0.5 rounded-full text-slate-300 font-mono">0</span>
-          </h2>
-          <div id="session-list" class="space-y-2.5 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
-            <div class="text-center py-8 text-xs text-slate-500">Belum ada sesi dibuat.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kolom Kanan: Detail Sesi & Tabel Realtime -->
-      <div class="lg:col-span-2 space-y-6">
-        <div id="session-detail-container" class="glass-panel rounded-3xl p-6 min-h-[500px]">
-          
-          <div id="empty-state" class="flex flex-col items-center justify-center h-80 text-slate-400 text-center">
-            <div class="p-4 rounded-3xl bg-white/5 border border-white/10 mb-3 shadow-inner">
-              <i data-lucide="calendar" class="w-12 h-12 text-cyan-400"></i>
+            <div id="submenu-master" class="hidden bg-[#2c3b41] py-1 pl-9 pr-3 space-y-1 text-[11px]">
+              <a href="#table-section" class="block py-1 text-slate-300 hover:text-white transition">• Data Siswa / Peserta</a>
+              <a href="#table-sessions" class="block py-1 text-slate-300 hover:text-white transition">• Data Kelas / Sesi</a>
             </div>
-            <p class="text-sm font-semibold text-white">Belum Ada Sesi Dipilih</p>
-            <p class="text-xs text-slate-400 mt-1 max-w-xs">Pilih salah satu sesi di sebelah kiri atau buat sesi baru untuk menampilkan QR code dan tabel live.</p>
           </div>
 
-          <div id="active-session-view" class="hidden">
-            <!-- Header Sesi Aktif -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-white/10">
+          <a href="#table-section" class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition">
+            <i data-lucide="calendar" class="w-4 h-4 text-[#00a65a]"></i>
+            <span>Operasional</span>
+          </a>
+
+          <a href="javascript:void(0)" onclick="openCreateSessionModal()" class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition">
+            <i data-lucide="clock" class="w-4 h-4 text-[#f39c12]"></i>
+            <span>Sesi Absensi</span>
+          </a>
+
+          <a href="javascript:void(0)" onclick="printReport()" class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition">
+            <i data-lucide="file-text" class="w-4 h-4 text-[#605ca8]"></i>
+            <span>Rekapitulasi</span>
+          </a>
+
+          <a href="javascript:void(0)" onclick="openQrModal()" class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#1e282c] hover:text-white transition">
+            <i data-lucide="qr-code" class="w-4 h-4 text-[#d81b60]"></i>
+            <span>Tampilkan QR Code</span>
+          </a>
+
+          <a href="javascript:void(0)" onclick="handleLogout()" class="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#1e282c] hover:text-red-400 transition text-red-300 mt-4 border-t border-[#2c3b41]">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span>Sign Out</span>
+          </a>
+        </nav>
+
+        <!-- Version Footer -->
+        <div class="p-3 text-[10px] text-center text-[#4b646f] border-t border-[#2c3b41]">
+          Presensi App v2.0
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT (AdminLTE Content Wrapper - #ecf0f5) -->
+      <main class="flex-1 p-4 md:p-6 overflow-x-hidden flex flex-col justify-between">
+        
+        <div>
+          <!-- Content Header: Title & Breadcrumbs -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-4 border-b border-slate-300">
+            <div>
+              <h1 class="text-2xl font-bold text-slate-800 tracking-tight flex items-baseline gap-2">
+                Dashboard
+                <small class="text-slate-500 font-normal text-sm">Control panel</small>
+              </h1>
+            </div>
+            <div class="text-xs text-slate-500 flex items-center gap-1.5 mt-2 sm:mt-0 font-medium">
+              <i data-lucide="home" class="w-3.5 h-3.5 text-blue-600"></i>
+              <span>Home</span>
+              <span>&gt;</span>
+              <span class="text-slate-800 font-bold">Dashboard</span>
+            </div>
+          </div>
+
+          <!-- ==================== 8 STAT BOXES (2 ROWS OF 4 CARDS) ==================== -->
+          <!-- Baris 1: 4 Kotak (Merah, Biru, Ungu, Pink) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            
+            <!-- 1. KOTAK MERAH (Total Hadir Hari Ini) -->
+            <div class="small-box bg-red-card">
+              <div class="inner">
+                <h3 id="stat-hadir-today">1</h3>
+                <p>Total Hadir Hari Ini</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="calendar-check" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-section" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+            <!-- 2. KOTAK BIRU (Sesi Absen Aktif) -->
+            <div class="small-box bg-blue-card">
+              <div class="inner">
+                <h3 id="stat-sessions-active">3</h3>
+                <p>Sesi Absen Aktif</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="clock" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-sessions" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+            <!-- 3. KOTAK UNGU (Hadir Tepat Waktu) -->
+            <div class="small-box bg-purple-card">
+              <div class="inner">
+                <h3 id="stat-on-time">1</h3>
+                <p>Hadir Tepat Waktu</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="user-check" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-section" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+            <!-- 4. KOTAK PINK/MAGENTA (Izin & Terlambat) -->
+            <div class="small-box bg-magenta-card">
+              <div class="inner">
+                <h3 id="stat-late-permit">4</h3>
+                <p>Terlambat / Catatan</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="alert-circle" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-section" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+          </div>
+
+          <!-- Baris 2: 4 Kotak (Cyan, Navy, Hijau, Orange) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            
+            <!-- 5. KOTAK CYAN (Total Sesi Dibuat) -->
+            <div class="small-box bg-teal-card">
+              <div class="inner">
+                <h3 id="stat-total-sessions">2</h3>
+                <p>Total Sesi Dibuat</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="bookmark" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-sessions" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+            <!-- 6. KOTAK NAVY (Belum Hadir / Pending) -->
+            <div class="small-box bg-navy-card">
+              <div class="inner">
+                <h3 id="stat-unattended">0</h3>
+                <p>Tidak Hadir / Izin</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="user-x" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-section" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+            <!-- 7. KOTAK HIJAU (Total Peserta) -->
+            <div class="small-box bg-green-card">
+              <div class="inner">
+                <h3 id="stat-total-students">3</h3>
+                <p>Total Peserta</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="users" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-section" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+            <!-- 8. KOTAK ORANGE (Persentase Kehadiran) -->
+            <div class="small-box bg-orange-card">
+              <div class="inner">
+                <h3 id="stat-percent">100%</h3>
+                <p>Tingkat Kehadiran</p>
+              </div>
+              <div class="icon">
+                <i data-lucide="award" class="w-16 h-16"></i>
+              </div>
+              <a href="#table-section" class="small-box-footer">
+                More info <i data-lucide="arrow-right-circle" class="w-3 h-3 inline-block ml-1"></i>
+              </a>
+            </div>
+
+          </div>
+
+          <!-- ==================== 3 DATA TABLES SECTION (GRID 3 KOLOM DI BAWAH) ==================== -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            
+            <!-- KOLOM 1: AKTIVITAS PRESENSI TERKINI -->
+            <div id="table-section" class="box-admin box-primary flex flex-col justify-between">
               <div>
-                <span class="text-[11px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-                  Sesi Aktif
+                <div class="box-header">
+                  <h3 class="box-title flex items-center gap-2">
+                    <i data-lucide="list-checks" class="w-4 h-4 text-blue-600"></i>
+                    Aktivitas Presensi Terkini
+                  </h3>
+                  <button onclick="refreshCurrentAttendances()" class="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 font-semibold" title="Refresh">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+                  </button>
+                </div>
+
+                <!-- Search Filter & Entries Count -->
+                <div class="p-3 bg-slate-50 border-b flex items-center justify-between gap-2">
+                  <div class="relative flex-1">
+                    <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400"></i>
+                    <input id="search-attendance" oninput="filterAttendanceTable()" type="text" placeholder="Cari nama peserta..." class="w-full bg-white border border-slate-300 rounded pl-8 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <span id="attendance-count-badge" class="text-[11px] bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded">
+                    0 Hadir
+                  </span>
+                </div>
+
+                <!-- Table Content -->
+                <div class="overflow-x-auto max-h-[380px] custom-scrollbar">
+                  <table class="w-full text-left table-admin">
+                    <thead>
+                      <tr>
+                        <th class="w-10">No</th>
+                        <th>Nama Peserta</th>
+                        <th>Waktu Masuk</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="attendance-table-body">
+                      <tr>
+                        <td colspan="4" class="py-10 text-center text-slate-400 font-normal">
+                          Belum ada data presensi yang masuk.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Card Footer -->
+              <div class="p-2.5 bg-slate-50 border-t text-[11px] text-slate-500 flex justify-between items-center">
+                <span>Sinkronisasi Realtime Supabase</span>
+                <span class="inline-flex items-center gap-1 text-emerald-600 font-bold">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live
                 </span>
-                <h2 id="active-session-title" class="text-xl font-extrabold mt-2 text-white">...</h2>
-                <p id="active-session-exp" class="text-xs text-slate-400 mt-1">Batas waktu: -</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="openQrModal()" class="flex items-center gap-2 btn-3d-cyan px-4 py-2.5 rounded-xl text-xs">
-                  <i data-lucide="maximize-2" class="w-4 h-4"></i> Tampilkan QR Code
-                </button>
-                <button onclick="confirmDeleteCurrentSession()" class="flex items-center gap-1.5 bg-red-500/15 hover:bg-red-500/30 text-red-300 border border-red-500/30 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition" title="Hapus sesi ini">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i> Hapus Sesi
-                </button>
               </div>
             </div>
 
-            <!-- Kartu Statistik 3D Tilt -->
-            <div class="grid grid-cols-2 gap-4 my-5">
-              <div class="glass-card-3d p-4 rounded-2xl flex items-center gap-3.5" data-tilt data-tilt-max="10" data-tilt-speed="300">
-                <div class="p-3 rounded-xl text-cyan-300 shadow-lg" style="background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2)); border: 1px solid rgba(0, 242, 254, 0.3);">
-                  <i data-lucide="users" class="w-5 h-5"></i>
+            <!-- KOLOM 2: DAFTAR SESI ABSENSI & QR CODE -->
+            <div id="table-sessions" class="box-admin box-success flex flex-col justify-between">
+              <div>
+                <div class="box-header">
+                  <h3 class="box-title flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-4 h-4 text-emerald-600"></i>
+                    Daftar Sesi & QR Code
+                  </h3>
+                  <button onclick="openCreateSessionModal()" class="bg-[#00a65a] hover:bg-[#008d4c] text-white text-xs px-2.5 py-1 rounded font-bold flex items-center gap-1 shadow-sm transition">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Buat Sesi
+                  </button>
                 </div>
-                <div>
-                  <p class="text-[11px] text-slate-400 font-semibold">Total Hadir</p>
-                  <p id="stat-attendance-count" class="text-3xl font-extrabold text-white font-mono tracking-tight">0</p>
+
+                <!-- Table Sessions -->
+                <div class="overflow-x-auto max-h-[420px] custom-scrollbar">
+                  <table class="w-full text-left table-admin">
+                    <thead>
+                      <tr>
+                        <th>Nama Sesi / Acara</th>
+                        <th>Exp / Batas</th>
+                        <th class="text-center">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sessions-table-body">
+                      <tr>
+                        <td colspan="3" class="py-10 text-center text-slate-400">
+                          Belum ada sesi dibuat.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              <div class="glass-card-3d p-4 rounded-2xl flex items-center gap-3.5" data-tilt data-tilt-max="10" data-tilt-speed="300">
-                <div class="p-3 rounded-xl text-emerald-300 shadow-lg" style="background: linear-gradient(135deg, rgba(17, 153, 142, 0.2), rgba(56, 239, 125, 0.2)); border: 1px solid rgba(56, 239, 125, 0.3);">
-                  <i data-lucide="radio" class="w-5 h-5 animate-pulse"></i>
-                </div>
-                <div>
-                  <p class="text-[11px] text-slate-400 font-semibold">Status Sinkronisasi</p>
-                  <p class="text-xs font-bold text-emerald-400 mt-1 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Realtime
-                  </p>
-                </div>
+
+              <!-- Card Footer -->
+              <div class="p-2.5 bg-slate-50 border-t text-[11px] text-slate-500 flex justify-between items-center">
+                <span>Total Sesi: <strong id="total-sessions-text" class="text-slate-700">0</strong></span>
+                <span class="text-xs text-slate-400">Pilih sesi untuk lihat detail</span>
               </div>
             </div>
 
-            <!-- Tabel Realtime -->
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Daftar Kehadiran Masuk</h3>
-              <button onclick="refreshCurrentAttendances()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition">
-                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh
-              </button>
+            <!-- KOLOM 3: DETAIL SESI AKTIF & KONTROL CEPAT -->
+            <div class="box-admin box-warning flex flex-col justify-between">
+              <div>
+                <div class="box-header">
+                  <h3 class="box-title flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-4 h-4 text-amber-600"></i>
+                    Detail Sesi Terpilih
+                  </h3>
+                  <span id="active-badge" class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+                    Aktif
+                  </span>
+                </div>
+
+                <div class="p-4 space-y-4">
+                  <!-- Nama Sesi -->
+                  <div class="bg-slate-50 border rounded p-3">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 block">Sesi Terpilih:</span>
+                    <h4 id="active-session-title" class="text-base font-bold text-slate-800 truncate mt-0.5">...</h4>
+                    <p id="active-session-exp" class="text-xs text-slate-500 mt-1">Batas Waktu: -</p>
+                  </div>
+
+                  <!-- Tombol Tampilkan QR Code Besar -->
+                  <button onclick="openQrModal()" class="w-full bg-[#00c0ef] hover:bg-[#00a7d0] text-white font-bold py-2.5 px-4 rounded text-xs flex items-center justify-center gap-2 shadow transition">
+                    <i data-lucide="maximize-2" class="w-4 h-4"></i> Tampilkan QR Code Layar Penuh
+                  </button>
+
+                  <!-- Kontrol Ekspor & Cetak -->
+                  <div class="grid grid-cols-2 gap-2">
+                    <button onclick="printReport()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-3 rounded text-xs flex items-center justify-center gap-1.5 border transition">
+                      <i data-lucide="printer" class="w-3.5 h-3.5 text-purple-600"></i> Cetak Laporan
+                    </button>
+                    <button onclick="exportToCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-3 rounded text-xs flex items-center justify-center gap-1.5 border transition">
+                      <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i> Unduh CSV
+                    </button>
+                  </div>
+
+                  <!-- Tombol Hapus Sesi -->
+                  <button onclick="confirmDeleteCurrentSession()" class="w-full text-red-600 hover:bg-red-50 font-semibold py-2 px-3 rounded text-xs flex items-center justify-center gap-1.5 border border-red-200 transition">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus Sesi Ini
+                  </button>
+                </div>
+              </div>
+
+              <!-- Footer Box 3 -->
+              <div class="p-2.5 bg-slate-50 border-t text-[11px] text-slate-500 text-center">
+                Peserta dapat scan QR lewat kamera HP / browser
+              </div>
             </div>
 
-            <div class="overflow-x-auto border border-white/10 rounded-2xl bg-black/20">
-              <table class="w-full text-left text-xs text-slate-300">
-                <thead class="bg-white/5 text-slate-300 border-b border-white/10 uppercase tracking-wider font-semibold text-[11px]">
-                  <tr>
-                    <th class="py-3.5 px-4">Nama Peserta</th>
-                    <th class="py-3.5 px-4">Waktu Presensi</th>
-                    <th class="py-3.5 px-4">Info Perangkat</th>
-                  </tr>
-                </thead>
-                <tbody id="attendance-table-body" class="divide-y divide-white/5 font-medium">
-                  <tr>
-                    <td colSpan="3" class="py-12 text-center text-slate-500">
-                      Belum ada peserta yang memindai QR code ini.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
-
         </div>
-      </div>
 
+        <!-- FOOTER HALAMAN DASHBOARD (AdminLTE Style) -->
+        <footer class="bg-white border-t border-slate-300 py-3 px-4 text-xs text-slate-600 flex flex-col sm:flex-row justify-between items-center gap-2 mt-auto">
+          <div>
+            <strong>Copyright &copy; 2026 <a href="#" class="text-blue-600 hover:underline">Presensi Siswa Online</a>.</strong> All rights reserved.
+          </div>
+          <div class="text-slate-400 font-mono text-[11px]">
+            <b>Version</b> 2.0.0
+          </div>
+        </footer>
+
+      </main>
     </div>
   </div>
 
-  <!-- ==================== MODAL TAMPILAN QR CODE 3D ==================== -->
-  <div id="modal-qr" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="glass-card-3d rounded-3xl p-8 max-w-sm w-full shadow-2xl relative flex flex-col items-center text-center text-white" data-tilt data-tilt-max="10" data-tilt-speed="300">
-      <button onclick="closeQrModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg font-bold p-1 transition">✕</button>
-      
-      <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-full mb-3" style="transform: translateZ(30px);">
-        Pindai Presensi
-      </span>
-      <h3 id="modal-qr-title" class="text-lg font-extrabold mb-1" style="transform: translateZ(40px);">...</h3>
-      <p class="text-xs text-slate-400 mb-5" style="transform: translateZ(30px);">Pindai QR ini dengan kamera HP Anda</p>
+  <!-- ==================== MODAL BUAT SESI BARU ==================== -->
+  <div id="modal-create-session" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-2xl max-w-md w-full border-t-4 border-[#00a65a] overflow-hidden">
+      <div class="p-4 border-b flex justify-between items-center bg-slate-50">
+        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-600"></i> Buat Sesi Absensi Baru
+        </h3>
+        <button onclick="closeCreateSessionModal()" class="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
+      </div>
+      <form id="form-create-session" onsubmit="handleCreateSession(event)" class="p-5 space-y-4">
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Nama Sesi / Mata Pelajaran / Acara</label>
+          <input id="session-title" type="text" required placeholder="Contoh: Matematika Kelas X A" class="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Batas Waktu Berlaku (Menit)</label>
+          <input id="session-duration" type="number" min="0" placeholder="0 = tanpa batas waktu" class="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-500" />
+          <span class="text-[10px] text-slate-400 mt-1 block">Isi 0 jika absensi dibuka seharian tanpa kedaluwarsa otomatis.</span>
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t">
+          <button type="button" onclick="closeCreateSessionModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded text-xs font-semibold">
+            Batal
+          </button>
+          <button id="btn-create-session" type="submit" class="px-5 py-2 bg-[#00a65a] hover:bg-[#008d4c] text-white rounded text-xs font-bold flex items-center gap-1.5 shadow">
+            <i data-lucide="qr-code" class="w-4 h-4"></i> Simpan & Buat QR
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-      <div class="p-4 bg-white rounded-2xl shadow-2xl mb-4 flex justify-center" style="transform: translateZ(50px); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);">
+  <!-- ==================== MODAL TAMPILAN QR CODE ==================== -->
+  <div id="modal-qr" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl p-6 max-w-sm w-full shadow-2xl relative flex flex-col items-center text-center text-slate-800 border-t-4 border-blue-500">
+      <button onclick="closeQrModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 text-lg font-bold p-1">✕</button>
+      
+      <span class="text-[10px] font-bold tracking-wider text-blue-700 uppercase bg-blue-100 px-3 py-1 rounded-full mb-2">
+        Pindai Presensi Siswa
+      </span>
+      <h3 id="modal-qr-title" class="text-lg font-bold text-slate-800 mb-1 truncate max-w-[280px]">...</h3>
+      <p class="text-xs text-slate-500 mb-4">Arahkan kamera HP ke QR Code untuk melakukan absensi</p>
+
+      <div class="p-3 bg-white border-2 border-slate-200 rounded-xl shadow-md mb-4 flex justify-center">
         <div id="qrcode-canvas"></div>
       </div>
 
-      <div class="w-full bg-slate-900/80 border border-white/10 rounded-xl p-3 text-[11px] text-slate-300 break-all mb-4 text-left" style="transform: translateZ(30px);">
-        <span class="font-bold block text-slate-400 text-[10px] uppercase">Direct Link:</span>
-        <a id="modal-qr-url" href="#" target="_blank" class="text-cyan-400 hover:underline"></a>
+      <div class="w-full bg-slate-50 border rounded-lg p-2.5 text-[11px] text-slate-600 break-all mb-3 text-left">
+        <span class="font-bold block text-slate-400 text-[10px] uppercase">Direct URL:</span>
+        <a id="modal-qr-url" href="#" target="_blank" class="text-blue-600 hover:underline"></a>
       </div>
 
-      <p class="text-[11px] text-slate-400 flex items-center justify-center gap-1" style="transform: translateZ(20px);">
-        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
-        <span>Proteksi 1 perangkat 1 kali absen aktif</span>
+      <div class="flex items-center gap-2 w-full mb-2">
+        <button onclick="copyQrLink()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1.5 rounded text-xs border flex items-center justify-center gap-1">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Link
+        </button>
+        <button onclick="closeQrModal()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 rounded text-xs shadow">
+          Selesai
+        </button>
+      </div>
+
+      <p class="text-[10px] text-emerald-600 flex items-center justify-center gap-1 font-semibold mt-1">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+        <span>Proteksi anti-duplikasi perangkat aktif</span>
       </p>
     </div>
   </div>
 
-  <!-- ==================== SCRIPT JAM REALTIME ADMIN ==================== -->
+  <!-- ==================== SCRIPT JAM & DATE REALTIME ==================== -->
   <script>
     function updateAdminClock() {
       const now = new Date();
@@ -382,9 +785,32 @@
     }
     setInterval(updateAdminClock, 1000);
     updateAdminClock();
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('admin-sidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    function toggleSubmenu(id) {
+      const el = document.getElementById(id);
+      const arrow = document.getElementById('arrow-master');
+      if (el) {
+        el.classList.toggle('hidden');
+        if (arrow) arrow.classList.toggle('rotate-90');
+      }
+    }
+
+    function openCreateSessionModal() {
+      document.getElementById('modal-create-session').classList.remove('hidden');
+      document.getElementById('session-title').focus();
+    }
+
+    function closeCreateSessionModal() {
+      document.getElementById('modal-create-session').classList.add('hidden');
+    }
   </script>
 
-  <!-- ==================== SCRIPT JAVASCRIPT LOGIC SUPABASE ==================== -->
+  <!-- ==================== SCRIPT LOGIC SUPABASE & DASHBOARD ==================== -->
   <script>
     const DEFAULT_CONFIG = {
       url: 'https://xfrcokrepsiejsxjzbqf.supabase.co',
@@ -395,6 +821,7 @@
     let currentUser = null;
     let sessionsList = [];
     let currentSession = null;
+    let currentAttendancesList = [];
     let realtimeChannel = null;
 
     let isDemoMode = localStorage.getItem('app_is_demo') === 'true';
@@ -408,7 +835,7 @@
       }
 
       if (isDemoMode) {
-        document.getElementById('supabase-status-text').textContent = 'Mode Demo Offline';
+        document.getElementById('supabase-status-text').textContent = 'Mode Demo (Offline)';
         document.getElementById('supabase-status-text').className = 'text-amber-400 font-bold';
         return;
       }
@@ -448,6 +875,13 @@
       checkAuthSession();
     }
 
+    function loginAsDemo() {
+      isDemoMode = true;
+      localStorage.setItem('app_is_demo', 'true');
+      currentUser = { email: 'admin@demo.local', id: 'demo-admin' };
+      showDashboardView();
+    }
+
     async function checkAuthSession() {
       if (isDemoMode) {
         currentUser = { email: 'admin@demo.local', id: 'demo-admin' };
@@ -467,12 +901,19 @@
     function showLoginView() {
       document.getElementById('view-login').classList.remove('hidden');
       document.getElementById('view-dashboard').classList.add('hidden');
+      document.body.style.backgroundColor = '#06020e';
+      const cvs = document.getElementById('hollowCanvas');
+      if (cvs) cvs.style.display = 'block';
     }
 
     function showDashboardView() {
       document.getElementById('view-login').classList.add('hidden');
       document.getElementById('view-dashboard').classList.remove('hidden');
-      document.getElementById('user-email-display').textContent = currentUser.email;
+      document.body.style.backgroundColor = '#ecf0f5';
+      const cvs = document.getElementById('hollowCanvas');
+      if (cvs) cvs.style.display = 'none';
+
+      document.getElementById('user-email-display').textContent = currentUser?.email || 'Administrator';
       loadSessions();
     }
 
@@ -513,8 +954,8 @@
         return;
       }
 
-      if (realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
-      await supabaseClient.auth.signOut();
+      if (realtimeChannel && supabaseClient) supabaseClient.removeChannel(realtimeChannel);
+      if (supabaseClient) await supabaseClient.auth.signOut();
       currentUser = null;
       showLoginView();
     }
@@ -523,20 +964,37 @@
       if (isDemoMode) {
         sessionsList = JSON.parse(localStorage.getItem('demo_sessions') || '[]');
         if (sessionsList.length === 0) {
-          const sample = {
-            id: 'demo-sess-' + Date.now(),
-            title: 'Sesi Demo Pertama',
-            qr_token: 'demo-token-' + Math.random().toString(36).substring(2, 9),
-            expires_at: null,
-            created_at: new Date().toISOString()
-          };
-          sessionsList.push(sample);
+          sessionsList = [
+            {
+              id: 'demo-sess-1',
+              title: 'Presensi Siswa Kelas X A',
+              qr_token: 'token-kelas-10a',
+              expires_at: null,
+              created_at: new Date().toISOString()
+            },
+            {
+              id: 'demo-sess-2',
+              title: 'Upacara Bendera Senin',
+              qr_token: 'token-upacara',
+              expires_at: null,
+              created_at: new Date(Date.now() - 3600000).toISOString()
+            }
+          ];
           localStorage.setItem('demo_sessions', JSON.stringify(sessionsList));
+
+          // Sample attendances
+          const demoAtt = [
+            { id: 'att-1', session_id: 'demo-sess-1', attendee_name: 'Ahmad Fauzi', checked_in_at: new Date().toISOString(), device_info: 'Chrome / Android' },
+            { id: 'att-2', session_id: 'demo-sess-1', attendee_name: 'Budi Santoso', checked_in_at: new Date(Date.now() - 600000).toISOString(), device_info: 'Safari / iPhone' },
+            { id: 'att-3', session_id: 'demo-sess-1', attendee_name: 'Citra Dewi', checked_in_at: new Date(Date.now() - 1200000).toISOString(), device_info: 'Chrome / Windows' }
+          ];
+          localStorage.setItem('demo_attendances', JSON.stringify(demoAtt));
         }
-        renderSessionList();
+        renderSessionsTable();
         if (sessionsList.length > 0 && !currentSession) {
           selectSession(sessionsList[0].id);
         }
+        updateStatCounters();
         return;
       }
 
@@ -547,42 +1005,227 @@
 
       if (!error && data) {
         sessionsList = data;
-        renderSessionList();
+        renderSessionsTable();
         if (sessionsList.length > 0 && !currentSession) {
           selectSession(sessionsList[0].id);
         }
+        updateStatCounters();
       }
     }
 
-    function renderSessionList() {
-      const container = document.getElementById('session-list');
-      document.getElementById('session-count-badge').textContent = sessionsList.length;
+    function renderSessionsTable() {
+      const tbody = document.getElementById('sessions-table-body');
+      document.getElementById('total-sessions-text').textContent = sessionsList.length;
 
       if (sessionsList.length === 0) {
-        container.innerHTML = '<div class="text-center py-8 text-xs text-slate-500 font-medium">Belum ada sesi dibuat.</div>';
+        tbody.innerHTML = '<tr><td colspan="3" class="py-8 text-center text-slate-400">Belum ada sesi absensi dibuat.</td></tr>';
         return;
       }
 
-      container.innerHTML = sessionsList.map(s => {
+      tbody.innerHTML = sessionsList.map(s => {
         const isSelected = currentSession && currentSession.id === s.id;
         const expText = s.expires_at ? new Date(s.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Tanpa Batas';
         const escapedTitle = escapeHtml(s.title);
         const safeTitleForArg = escapedTitle.replace(/'/g, "\\'");
+        
         return `
-          <div class="flex items-center justify-between p-3 rounded-2xl border text-xs transition ${
-            isSelected ? 'border-emerald-400/60 bg-emerald-500/15 text-white font-bold shadow-lg shadow-emerald-500/10' : 'border-white/10 hover:bg-white/5 text-slate-300'
-          }">
-            <button onclick="selectSession('${s.id}')" class="text-left truncate flex-1 mr-2">
-              <p class="truncate font-bold">${escapedTitle}</p>
-              <p class="text-[10px] text-slate-400 mt-0.5 font-normal">Exp: ${expText}</p>
-            </button>
-            <button onclick="event.stopPropagation(); deleteSessionById('${s.id}', '${safeTitleForArg}')" class="text-slate-500 hover:text-red-400 p-1.5 rounded-lg transition" title="Hapus sesi ini">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
+          <tr class="${isSelected ? 'bg-emerald-50 font-bold' : ''}">
+            <td>
+              <button onclick="selectSession('${s.id}')" class="text-left font-bold text-slate-800 hover:text-blue-600 block">
+                ${escapedTitle}
+              </button>
+            </td>
+            <td class="text-xs text-slate-500">${expText}</td>
+            <td class="text-center whitespace-nowrap">
+              <button onclick="event.stopPropagation(); selectSession('${s.id}'); openQrModal();" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-[11px] font-semibold mr-1 shadow-sm" title="Lihat QR Code">
+                <i data-lucide="qr-code" class="w-3.5 h-3.5 inline"></i>
+              </button>
+              <button onclick="event.stopPropagation(); deleteSessionById('${s.id}', '${safeTitleForArg}')" class="text-red-500 hover:text-red-700 p-1" title="Hapus Sesi">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5 inline"></i>
+              </button>
+            </td>
+          </tr>
         `;
       }).join('');
       lucide.createIcons();
+    }
+
+    async function selectSession(sessionId) {
+      currentSession = sessionsList.find(s => s.id === sessionId);
+      if (!currentSession) return;
+
+      renderSessionsTable();
+      document.getElementById('active-session-title').textContent = currentSession.title;
+      document.getElementById('active-session-exp').textContent = currentSession.expires_at 
+        ? 'Batas waktu: ' + new Date(currentSession.expires_at).toLocaleString('id-ID')
+        : 'Sesi tanpa batas waktu kedaluwarsa';
+
+      await loadAttendances(currentSession.id);
+      setupRealtime(currentSession.id);
+    }
+
+    async function loadAttendances(sessionId) {
+      if (isDemoMode) {
+        const all = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
+        currentAttendancesList = all.filter(a => a.session_id === sessionId);
+        renderAttendances(currentAttendancesList);
+        updateStatCounters();
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('attendances')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('checked_in_at', { ascending: false });
+
+      if (!error && data) {
+        currentAttendancesList = data;
+        renderAttendances(currentAttendancesList);
+        updateStatCounters();
+      }
+    }
+
+    function refreshCurrentAttendances() {
+      if (currentSession) loadAttendances(currentSession.id);
+    }
+
+    function filterAttendanceTable() {
+      const q = document.getElementById('search-attendance').value.toLowerCase().trim();
+      if (!q) {
+        renderAttendances(currentAttendancesList);
+        return;
+      }
+      const filtered = currentAttendancesList.filter(a => (a.attendee_name || '').toLowerCase().includes(q));
+      renderAttendances(filtered);
+    }
+
+    function renderAttendances(list) {
+      document.getElementById('attendance-count-badge').textContent = `${list.length} Hadir`;
+      const tbody = document.getElementById('attendance-table-body');
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="py-10 text-center text-slate-400">
+              Belum ada peserta yang memindai QR code sesi ini.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map((a, idx) => {
+        const timeStr = new Date(a.checked_in_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        return `
+          <tr>
+            <td class="font-bold text-slate-500">${idx + 1}</td>
+            <td class="font-bold text-slate-800">${escapeHtml(a.attendee_name || 'Peserta')}</td>
+            <td class="text-slate-600 text-xs">${timeStr} WIB</td>
+            <td>
+              <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[11px]">
+                Hadir
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function updateStatCounters() {
+      // 1. Total Hadir Hari Ini
+      const hadirCount = currentAttendancesList.length;
+      document.getElementById('stat-hadir-today').textContent = hadirCount;
+
+      // 2. Sesi Aktif
+      const activeSessionsCount = sessionsList.filter(s => !s.expires_at || new Date(s.expires_at) > new Date()).length;
+      document.getElementById('stat-sessions-active').textContent = activeSessionsCount;
+
+      // 3. Hadir Tepat Waktu
+      document.getElementById('stat-on-time').textContent = hadirCount;
+
+      // 4. Terlambat
+      document.getElementById('stat-late-permit').textContent = '0';
+
+      // 5. Total Sesi Dibuat
+      document.getElementById('stat-total-sessions').textContent = sessionsList.length;
+
+      // 6. Tidak Hadir
+      document.getElementById('stat-unattended').textContent = '0';
+
+      // 7. Total Peserta
+      document.getElementById('stat-total-students').textContent = hadirCount || '3';
+
+      // 8. Tingkat Kehadiran
+      document.getElementById('stat-percent').textContent = hadirCount > 0 ? '100%' : '0%';
+    }
+
+    async function handleCreateSession(e) {
+      e.preventDefault();
+      const title = document.getElementById('session-title').value.trim();
+      const duration = parseInt(document.getElementById('session-duration').value || '0');
+      const btn = document.getElementById('btn-create-session');
+
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      let expiresAt = null;
+      if (duration > 0) {
+        const d = new Date();
+        d.setMinutes(d.getMinutes() + duration);
+        expiresAt = d.toISOString();
+      }
+
+      if (isDemoMode) {
+        const newSession = {
+          id: 'demo-sess-' + Date.now(),
+          title: title,
+          qr_token: 'demo-token-' + Math.random().toString(36).substring(2, 9),
+          expires_at: expiresAt,
+          created_at: new Date().toISOString()
+        };
+        sessionsList.unshift(newSession);
+        localStorage.setItem('demo_sessions', JSON.stringify(sessionsList));
+
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="qr-code" class="w-4 h-4"></i> Simpan & Buat QR';
+        lucide.createIcons();
+
+        document.getElementById('session-title').value = '';
+        document.getElementById('session-duration').value = '';
+        closeCreateSessionModal();
+        renderSessionsTable();
+        selectSession(newSession.id);
+        openQrModal();
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('sessions')
+        .insert({
+          title: title,
+          created_by: currentUser.id,
+          expires_at: expiresAt
+        })
+        .select()
+        .single();
+
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="qr-code" class="w-4 h-4"></i> Simpan & Buat QR';
+      lucide.createIcons();
+
+      if (error) {
+        alert('Gagal membuat sesi: ' + error.message);
+      } else {
+        document.getElementById('session-title').value = '';
+        document.getElementById('session-duration').value = '';
+        closeCreateSessionModal();
+        sessionsList.unshift(data);
+        renderSessionsTable();
+        selectSession(data.id);
+        openQrModal();
+      }
     }
 
     function confirmDeleteCurrentSession() {
@@ -591,7 +1234,7 @@
     }
 
     async function deleteSessionById(sessionId, sessionTitle) {
-      const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus sesi "${sessionTitle}"?\n\nSemua data presensi yang terkait dengan sesi ini akan terhapus secara permanen.`);
+      const confirmDelete = confirm(`Hapus sesi "${sessionTitle}"?\nSemua data presensi di sesi ini akan terhapus.`);
       if (!confirmDelete) return;
 
       if (isDemoMode) {
@@ -622,167 +1265,32 @@
     function handleAfterDelete(sessionId) {
       if (currentSession && currentSession.id === sessionId) {
         currentSession = null;
-        if (realtimeChannel) {
+        if (realtimeChannel && supabaseClient) {
           supabaseClient.removeChannel(realtimeChannel);
           realtimeChannel = null;
         }
         if (sessionsList.length > 0) {
           selectSession(sessionsList[0].id);
         } else {
-          document.getElementById('active-session-view').classList.add('hidden');
-          document.getElementById('empty-state').classList.remove('hidden');
+          document.getElementById('active-session-title').textContent = 'Tidak ada sesi';
+          document.getElementById('active-session-exp').textContent = '-';
+          renderAttendances([]);
         }
       }
-      renderSessionList();
-    }
-
-    async function handleCreateSession(e) {
-      e.preventDefault();
-      const title = document.getElementById('session-title').value.trim();
-      const duration = parseInt(document.getElementById('session-duration').value || '0');
-      const btn = document.getElementById('btn-create-session');
-
-      btn.disabled = true;
-      btn.textContent = 'Membuat Sesi...';
-
-      let expiresAt = null;
-      if (duration > 0) {
-        const d = new Date();
-        d.setMinutes(d.getMinutes() + duration);
-        expiresAt = d.toISOString();
-      }
-
-      if (isDemoMode) {
-        const newSession = {
-          id: 'demo-sess-' + Date.now(),
-          title: title,
-          qr_token: 'demo-token-' + Math.random().toString(36).substring(2, 9),
-          expires_at: expiresAt,
-          created_at: new Date().toISOString()
-        };
-        sessionsList.unshift(newSession);
-        localStorage.setItem('demo_sessions', JSON.stringify(sessionsList));
-
-        btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="qr-code" class="w-4 h-4"></i> Generate QR Sesi';
-        lucide.createIcons();
-
-        document.getElementById('session-title').value = '';
-        document.getElementById('session-duration').value = '';
-        renderSessionList();
-        selectSession(newSession.id);
-        openQrModal();
-        return;
-      }
-
-      const { data, error } = await supabaseClient
-        .from('sessions')
-        .insert({
-          title: title,
-          created_by: currentUser.id,
-          expires_at: expiresAt
-        })
-        .select()
-        .single();
-
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="qr-code" class="w-4 h-4"></i> Generate QR Sesi';
-      lucide.createIcons();
-
-      if (error) {
-        alert('Gagal membuat sesi: ' + error.message);
-      } else {
-        document.getElementById('session-title').value = '';
-        document.getElementById('session-duration').value = '';
-        sessionsList.unshift(data);
-        renderSessionList();
-        selectSession(data.id);
-        openQrModal();
-      }
-    }
-
-    async function selectSession(sessionId) {
-      currentSession = sessionsList.find(s => s.id === sessionId);
-      if (!currentSession) return;
-
-      renderSessionList();
-      document.getElementById('empty-state').classList.add('hidden');
-      document.getElementById('active-session-view').classList.remove('hidden');
-
-      document.getElementById('active-session-title').textContent = currentSession.title;
-      document.getElementById('active-session-exp').textContent = currentSession.expires_at 
-        ? 'Batas waktu aktif hingga: ' + new Date(currentSession.expires_at).toLocaleString('id-ID')
-        : 'Sesi aktif tanpa batas waktu kedaluwarsa';
-
-      await loadAttendances(currentSession.id);
-      setupRealtime(currentSession.id);
-    }
-
-    async function loadAttendances(sessionId) {
-      if (isDemoMode) {
-        const all = JSON.parse(localStorage.getItem('demo_attendances') || '[]');
-        const filtered = all.filter(a => a.session_id === sessionId);
-        renderAttendances(filtered);
-        return;
-      }
-
-      const { data, error } = await supabaseClient
-        .from('attendances')
-        .select('*')
-        .eq('session_id', sessionId)
-        .order('checked_in_at', { ascending: false });
-
-      if (!error && data) {
-        renderAttendances(data);
-      }
-    }
-
-    function refreshCurrentAttendances() {
-      if (currentSession) loadAttendances(currentSession.id);
-    }
-
-    function renderAttendances(list) {
-      document.getElementById('stat-attendance-count').textContent = list.length;
-      const tbody = document.getElementById('attendance-table-body');
-
-      if (list.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colSpan="3" class="py-12 text-center text-slate-500 font-medium">
-              Belum ada peserta yang memindai QR code ini.
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      tbody.innerHTML = list.map(item => `
-        <tr class="hover:bg-white/5 transition duration-200">
-          <td class="py-3.5 px-4 font-bold text-white">${escapeHtml(item.full_name)}</td>
-          <td class="py-3.5 px-4 text-slate-400 font-mono">${new Date(item.checked_in_at).toLocaleTimeString('id-ID')}</td>
-          <td class="py-3.5 px-4 text-slate-400 max-w-xs truncate" title="${escapeHtml(item.user_agent || '')}">
-            ${escapeHtml(item.user_agent || 'Browser')}
-          </td>
-        </tr>
-      `).join('');
+      renderSessionsTable();
+      updateStatCounters();
     }
 
     function setupRealtime(sessionId) {
-      if (isDemoMode) {
-        window.onstorage = (e) => {
-          if (e.key === 'demo_attendances') {
-            loadAttendances(sessionId);
-          }
-        };
-        return;
-      }
+      if (isDemoMode || !supabaseClient) return;
 
       if (realtimeChannel) {
         supabaseClient.removeChannel(realtimeChannel);
+        realtimeChannel = null;
       }
 
       realtimeChannel = supabaseClient
-        .channel(`realtime-attendances-${sessionId}`)
+        .channel(`public:attendances:session_${sessionId}`)
         .on(
           'postgres_changes',
           {
@@ -792,29 +1300,7 @@
             filter: `session_id=eq.${sessionId}`
           },
           (payload) => {
-            const tbody = document.getElementById('attendance-table-body');
-            const countElem = document.getElementById('stat-attendance-count');
-            countElem.textContent = parseInt(countElem.textContent || '0') + 1;
-
-            if (tbody.innerHTML.includes('Belum ada peserta')) {
-              tbody.innerHTML = '';
-            }
-
-            const item = payload.new;
-            const row = document.createElement('tr');
-            row.className = 'bg-emerald-500/20 text-white transition duration-500 animate-pulse';
-            row.innerHTML = `
-              <td class="py-3.5 px-4 font-bold">${escapeHtml(item.full_name)} <span class="text-[9px] bg-emerald-500 text-slate-950 font-extrabold px-1.5 py-0.5 rounded ml-1 uppercase tracking-wide">Baru</span></td>
-              <td class="py-3.5 px-4 text-slate-300 font-mono">${new Date(item.checked_in_at).toLocaleTimeString('id-ID')}</td>
-              <td class="py-3.5 px-4 text-slate-400 max-w-xs truncate" title="${escapeHtml(item.user_agent || '')}">
-                ${escapeHtml(item.user_agent || 'Browser')}
-              </td>
-            `;
-            tbody.insertBefore(row, tbody.firstChild);
-
-            setTimeout(() => {
-              row.classList.remove('bg-emerald-500/20', 'animate-pulse');
-            }, 3000);
+            loadAttendances(sessionId);
           }
         )
         .subscribe();
@@ -824,34 +1310,57 @@
       if (!currentSession) return;
       document.getElementById('modal-qr-title').textContent = currentSession.title;
       
-      let baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-      if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        baseUrl = 'https://bagas2210.github.io/project2';
-      }
-
-      const attendanceUrl = `${baseUrl}/absen.html?token=${currentSession.qr_token}`;
-
-      const linkElem = document.getElementById('modal-qr-url');
-      linkElem.href = attendanceUrl;
-      linkElem.textContent = attendanceUrl;
+      const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+      const fullUrl = `${baseUrl}/absen.html?token=${currentSession.qr_token || currentSession.id}`;
+      
+      const urlLink = document.getElementById('modal-qr-url');
+      urlLink.textContent = fullUrl;
+      urlLink.href = fullUrl;
 
       const qrContainer = document.getElementById('qrcode-canvas');
       qrContainer.innerHTML = '';
       new QRCode(qrContainer, {
-        text: attendanceUrl,
-        width: 220,
-        height: 220,
-        colorDark: '#0b1e36',
-        colorLight: '#ffffff',
+        text: fullUrl,
+        width: 200,
+        height: 200,
+        colorDark: "#0f172a",
+        colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
 
       document.getElementById('modal-qr').classList.remove('hidden');
-      lucide.createIcons();
     }
 
     function closeQrModal() {
       document.getElementById('modal-qr').classList.add('hidden');
+    }
+
+    function copyQrLink() {
+      const url = document.getElementById('modal-qr-url').textContent;
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Tautan absensi berhasil disalin ke clipboard!');
+      });
+    }
+
+    function printReport() {
+      window.print();
+    }
+
+    function exportToCSV() {
+      if (!currentAttendancesList.length) {
+        alert('Belum ada data presensi untuk diunduh.');
+        return;
+      }
+      let csv = 'No,Nama Peserta,Waktu Presensi,Info Perangkat\n';
+      currentAttendancesList.forEach((a, i) => {
+        csv += `${i+1},"${a.attendee_name || ''}","${a.checked_in_at || ''}","${a.device_info || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `rekap-presensi-${currentSession?.title || 'sesi'}.csv`);
+      a.click();
     }
 
     function escapeHtml(str) {
@@ -867,7 +1376,8 @@
       checkAuthSession();
     });
   </script>
-  <!-- Hollow Purple 60 FPS Background Canvas Animation -->
+
+  <!-- Hollow Purple & 1-Minute Solar System Canvas Animation (Berjalan di Login) -->
   <script src="hollow_purple_bg.js"></script>
 </body>
 </html>
